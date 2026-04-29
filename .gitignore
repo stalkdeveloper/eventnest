@@ -1,0 +1,44 @@
+# ── Python ────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ── Virtual Environment ───────────────────────────
+vistalk_env/
+env/
+venv/
+.env/
+.venv/
+
+# ── Environment Variables ─────────────────────────
+.env
+.env.local
+.env.production
+*.env
+
+# ── Django ────────────────────────────────────────
+*.sqlite3
+media/
+staticfiles/
+static_root/
+
+# ── IDE ───────────────────────────────────────────
+.vscode/
+.idea/
+*.code-workspace
+
+# ── OS ────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs ──────────────────────────────────────────
+*.log
+logs/
+
+# ── Coverage & Testing ────────────────────────────
+.coverage
+htmlcov/
+.pytest_cache/
