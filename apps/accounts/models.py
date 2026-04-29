@@ -1,25 +1,30 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
-class User(AbstractUser):
+class CustomUser(AbstractUser):
     """
     Custom user model for EventNest.
-    Extends Django's AbstractUser — no role field.
-    Roles are handled via Django Groups (Admin, Organiser, Guest).
+    - No role field (roles handled via Django Groups)
+    - No profile_picture field (media handled via Media table)
     """
 
-    phone = models.CharField(
-        max_length=20,
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+
+    groups = models.ManyToManyField(
+        "auth.Group",
+        verbose_name="groups",
         blank=True,
-        null=True,
-        help_text="Optional contact phone number.",
+        related_name="customuser_set",
+        related_query_name="customuser",
     )
-    profile_picture = models.ImageField(
-        upload_to="profile_pictures/",
+    user_permissions = models.ManyToManyField(
+        "auth.Permission",
+        verbose_name="user permissions",
         blank=True,
-        null=True,
-        help_text="Optional profile picture.",
+        related_name="customuser_set",
+        related_query_name="customuser",
     )
 
     class Meta:
@@ -28,3 +33,19 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email or self.username
+
+    @property
+    def get_profile_picture(self):
+        """
+        Returns the Media object for this user's profile picture, or None.
+        Queries the Media table using polymorphic fields.
+        """
+        try:
+            from apps.media.models import Media
+            return Media.objects.filter(
+                mediable_type="accounts.CustomUser",
+                mediable_id=self.pk,
+                source_type="profile_picture",
+            ).first()
+        except Exception:
+            return None

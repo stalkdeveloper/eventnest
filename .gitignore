@@ -20,7 +20,7 @@ venv/
 
 # ── Django ────────────────────────────────────────
 *.sqlite3
-media/
+/media/
 staticfiles/
 static_root/
 
