@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}{{ event.title }} - EventNest{% endblock %}
+{% block content %}
+<div style="max-width:900px;margin:0 auto">
+  <!-- Banner -->
+  <div style="height:320px;border-radius:var(--radius);overflow:hidden;margin-bottom:2rem;position:relative;{% if event.category %}background:linear-gradient(135deg,{{ event.category.color }}99,{{ event.category.color }}11){% else %}background:var(--gradient){% endif %}">
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:6rem;opacity:.2">&#127881;</div>
+    <div style="position:absolute;bottom:1.5rem;left:1.5rem;display:flex;gap:.5rem">
+      {% if event.category %}<span class="badge badge-purple" style="backdrop-filter:blur(10px)">{{ event.category.name }}</span>{% endif %}
+      <span class="badge {% if event.event_type == 'online' %}badge-cyan{% else %}badge-green{% endif %}">{{ event.event_type|title }}</span>
+      {% if event.is_free %}<span class="badge badge-green">FREE</span>{% endif %}
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:2rem;align-items:start">
+    <div>
+      <h1 style="font-family:var(--font-head);font-size:2rem;font-weight:800;margin-bottom:1rem;line-height:1.2">{{ event.title }}</h1>
+      <div style="display:flex;flex-wrap:wrap;gap:1.5rem;margin-bottom:2rem;color:var(--text2);font-size:.9rem">
+        <span>&#128197; {{ event.start_date|date:"F d, Y, g:i A" }}</span>
+        {% if event.city %}<span>&#128205; {{ event.city }}</span>{% endif %}
+        {% if event.venue %}<span>&#127963; {{ event.venue }}</span>{% endif %}
+        <span>&#128101; {{ event.tickets_sold }} registered</span>
+      </div>
+      <div style="color:var(--text);line-height:1.8;font-size:.95rem">{{ event.description|linebreaks }}</div>
+      {% if event.address %}
+      <div style="margin-top:2rem;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1.25rem">
+        <h4 style="font-family:var(--font-head);margin-bottom:.5rem">&#128205; Venue Address</h4>
+        <p style="color:var(--text2);font-size:.9rem">{{ event.address }}</p>
+      </div>
+      {% endif %}
+      {% if event.online_link %}
+      <div style="margin-top:1rem;background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);border-radius:var(--radius-sm);padding:1.25rem">
+        <h4 style="font-family:var(--font-head);margin-bottom:.5rem;color:var(--cyan)">&#127760; Online Event</h4>
+        <p style="color:var(--text2);font-size:.9rem">Link will be shared with registered attendees.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div style="position:sticky;top:80px">
+      <div class="card">
+        <div class="card-body">
+          <div style="font-family:var(--font-head);font-size:2rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1rem">
+            {% if event.is_free %}FREE{% else %}&#8377;{{ event.ticket_price }}{% endif %}
+          </div>
+          {% if event.max_capacity > 0 %}
+          <div style="margin-bottom:1.25rem">
+            <div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--text2);margin-bottom:.4rem">
+              <span>Availability</span>
+              <span>{{ event.spots_left }} / {{ event.max_capacity }}</span>
+            </div>
+            <div style="background:var(--bg2);border-radius:99px;height:6px;overflow:hidden">
+              <div style="height:100%;background:var(--gradient);border-radius:99px;width:{% widthratio event.tickets_sold event.max_capacity 100 %}%"></div>
+            </div>
+          </div>
+          {% endif %}
+
+          <div style="font-size:.85rem;color:var(--text2);margin-bottom:1.5rem;display:flex;flex-direction:column;gap:.5rem">
+            <span>&#128197; Ends: {{ event.end_date|date:"M d, Y" }}</span>
+            <span>&#128101; {{ event.tickets_sold }} registered</span>
+            {% if event.organiser %}<span>&#128081; By {{ event.organiser.username }}</span>{% endif %}
+          </div>
+
+          {% if user.is_authenticated %}
+            {% if user_ticket %}
+            <div style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:var(--radius-sm);padding:1rem;text-align:center;margin-bottom:1rem">
+              <div style="color:var(--green);font-weight:700;margin-bottom:.25rem">&#10003; You're Registered!</div>
+              <div style="font-size:.82rem;color:var(--text2)">Ticket: {{ user_ticket.ticket_code }}</div>
+            </div>
+            {% elif event.spots_left == 0 %}
+            <button class="btn btn-outline" style="width:100%" disabled>Fully Booked</button>
+            {% elif not event.is_upcoming %}
+            <button class="btn btn-outline" style="width:100%" disabled>Event Ended</button>
+            {% else %}
+            <form method="post" action="{% url 'core:register_event' event.slug %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-gradient" style="width:100%">
+                {% if event.is_free %}Register Free{% else %}Get Ticket - &#8377;{{ event.ticket_price }}{% endif %}
+              </button>
+            </form>
+            {% endif %}
+          {% else %}
+          <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-gradient" style="width:100%;display:block;text-align:center">Login to Register</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

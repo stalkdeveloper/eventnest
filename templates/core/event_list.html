@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Explore Events - EventNest{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-3">
+  <h1 class="section-title" style="margin-bottom:0">Explore Events</h1>
+</div>
+
+<form method="get" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:2rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end">
+  <div style="flex:1;min-width:200px">
+    <label class="form-label">Search</label>
+    <input type="text" name="q" value="{{ query }}" placeholder="Search events..." class="form-input">
+  </div>
+  <div style="min-width:160px">
+    <label class="form-label">Category</label>
+    <select name="category" class="form-input form-select">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+      <option value="{{ cat.slug }}" {% if current_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div style="min-width:140px">
+    <label class="form-label">Type</label>
+    <select name="type" class="form-input form-select">
+      <option value="">All Types</option>
+      <option value="online" {% if current_type == 'online' %}selected{% endif %}>Online</option>
+      <option value="offline" {% if current_type == 'offline' %}selected{% endif %}>Offline</option>
+      <option value="hybrid" {% if current_type == 'hybrid' %}selected{% endif %}>Hybrid</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-gradient">Filter</button>
+  <a href="{% url 'core:event_list' %}" class="btn btn-outline">Clear</a>
+</form>
+
+{% if events %}
+<p class="text-muted text-sm mb-3">{{ events|length }} event{{ events|length|pluralize }} found</p>
+<div class="grid-3">
+  {% for event in events %}
+  <a href="{% url 'core:event_detail' event.slug %}" style="text-decoration:none">
+    <div class="event-card">
+      <div class="event-card-img" style="{% if event.category %}background:linear-gradient(135deg,{{ event.category.color }}77,{{ event.category.color }}11){% endif %}">
+        <div class="event-card-img-placeholder">{% if event.category %}{{ event.category.name|first }}{% else %}E{% endif %}</div>
+      </div>
+      <div class="event-card-body">
+        <div class="event-card-meta">
+          {% if event.category %}<span class="badge badge-purple">{{ event.category.name }}</span>{% endif %}
+          <span class="badge {% if event.event_type == 'online' %}badge-cyan{% elif event.event_type == 'hybrid' %}badge-orange{% else %}badge-green{% endif %}">{{ event.event_type|title }}</span>
+        </div>
+        <div class="event-card-title">{{ event.title }}</div>
+        <p style="font-size:.82rem;color:var(--text2);line-height:1.5">{{ event.description|truncatewords:15 }}</p>
+        <div class="event-card-meta">
+          <span>&#128197; {{ event.start_date|date:"M d, Y" }}</span>
+          {% if event.city %}<span>&#128205; {{ event.city }}</span>{% endif %}
+        </div>
+      </div>
+      <div class="event-card-footer">
+        {% if event.is_free %}<span style="color:var(--green);font-weight:700">FREE</span>
+        {% else %}<span style="font-family:var(--font-head);font-weight:700;color:var(--accent2)">&#8377;{{ event.ticket_price }}</span>{% endif %}
+        <span class="btn btn-gradient btn-sm">View Details</span>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div style="text-align:center;padding:4rem 0">
+  <div style="font-size:3rem;margin-bottom:1rem">&#128269;</div>
+  <h3 style="font-family:var(--font-head);margin-bottom:.5rem">No events found</h3>
+  <p style="color:var(--text2)">Try adjusting your filters or search term.</p>
+</div>
+{% endif %}
+{% endblock %}

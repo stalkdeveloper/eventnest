@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Delete Event - EventNest{% endblock %}
+{% block content %}
+<div style="max-width:500px;margin:4rem auto;text-align:center">
+  <div style="font-size:3.5rem;margin-bottom:1rem">&#128465;</div>
+  <h2 style="font-family:var(--font-head);font-size:1.5rem;margin-bottom:.75rem">Delete Event?</h2>
+  <p style="color:var(--text2);margin-bottom:.5rem">You are about to permanently delete:</p>
+  <p style="font-weight:700;font-size:1.05rem;margin-bottom:2rem;color:var(--text)">{{ event.title }}</p>
+  <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:var(--radius-sm);padding:1rem;margin-bottom:2rem;font-size:.88rem;color:#f87171">
+    This action cannot be undone. All tickets for this event will also be deleted.
+  </div>
+  <div style="display:flex;gap:1rem;justify-content:center">
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger btn-lg">Yes, Delete Event</button>
+    </form>
+    <a href="{% url 'core:organiser_dashboard' %}" class="btn btn-outline btn-lg">Cancel</a>
+  </div>
+</div>
+{% endblock %}

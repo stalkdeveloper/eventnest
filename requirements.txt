@@ -1,7 +1,19 @@
 asgiref==3.11.1
 Django==6.0.4
-djangorestframework==3.17.1
-djangorestframework_simplejwt==5.5.1
 PyJWT==2.12.1
 sqlparse==0.5.5
 tzdata==2026.2
+
+
+# Django>=5.0,<6.0
+# Pillow>=10.0
+# python-decouple>=3.8
+
+# Production extras (uncomment as needed)
+# psycopg2-binary>=2.9       # PostgreSQL
+# django-storages>=1.14      # S3 / Cloudinary file storage
+# boto3>=1.34                # Amazon S3
+# cloudinary>=1.40           # Cloudinary
+# gunicorn>=21.2             # Production WSGI server
+# whitenoise>=6.6            # Static files in prod
+# django-debug-toolbar>=4.3  # Debug toolbar

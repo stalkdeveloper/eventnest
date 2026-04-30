@@ -1,5 +1,5 @@
 ```
-You are a Django developer helping me build "EventNest" — an event management platform.
+You are a Django developer helping me build "EventNest" - an event management platform.
 
 ## Project stack
 - Django latest version backend (inside `eventnest/` folder)
@@ -16,7 +16,7 @@ You are a Django developer helping me build "EventNest" — an event management 
 - `INSTALLED_APPS` includes `apps.accounts`, `apps.core`, `apps.media`
 - NO migrations run yet
 
-## Media app — already built
+## Media app - already built
 `apps/media/models.py` is already written. Here is the complete file:
 
 ```python
@@ -70,19 +70,19 @@ class Media(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.source_type} — {self.original_file_name} ({self.mediable_type}:{self.mediable_id})"
+        return f"{self.source_type} - {self.original_file_name} ({self.mediable_type}:{self.mediable_id})"
 ```
 
 ## Media architecture decisions
-- ALL file storage (profile pictures, event banners, ticket QR codes, documents etc.) goes through the `apps/media` Media table — never store files directly on the User or Event model
+- ALL file storage (profile pictures, event banners, ticket QR codes, documents etc.) goes through the `apps/media` Media table - never store files directly on the User or Event model
 - Media is polymorphic: `mediable_type` = app label + model name (e.g. `accounts.User`), `mediable_id` = PK of the owner
 - `source_type` describes purpose: `profile_picture`, `event_banner`, `ticket_qr`, `event_gallery` etc.
 - `storage_type` describes location: local (dev), S3 or Cloudinary (prod)
-- `profile_picture` on CustomUser is NOT an ImageField — it is looked up via Media table using `mediable_type='accounts.User'` + `source_type='profile_picture'`
+- `profile_picture` on CustomUser is NOT an ImageField - it is looked up via Media table using `mediable_type='accounts.User'` + `source_type='profile_picture'`
 - A helper method `get_media(obj, source_type)` will be added to a utils file so any model can fetch its media in one line or using relationships
 
 ## Architecture decisions already made
-- NO static `role` field on User — use Django's built-in Groups and Permissions
+- NO static `role` field on User - use Django's built-in Groups and Permissions
 - Three groups: Admin, Organiser, Guest(If Admin need will create subadmin)
 - Guest group: view events, add ticket (register for event) only
 - New users auto-assigned to Guest group

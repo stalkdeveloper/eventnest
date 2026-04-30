@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Attendees - {{ event.title }}{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <div>
+    <a href="{% url 'core:organiser_dashboard' %}" style="color:var(--text2);font-size:.85rem">&larr; Dashboard</a>
+    <h1 class="section-title" style="margin-bottom:.25rem;margin-top:.5rem">Attendees</h1>
+    <p class="text-muted">{{ event.title }}</p>
+  </div>
+  <div style="text-align:right">
+    <div class="stat-value" style="font-size:2.5rem">{{ tickets|length }}</div>
+    <div class="stat-label">Registered</div>
+  </div>
+</div>
+
+{% if tickets %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>#</th><th>Name</th><th>Email</th><th>Ticket Code</th><th>Status</th><th>Paid</th><th>Registered</th></tr>
+    </thead>
+    <tbody>
+      {% for ticket in tickets %}
+      <tr>
+        <td class="text-muted text-sm">{{ forloop.counter }}</td>
+        <td style="font-weight:500">{{ ticket.attendee.get_full_name|default:ticket.attendee.username }}</td>
+        <td class="text-muted text-sm">{{ ticket.attendee.email }}</td>
+        <td><code style="background:var(--card2);padding:.2rem .5rem;border-radius:4px;font-size:.8rem;color:var(--accent2)">{{ ticket.ticket_code }}</code></td>
+        <td><span class="badge {% if ticket.status == 'confirmed' %}badge-green{% elif ticket.status == 'cancelled' %}badge-red{% elif ticket.status == 'attended' %}badge-cyan{% else %}badge-orange{% endif %}">{{ ticket.status|title }}</span></td>
+        <td class="text-sm">{% if ticket.amount_paid > 0 %}&#8377;{{ ticket.amount_paid }}{% else %}<span style="color:var(--green)">Free</span>{% endif %}</td>
+        <td class="text-muted text-sm">{{ ticket.registered_at|date:"M d, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div style="text-align:center;padding:4rem;background:var(--card);border:1px solid var(--border);border-radius:var(--radius)">
+  <div style="font-size:2.5rem;margin-bottom:.75rem">&#128101;</div>
+  <p class="text-muted">No attendees yet. Share your event to get registrations.</p>
+</div>
+{% endif %}
+{% endblock %}

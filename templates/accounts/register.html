@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Register - EventNest{% endblock %}
+{% block content %}
+<div style="min-height:70vh;display:flex;align-items:center;justify-content:center">
+  <div style="width:100%;max-width:480px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2.5rem">
+    <div style="text-align:center;margin-bottom:2rem">
+      <span style="font-family:var(--font-head);font-size:2rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">&#11043; EventNest</span>
+    </div>
+    <h2 style="font-family:var(--font-head);font-size:1.5rem;font-weight:700;margin-bottom:0.25rem">Create account</h2>
+    <p style="color:var(--text2);font-size:.9rem;margin-bottom:2rem">Join EventNest and discover amazing events</p>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<div class="form-errors">{% for e in field.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>{% endif %}
+        {% if field.help_text %}<p style="font-size:.75rem;color:var(--text2);margin-top:.25rem">{{ field.help_text }}</p>{% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-gradient" style="width:100%;margin-top:.5rem">Create Account</button>
+    </form>
+    <p style="text-align:center;margin-top:1.5rem;font-size:.88rem;color:var(--text2)">
+      Already have an account? <a href="{% url 'accounts:login' %}" style="color:var(--accent2);font-weight:600">Sign in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

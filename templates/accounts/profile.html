@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}My Profile - EventNest{% endblock %}
+{% block content %}
+<div style="max-width:750px;margin:0 auto">
+  <h1 class="section-title">My Profile</h1>
+  <div class="card">
+    <!-- Cover banner -->
+    <div style="height:130px;background:var(--gradient);border-radius:var(--radius) var(--radius) 0 0;position:relative"></div>
+
+    <!-- Avatar + upload -->
+    <div style="padding:0 1.75rem;position:relative">
+      <div style="position:absolute;top:-50px;left:1.75rem;display:flex;align-items:flex-end;gap:.75rem">
+        <div id="avatar-preview" style="width:90px;height:90px;border-radius:50%;border:3px solid var(--bg);background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:800;font-family:var(--font-head);overflow:hidden;flex-shrink:0">
+          {% if profile_pic %}
+          <img src="{{ profile_pic.get_url }}" style="width:100%;height:100%;object-fit:cover">
+          {% else %}
+          {{ user.username|first|upper }}
+          {% endif %}
+        </div>
+        <div style="margin-bottom:.5rem">
+          <label for="pic-upload" style="cursor:pointer" class="btn btn-outline btn-sm">&#128247; Change Photo</label>
+          <input type="file" id="pic-upload" accept="image/*" style="display:none" onchange="uploadPicture(this)">
+          <div id="upload-status" style="font-size:.75rem;color:var(--text2);margin-top:.25rem"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body" style="padding-top:4.5rem">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="font-head" style="font-size:1.2rem;font-weight:700">{{ user.get_full_name|default:user.username }}</span>
+        <span class="badge badge-purple">{{ user.role }}</span>
+        {% if user.is_verified %}<span class="badge badge-green">&#10003; Verified</span>{% endif %}
+        {% if user.is_staff %}<span class="badge badge-orange">Staff</span>{% endif %}
+      </div>
+      <p class="text-muted text-sm mb-3">Member since {{ user.created_at|date:"F Y" }}</p>
+
+      <form method="post">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+          {% for field in form %}
+          <div class="form-group" {% if field.name == 'bio' %}style="grid-column:1/-1"{% endif %}>
+            <label class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <div class="form-errors">{% for e in field.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        <div class="flex gap-2 mt-3">
+          <button type="submit" class="btn btn-gradient">Save Changes</button>
+          <a href="{% url 'accounts:password_change' %}" class="btn btn-outline">Change Password</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function uploadPicture(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('upload-status');
+  status.textContent = 'Uploading...';
+  const formData = new FormData();
+  formData.append('file', file);
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  fetch('/media/upload/profile-picture/', {
+    method: 'POST',
+    headers: {'X-CSRFToken': csrfToken},
+    body: formData
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.url) {
+      const prev = document.getElementById('avatar-preview');
+      prev.innerHTML = '<img src="' + data.url + '" style="width:100%;height:100%;object-fit:cover">';
+      status.textContent = '&#10003; Photo updated!';
+      status.style.color = 'var(--green)';
+    } else {
+      status.textContent = 'Upload failed: ' + (data.error || 'unknown error');
+      status.style.color = 'var(--red)';
+    }
+  })
+  .catch(() => { status.textContent = 'Upload failed.'; status.style.color = 'var(--red)'; });
+}
+</script>
+{% endblock %}

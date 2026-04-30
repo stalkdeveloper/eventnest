@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard - EventNest{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <div>
+    <h1 class="section-title" style="margin-bottom:.25rem">Admin Dashboard</h1>
+    <p class="text-muted">Platform overview and management</p>
+  </div>
+  <div class="flex gap-2">
+    <a href="/admin/" class="btn btn-gradient">Django Admin</a>
+    <a href="{% url 'core:event_create' %}" class="btn btn-outline">+ Event</a>
+  </div>
+</div>
+
+<div class="grid-4 mb-4">
+  <div class="stat-card"><div class="stat-value">{{ total_users }}</div><div class="stat-label">Total Users</div></div>
+  <div class="stat-card"><div class="stat-value">{{ total_events }}</div><div class="stat-label">Total Events</div></div>
+  <div class="stat-card"><div class="stat-value">{{ total_tickets }}</div><div class="stat-label">Tickets Sold</div></div>
+</div>
+
+<h2 style="font-family:var(--font-head);font-size:1.2rem;margin-bottom:1rem">Recent Events</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Title</th><th>Organiser</th><th>Status</th><th>Date</th><th>City</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for event in recent_events %}
+      <tr>
+        <td style="font-weight:500">{{ event.title }}</td>
+        <td class="text-sm text-muted">{{ event.organiser.username }}</td>
+        <td><span class="badge {% if event.status == 'published' %}badge-green{% elif event.status == 'draft' %}badge-orange{% elif event.status == 'cancelled' %}badge-red{% else %}badge-cyan{% endif %}">{{ event.status|title }}</span></td>
+        <td class="text-sm text-muted">{{ event.start_date|date:"M d, Y" }}</td>
+        <td class="text-sm text-muted">{{ event.city|default:"-" }}</td>
+        <td>
+          <div class="flex gap-1">
+            <a href="{% url 'core:event_detail' event.slug %}" class="btn btn-outline btn-sm">View</a>
+            <a href="{% url 'core:event_edit' event.slug %}" class="btn btn-outline btn-sm">Edit</a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

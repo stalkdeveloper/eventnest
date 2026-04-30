@@ -1,0 +1,65 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ title }} | EventNest Admin{% endblock %}
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">&#11043; EventNest Admin</a></h1>
+{% endblock %}
+{% block extrastyle %}
+{{ block.super }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#7c3aed;
+  --primary-dark:#6d28d9;
+  --secondary:#ec4899;
+  --bg:#0a0a0f;
+  --bg2:#111118;
+  --card:#16161f;
+  --card2:#1c1c28;
+  --border:#2a2a3a;
+  --text:#e8e8f0;
+  --text2:#8888aa;
+  --green:#10b981;
+  --red:#ef4444;
+  --orange:#f59e0b;
+}
+body,#container,#content-main,#content,.module{font-family:'DM Sans',sans-serif!important;background:var(--bg)!important;color:var(--text)!important}
+#header{background:linear-gradient(135deg,#7c3aed,#ec4899)!important;padding:0 1.5rem!important;height:60px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;border-bottom:none!important}
+#branding h1,#branding h1 a{font-family:'Syne',sans-serif!important;font-size:1.3rem!important;font-weight:800!important;color:#fff!important;letter-spacing:-.5px!important}
+#user-tools a,#user-tools{color:rgba(255,255,255,.85)!important;font-size:.85rem!important}
+#user-tools a:hover{color:#fff!important}
+div.breadcrumbs{background:var(--bg2)!important;border-bottom:1px solid var(--border)!important;padding:.65rem 1.5rem!important;color:var(--text2)!important;font-size:.85rem!important}
+div.breadcrumbs a{color:var(--accent2)!important}
+#nav-sidebar,.sticky.shifted #nav-sidebar{background:var(--bg2)!important;border-right:1px solid var(--border)!important}
+#nav-sidebar .current-app .section:link,#nav-sidebar .current-app .section:visited{color:var(--text)!important;font-weight:600!important}
+.module h2,.module caption{background:var(--card2)!important;color:var(--text)!important;border-bottom:1px solid var(--border)!important;font-family:'Syne',sans-serif!important;font-weight:700!important;padding:.85rem 1.25rem!important;font-size:.9rem!important;text-transform:uppercase!important;letter-spacing:.04em!important}
+.module{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:12px!important;overflow:hidden!important;margin-bottom:1.5rem!important}
+#content-main{padding:1.5rem!important}
+#content{padding:0!important;background:var(--bg)!important}
+.change-list .results table,.results table{border:1px solid var(--border)!important;border-radius:8px!important;overflow:hidden!important;background:var(--card)!important}
+#result_list thead th,#result_list thead th a{background:var(--card2)!important;color:var(--text2)!important;font-size:.78rem!important;text-transform:uppercase!important;letter-spacing:.05em!important;border:none!important;padding:.85rem 1rem!important}
+#result_list tbody tr{background:var(--card)!important;border-bottom:1px solid var(--border)!important}
+#result_list tbody tr:hover{background:var(--card2)!important}
+#result_list tbody td,#result_list tbody th{padding:.9rem 1rem!important;border:none!important;font-size:.9rem!important;color:var(--text)!important}
+a{color:#a855f7!important}.submit-row{background:var(--card2)!important;border-top:1px solid var(--border)!important;padding:1rem 1.25rem!important}
+.submit-row input,.button,.historylink a,.deletelink,.addlink{border-radius:8px!important;font-family:'DM Sans',sans-serif!important;font-size:.88rem!important;font-weight:600!important;padding:.6rem 1.2rem!important;border:none!important;cursor:pointer!important;transition:all .2s!important}
+input[type=submit],input[type=button],.default{background:linear-gradient(135deg,#7c3aed,#ec4899)!important;color:#fff!important}
+.deletelink{background:rgba(239,68,68,.15)!important;color:var(--red)!important;border:1px solid rgba(239,68,68,.3)!important}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=url],select,textarea{background:var(--bg2)!important;border:1px solid var(--border)!important;color:var(--text)!important;border-radius:8px!important;padding:.65rem 1rem!important;font-family:'DM Sans',sans-serif!important;font-size:.9rem!important;outline:none!important;transition:border-color .2s!important;width:100%!important}
+input:focus,select:focus,textarea:focus{border-color:#a855f7!important;box-shadow:0 0 0 3px rgba(168,85,247,.1)!important}
+.form-row{padding:1rem 1.25rem!important;border-bottom:1px solid var(--border)!important}
+.form-row:last-child{border-bottom:none!important}
+label{color:var(--text2)!important;font-size:.85rem!important;font-weight:500!important}
+.help{color:var(--text2)!important;font-size:.78rem!important}
+.errornote,.errorlist li{background:rgba(239,68,68,.1)!important;border:1px solid rgba(239,68,68,.3)!important;color:#f87171!important;border-radius:6px!important;padding:.5rem .85rem!important}
+.messagelist li{border-radius:8px!important;padding:.75rem 1rem!important;margin-bottom:.5rem!important;font-size:.9rem!important}
+.messagelist li.success{background:rgba(16,185,129,.1)!important;color:#34d399!important;border:1px solid rgba(16,185,129,.3)!important}
+#changelist-filter{background:var(--card2)!important;border-left:1px solid var(--border)!important}
+#changelist-filter h2{background:var(--card)!important;color:var(--text)!important;border-bottom:1px solid var(--border)!important}
+#changelist-filter ul li a{color:var(--text2)!important}
+#changelist-filter ul li.selected a{color:#a855f7!important;font-weight:600!important}
+.paginator{color:var(--text2)!important}.paginator a{color:#a855f7!important}
+.dashboard #content{padding:1.5rem!important}
+#nav-sidebar .module{border-radius:8px!important;margin:0 .5rem .5rem!important}
+</style>
+{% endblock %}
