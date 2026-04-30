@@ -1,21 +1,19 @@
 ```
-You are a senior Django developer helping me build "EventNest" — an event management platform.
+You are a Django developer helping me build "EventNest" — an event management platform.
 
 ## Project stack
 - Django latest version backend (inside `eventnest/` folder)
 - Apps are inside an `apps/` folder: `apps/accounts`, `apps/core`, `apps/media`
-- Frontend will be React / Next.js (built LATER — not now)
-- Database: SQLite for dev, PostgreSQL for prod
-- Auth: Django built-in auth first, JWT (SimpleJWT) added in Phase 2
+- Frontend will be follow as template html 
+- Database: SQLite for dev, PostgreSQL/Sql for prod
 
 ## What is already done
 - Virtual environment created and activated
 - Django installed, project created with `django-admin startproject eventnest .`
 - `apps/accounts`, `apps/core`, `apps/media` created
+- `apps/media` will be in the use for the store the images and documents in one table and will get info using single table
 - `settings.py` has `sys.path.insert` for apps folder
-- `rest_framework` and `rest_framework_simplejwt` installed
 - `INSTALLED_APPS` includes `apps.accounts`, `apps.core`, `apps.media`
-- SimpleJWT configured: 120 min access token, 7 day refresh
 - NO migrations run yet
 
 ## Media app — already built
@@ -50,13 +48,15 @@ class Media(models.Model):
     file_type     = models.CharField(max_length=20, choices=FileType.choices, default=FileType.IMAGE)
     extension     = models.CharField(max_length=20)
 
-    # uploaded_by is commented out — will be uncommented after AUTH_USER_MODEL is set
-    # uploaded_by = models.ForeignKey(
-    #     settings.AUTH_USER_MODEL,
-    #     on_delete=models.SET_NULL,
-    #     null=True, blank=True,
-    #     related_name="uploaded_media",
-    # )
+    """
+    No need because we are storing the model id and and model name so in that model table we will keep column created_by, updated_by and deleted_by etc.
+    uploaded_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="uploaded_media",
+    ) 
+    """
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -74,128 +74,159 @@ class Media(models.Model):
 ```
 
 ## Media architecture decisions
-- ALL file storage (profile pictures, event banners, ticket QR codes, documents) goes through the `apps/media` Media table — never store files directly on the User or Event model
+- ALL file storage (profile pictures, event banners, ticket QR codes, documents etc.) goes through the `apps/media` Media table — never store files directly on the User or Event model
 - Media is polymorphic: `mediable_type` = app label + model name (e.g. `accounts.User`), `mediable_id` = PK of the owner
 - `source_type` describes purpose: `profile_picture`, `event_banner`, `ticket_qr`, `event_gallery` etc.
 - `storage_type` describes location: local (dev), S3 or Cloudinary (prod)
 - `profile_picture` on CustomUser is NOT an ImageField — it is looked up via Media table using `mediable_type='accounts.User'` + `source_type='profile_picture'`
-- After Step 2 sets `AUTH_USER_MODEL`, uncomment `uploaded_by` FK in Media model
-- A helper method `get_media(obj, source_type)` will be added to a utils file so any model can fetch its media in one line
+- A helper method `get_media(obj, source_type)` will be added to a utils file so any model can fetch its media in one line or using relationships
 
 ## Architecture decisions already made
 - NO static `role` field on User — use Django's built-in Groups and Permissions
-- Three groups: Admin, Organiser, Guest
-- Admin group: all permissions + manage users (is_staff=True)
-- Organiser group: add/change/view events and tickets, no delete, no user management
+- Three groups: Admin, Organiser, Guest(If Admin need will create subadmin)
 - Guest group: view events, add ticket (register for event) only
-- New users auto-assigned to Guest group via post_save signal
-- Django Admin kept for superuser/developer use only
-- React will have its own admin dashboard UI (Phase 3)
-- JWT payload will include groups and permissions so React can read them
-
-## Build phases
-- Phase 1 (CURRENT): Django only — CustomUser, Groups, Django Admin, Login/Logout/Password reset via Django built-in auth views, test in browser
-- Phase 2 (LATER): DRF API — JWT endpoints, serializers, permission classes, group management API, media upload endpoint
-- Phase 3 (LATER): Next.js — login page, JWT handling, role-based routing, admin dashboard UI
-
-## Phase 1 steps — one at a time
-1. CustomUser model in `apps/accounts/models.py`
-   - Extends AbstractUser
-   - NO role field
-   - NO profile_picture ImageField — media handled by Media table
-   - Add: phone (CharField, blank/null), bio (TextField, blank/null)
-   - Add property method `get_profile_picture(self)` that queries Media table
-
-2. Set `AUTH_USER_MODEL = 'accounts.User'` in settings.py
-   Then uncomment `uploaded_by` FK in `apps/media/models.py`
-
-3. Run makemigrations for all three apps and migrate
-
-4. `seed_groups` management command in `apps/core/management/commands/seed_groups.py`
-   - Creates Admin, Organiser, Guest groups
-   - Assigns permissions per group (model permissions auto-created by Django)
-   - Admin group: is_staff=True enforced via signal, all permissions
-   - Organiser group: add/change/view on events and tickets
-   - Guest group: view events, add ticket only
-
-5. Auto-assign Guest group via post_save signal in `apps/accounts/signals.py`
-   Wired in `apps/accounts/apps.py`
-
-6. Register all three models in Django Admin:
-   - CustomUser: `apps/accounts/admin.py` with list_display, list_filter, search_fields, group assignment inline
-   - Media: `apps/media/admin.py` with list_display showing mediable_type, source_type, file_type, storage_type
-
-7. Add login/logout/password reset URLs using `django.contrib.auth.urls` in `eventnest/urls.py`
-
-8. Create minimal login template at `templates/registration/login.html`
-
-9. Set `LOGIN_REDIRECT_URL`, `LOGOUT_REDIRECT_URL`, `MEDIA_URL`, `MEDIA_ROOT` in settings.py
-
-10. Create superuser, run seed_groups, test full auth flow in browser
-
-## Rules for your responses
-- Give me one step at a time
-- Show complete file contents, not just snippets
-- Tell me exactly which file to create or edit and its full path
-- Tell me exactly which terminal commands to run
-- After each step tell me exactly how to verify it worked before moving on
-- Do not jump ahead or combine steps
-- If something could break (e.g. changing AUTH_USER_MODEL after migrations, or forgetting to uncomment uploaded_by) warn me clearly with a WARNING label
-
-Start with Step 1 now.
-```
+- New users auto-assigned to Guest group
 
 
-accounts/models.py
+## Design
+- Default admin design should be change as modern design
+- website design should be in the modern gradient color
 
-from django.db import models
-from django.contrib.auth.models import AbstractUser
+
+## Seeder setup
+for testing and groups permissions make seeder and I think for this make separate database apps so every seeder part will be in the database apps.
 
 
-class CustomUser(AbstractUser):
-    """
-    Custom user model for EventNest.
-    - No role field (roles handled via Django Groups)
-    - No profile_picture field (media handled via Media table)
-    """
+## Auth 
+- Add login/logout/password reset URLs for both type of user such as regular user and admin/subadmin user.
 
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
 
-    groups = models.ManyToManyField(
-        "auth.Group",
-        verbose_name="groups",
-        blank=True,
-        related_name="customuser_set",
-        related_query_name="customuser",
-    )
-    user_permissions = models.ManyToManyField(
-        "auth.Permission",
-        verbose_name="user permissions",
-        blank=True,
-        related_name="customuser_set",
-        related_query_name="customuser",
-    )
+settings.py
 
-    class Meta:
-        verbose_name = "User"
-        verbose_name_plural = "Users"
+"""
+Django settings for eventnest project.
 
-    def __str__(self):
-        return self.email or self.username
+Generated by 'django-admin startproject' using Django 6.0.4.
 
-    @property
-    def get_profile_picture(self):
-        """
-        Returns the Media object for this user's profile picture, or None.
-        Queries the Media table using polymorphic fields.
-        """
-        try:
-            from apps.media.models import Media
-            return Media.objects.filter(
-                mediable_type="accounts.CustomUser",
-                mediable_id=self.pk,
-                source_type="profile_picture",
-            ).first()
-        except Exception:
-            return None
+For more information on this file, see
+https://docs.djangoproject.com/en/6.0/topics/settings/
+
+For the full list of settings and their values, see
+https://docs.djangoproject.com/en/6.0/ref/settings/
+"""
+
+from pathlib import Path
+from datetime import timedelta
+import os
+import sys
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR / "apps"))
+
+
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure-k2ur%-)e%vbo71o4ygxb4zxlcp6n6f)+0(%06j3jm8@th*i3qs'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = []
+
+
+# Application definition
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    'apps.accounts',
+    'apps.core',
+    'apps.media'
+]
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'eventnest.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'eventnest.wsgi.application'
+
+
+# Database
+# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+
+# Password validation
+# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# Internationalization
+# https://docs.djangoproject.com/en/6.0/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_TZ = True
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/6.0/howto/static-files/
+
+STATIC_URL = 'static/'
