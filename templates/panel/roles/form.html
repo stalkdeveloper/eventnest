@@ -1,0 +1,93 @@
+{% extends 'panel/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block nav_roles %}active{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'panel:role_list' %}" class="btn btn-outline btn-sm">&larr; Back to Roles</a>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.perm-section      { margin-bottom: 1.25rem; }
+.perm-section-head { font-size: .78rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .5rem; padding-bottom: .3rem; border-bottom: 1px solid var(--border); }
+.perm-grid         { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .35rem; }
+.perm-checkbox-row { display: flex; align-items: center; gap: .5rem; padding: .32rem .5rem; border-radius: var(--radius-xs); transition: background .15s; }
+.perm-checkbox-row:hover { background: var(--bg2); }
+.perm-checkbox-row input { accent-color: var(--accent); width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; }
+.perm-checkbox-row label { font-size: .8rem; color: var(--text); cursor: pointer; font-family: monospace; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:860px">
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Role Name *</label>
+          {{ form.name }}
+          {% if form.name.errors %}
+          <div class="form-errors">{% for e in form.name.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <p class="panel-section-title mb-3">Permissions</p>
+        <p class="text-sm text-muted mb-3">Select which model-level permissions this role should have. Grouped by app.</p>
+
+        {% regroup form.permissions.field.queryset by content_type.app_label as perm_groups %}
+        {% for app_group in perm_groups %}
+        <div class="perm-section">
+          <div class="perm-section-head">{{ app_group.grouper }}</div>
+          <div class="perm-grid">
+            {% for perm in app_group.list %}
+            <div class="perm-checkbox-row">
+              <input type="checkbox"
+                     name="permissions"
+                     value="{{ perm.pk }}"
+                     id="perm_{{ perm.pk }}"
+                     {% if perm in form.initial.permissions %}checked{% endif %}
+                     {% if request.method == 'POST' %}
+                       {% if perm.pk|stringformat:"s" in request.POST.getlist 'permissions' %}checked{% endif %}
+                     {% endif %}>
+              <label for="perm_{{ perm.pk }}">{{ perm.codename }}</label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button type="submit" class="btn btn-gradient">{{ action }} Role</button>
+      <a href="{% url 'panel:role_list' %}" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* Re-check permissions correctly on POST round-trip */
+document.addEventListener('DOMContentLoaded', function() {
+  {% if request.method == 'POST' %}
+  var selected = [{% for v in request.POST.getlist 'permissions' %}"{{ v }}",{% endfor %}];
+  document.querySelectorAll('input[name="permissions"]').forEach(function(cb) {
+    cb.checked = selected.includes(cb.value);
+  });
+  {% elif action == 'Edit' and group %}
+  var selected = [{% for p in group.permissions.all %}"{{ p.pk }}",{% endfor %}];
+  document.querySelectorAll('input[name="permissions"]').forEach(function(cb) {
+    cb.checked = selected.includes(cb.value);
+  });
+  {% endif %}
+});
+</script>
+{% endblock %}

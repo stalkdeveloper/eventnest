@@ -28,8 +28,10 @@
       <option value="hybrid" {% if current_type == 'hybrid' %}selected{% endif %}>Hybrid</option>
     </select>
   </div>
-  <button type="submit" class="btn btn-gradient">Filter</button>
-  <a href="{% url 'core:event_list' %}" class="btn btn-outline">Clear</a>
+  <div class="card-body flex flex-wrap gap-2 items-end">
+    <button type="submit" class="btn btn-gradient h-auto py-2 px-4">Filter</button>
+    <a href="{% url 'core:event_list' %}" class="btn btn-outline h-auto py-2 px-4">Clear</a>
+  </div>
 </form>
 
 {% if events %}

@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Event - EventNest{% endblock %}
+{% block content %}
+<div class="max-w-820">
+  <h1 class="section-title">{{ action }} Event</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h3 class="text-xs text-muted font-bold mb-3 section-sub-label">Basic Info</h3>
+        <div class="form-group">
+          <label class="form-label">Event Title *</label>
+          <input type="text" name="title" value="{{ event.title|default:'' }}" class="form-input" required placeholder="Give your event a great title">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <textarea name="description" rows="5" class="form-input" required placeholder="Describe your event in detail&hellip;">{{ event.description|default:'' }}</textarea>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Event Type</label>
+            <select name="event_type" class="form-input form-select">
+              <option value="offline" {% if event.event_type == 'offline' %}selected{% endif %}>Offline</option>
+              <option value="online"  {% if event.event_type == 'online'  %}selected{% endif %}>Online</option>
+              <option value="hybrid"  {% if event.event_type == 'hybrid'  %}selected{% endif %}>Hybrid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-input form-select">
+              <option value="">Select category</option>
+              {% for cat in categories %}
+              <optgroup label="{{ cat.title }}">
+                <option value="{{ cat.id }}" {% if event.category_id == cat.id %}selected{% endif %}>{{ cat.title }}</option>
+                {% for child in cat.children.all %}
+                <option value="{{ child.id }}" {% if event.category_id == child.id %}selected{% endif %}>&nbsp;&nbsp;&#8627; {{ child.title }}</option>
+                {% endfor %}
+              </optgroup>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h3 class="text-xs text-muted font-bold mb-3 section-sub-label">Date &amp; Location</h3>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Start Date &amp; Time *</label>
+            <input type="datetime-local" name="start_date" value="{{ event.start_date|date:'Y-m-d\TH:i'|default:'' }}" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Date &amp; Time *</label>
+            <input type="datetime-local" name="end_date" value="{{ event.end_date|date:'Y-m-d\TH:i'|default:'' }}" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <input type="text" name="city" value="{{ event.city|default:'' }}" class="form-input" placeholder="City name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Venue Name</label>
+            <input type="text" name="venue" value="{{ event.venue|default:'' }}" class="form-input" placeholder="Hall or venue name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Full Address</label>
+          <textarea name="address" rows="2" class="form-input">{{ event.address|default:'' }}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Online Meeting Link</label>
+          <input type="url" name="online_link" value="{{ event.online_link|default:'' }}" class="form-input" placeholder="https://zoom.us/&hellip;">
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h3 class="text-xs text-muted font-bold mb-3 section-sub-label">Tickets &amp; Capacity</h3>
+        <div class="grid-stats">
+          <div class="form-group">
+            <label class="form-label">Max Capacity <span class="text-muted">(0 = unlimited)</span></label>
+            <input type="number" name="max_capacity" value="{{ event.max_capacity|default:0 }}" class="form-input" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ticket Price (&#8377;)</label>
+            <input type="number" name="ticket_price" value="{{ event.ticket_price|default:0 }}" class="form-input" min="0" step="0.01">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Free Event?</label>
+            <div class="flex items-center gap-2 mt-2">
+              <input type="checkbox" name="is_free" id="is_free" {% if event.is_free or not event %}checked{% endif %}>
+              <label for="is_free" class="text-sm">Mark as free</label>
+            </div>
+          </div>
+          {% if action == 'Edit' %}
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-input form-select">
+              <option value="draft"     {% if event.status == 'draft'     %}selected{% endif %}>Draft</option>
+              <option value="published" {% if event.status == 'published' %}selected{% endif %}>Published</option>
+              <option value="cancelled" {% if event.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+              <option value="completed" {% if event.status == 'completed' %}selected{% endif %}>Completed</option>
+            </select>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h3 class="text-xs text-muted font-bold mb-3 section-sub-label">Banner Image</h3>
+        <div class="form-group mb-0">
+          <label class="form-label">Upload Banner <span class="text-muted">(optional)</span></label>
+          <input type="file" name="banner" accept="image/*" class="form-input">
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button type="submit" class="btn btn-gradient btn-lg">{{ action }} Event</button>
+      {% if user.is_system_user %}
+        <a href="{% url 'core:admin_dashboard' %}" class="btn btn-outline btn-lg">Cancel</a>
+      {% else %}
+        <a href="{% url 'core:organiser_dashboard' %}" class="btn btn-outline btn-lg">Cancel</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

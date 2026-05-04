@@ -1,68 +1,53 @@
 {% extends 'base.html' %}
 {% block title %}EventNest - Discover & Host Events{% endblock %}
 {% block content %}
-<style>
-.hero{text-align:center;padding:5rem 0 4rem;position:relative}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(124,58,237,0.12),transparent);pointer-events:none;border-radius:24px}
-.hero-eyebrow{display:inline-block;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);color:var(--accent2);padding:.3rem 1rem;border-radius:99px;font-size:.8rem;font-weight:600;letter-spacing:.05em;margin-bottom:1.5rem;text-transform:uppercase}
-.hero-title{font-family:var(--font-head);font-size:clamp(2.5rem,6vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1.25rem;letter-spacing:-1px}
-.hero-title .grad{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{color:var(--text2);font-size:1.15rem;max-width:560px;margin:0 auto 2.5rem;line-height:1.7}
-.hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
-.search-bar{max-width:600px;margin:3rem auto 0;display:flex;gap:.5rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.4rem .4rem .4rem 1rem}
-.search-bar input{flex:1;background:none;border:none;color:var(--text);font-family:var(--font-body);font-size:.95rem;outline:none}
-.search-bar input::placeholder{color:var(--text2)}
-.cats{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2.5rem}
-.cat-pill{padding:.35rem .9rem;border-radius:99px;border:1px solid var(--border);color:var(--text2);font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s}
-.cat-pill:hover,.cat-pill.active{border-color:var(--accent2);color:var(--text);background:rgba(124,58,237,.1)}
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
-.price-tag{font-family:var(--font-head);font-weight:700;color:var(--accent2)}
-.free-tag{color:var(--green);font-weight:700}
-</style>
 
 <div class="hero">
-  <span class="hero-eyebrow">&#127881; The events platform</span>
-  <h1 class="hero-title">Discover & Host<br><span class="grad">Unforgettable Events</span></h1>
-  <p class="hero-sub">From tech conferences to music festivals - find your next experience or bring your vision to life.</p>
+  <span class="hero-eyebrow">&#127881; The Events Platform</span>
+  <h1 class="hero-title">
+    Discover &amp; Host<br>
+    <span class="grad">Unforgettable Events</span>
+  </h1>
+  <p class="hero-sub">From tech conferences to music festivals &mdash; find your next experience or bring your vision to life.</p>
   <div class="hero-actions">
-    <a href="{% url 'core:event_list' %}" class="btn btn-gradient btn-lg">Explore Events</a>
+    <a href="{% url 'events:event_list' %}" class="btn btn-gradient btn-lg">Explore Events</a>
     {% if user.is_authenticated %}
-    <a href="{% url 'core:dashboard' %}" class="btn btn-outline btn-lg">My Dashboard</a>
+      <a href="{% url 'core:dashboard' %}" class="btn btn-primary btn-lg">My Dashboard</a>
     {% else %}
-    <a href="{% url 'accounts:register' %}" class="btn btn-outline btn-lg">Get Started Free</a>
+      <a href="{% url 'accounts:register' %}" class="btn btn-outline btn-lg">Get Started Free</a>
     {% endif %}
   </div>
   <div class="search-bar">
-    <input type="text" placeholder="Search events, cities, categories..." id="searchInput" onkeydown="if(event.key==='Enter'){window.location='/events/?q='+this.value}">
+    <input type="text" id="searchInput" placeholder="Search events, cities, categories&hellip;">
     <button class="btn btn-gradient btn-sm" onclick="window.location='/events/?q='+document.getElementById('searchInput').value">Search</button>
   </div>
 </div>
 
-{% if categories %}
-<div class="cats">
-  <a href="{% url 'core:event_list' %}" class="cat-pill active">All</a>
-  {% for cat in categories %}
-  <a href="{% url 'core:event_list' %}?category={{ cat.slug }}" class="cat-pill" style="border-color:{{ cat.color }}22;color:{{ cat.color }}">{{ cat.name }} ({{ cat.event_count }})</a>
+{% if nav_categories %}
+<div class="cats mb-4">
+  <a href="{% url 'events:event_list' %}" class="cat-pill active">All</a>
+  {% for cat in nav_categories %}
+  <a href="{% url 'events:event_list' %}?category={{ cat.slug }}" class="cat-pill">{{ cat.title }}</a>
   {% endfor %}
 </div>
 {% endif %}
 
 {% if featured_events %}
 <div class="section-header">
-  <h2 class="section-title" style="margin-bottom:0">&#11088; Featured Events</h2>
-  <a href="{% url 'core:event_list' %}" class="btn btn-outline btn-sm">View All</a>
+  <h2 class="section-title mb-0">&#11088; Featured Events</h2>
+  <a href="{% url 'events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
 </div>
 <div class="grid-3 mb-4">
   {% for event in featured_events %}
-  <a href="{% url 'core:event_detail' event.slug %}" style="text-decoration:none">
+  <a href="{% url 'events:event_detail' event.slug %}">
     <div class="event-card">
-      <div class="event-card-img" style="{% if event.category %}background:linear-gradient(135deg,{{ event.category.color }}88,{{ event.category.color }}22){% endif %}">
-        <div class="event-card-img-placeholder">{% if event.category %}{{ event.category.name|first }}{% else %}&#127881;{% endif %}</div>
-        {% if event.is_featured %}<span class="badge badge-orange" style="position:absolute;top:.75rem;right:.75rem">Featured</span>{% endif %}
+      <div class="event-card-img">
+        <span class="event-card-img-placeholder">{% if event.category %}{{ event.category.title|first }}{% else %}&#127881;{% endif %}</span>
+        {% if event.is_featured %}<span class="badge badge-orange badge-img-pos">Featured</span>{% endif %}
       </div>
       <div class="event-card-body">
         <div class="event-card-meta">
-          {% if event.category %}<span class="badge badge-purple">{{ event.category.name }}</span>{% endif %}
+          {% if event.category %}<span class="badge badge-purple">{{ event.category.title }}</span>{% endif %}
           <span class="badge badge-cyan">{{ event.event_type|title }}</span>
         </div>
         <div class="event-card-title">{{ event.title }}</div>
@@ -74,9 +59,7 @@
       <div class="event-card-footer">
         {% if event.is_free %}<span class="free-tag">FREE</span>
         {% else %}<span class="price-tag">&#8377;{{ event.ticket_price }}</span>{% endif %}
-        {% if event.spots_left is not None %}
-        <span class="text-sm text-muted">{{ event.spots_left }} spots left</span>
-        {% endif %}
+        {% if event.spots_left is not None %}<span class="text-xs text-muted">{{ event.spots_left }} left</span>{% endif %}
       </div>
     </div>
   </a>
@@ -86,26 +69,26 @@
 
 {% if upcoming_events %}
 <div class="section-header mt-4">
-  <h2 class="section-title" style="margin-bottom:0">&#128197; Upcoming Events</h2>
-  <a href="{% url 'core:event_list' %}" class="btn btn-outline btn-sm">View All</a>
+  <h2 class="section-title mb-0">&#128197; Upcoming Events</h2>
+  <a href="{% url 'events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
 </div>
 <div class="grid-4">
   {% for event in upcoming_events %}
-  <a href="{% url 'core:event_detail' event.slug %}" style="text-decoration:none">
+  <a href="{% url 'events:event_detail' event.slug %}">
     <div class="event-card">
-      <div class="event-card-img" style="height:140px;{% if event.category %}background:linear-gradient(135deg,{{ event.category.color }}66,{{ event.category.color }}11){% endif %}">
-        <div class="event-card-img-placeholder">&#127881;</div>
+      <div class="event-card-img" style="height:130px">
+        <span class="event-card-img-placeholder">&#127881;</span>
       </div>
       <div class="event-card-body">
-        <div class="event-card-title" style="font-size:.9rem">{{ event.title }}</div>
+        <div class="event-card-title">{{ event.title }}</div>
         <div class="event-card-meta">
           <span>{{ event.start_date|date:"M d" }}</span>
           {% if event.city %}<span>{{ event.city }}</span>{% endif %}
         </div>
       </div>
-      <div class="event-card-footer" style="padding:.75rem 1rem">
-        {% if event.is_free %}<span class="free-tag" style="font-size:.8rem">FREE</span>
-        {% else %}<span class="price-tag" style="font-size:.85rem">&#8377;{{ event.ticket_price }}</span>{% endif %}
+      <div class="event-card-footer">
+        {% if event.is_free %}<span class="free-tag">FREE</span>
+        {% else %}<span class="price-tag">&#8377;{{ event.ticket_price }}</span>{% endif %}
       </div>
     </div>
   </a>
@@ -114,10 +97,10 @@
 {% endif %}
 
 {% if not featured_events and not upcoming_events %}
-<div style="text-align:center;padding:5rem 0">
-  <div style="font-size:4rem;margin-bottom:1rem">&#127881;</div>
-  <h2 style="font-family:var(--font-head);font-size:1.5rem;margin-bottom:.5rem">No events yet</h2>
-  <p style="color:var(--text2);margin-bottom:2rem">Run <code style="background:var(--card2);padding:.2rem .5rem;border-radius:4px">python manage.py seed</code> to add sample data</p>
+<div class="text-center" style="padding:5rem 0">
+  <div style="font-size:3.5rem">&#127881;</div>
+  <h2 class="font-head mt-2 mb-1">No events yet</h2>
+  <p class="text-muted mb-3">Run <code>python manage.py seed</code> to add sample data</p>
 </div>
 {% endif %}
 {% endblock %}

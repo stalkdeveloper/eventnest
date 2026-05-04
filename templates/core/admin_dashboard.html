@@ -1,46 +1,83 @@
 {% extends 'base.html' %}
 {% block title %}Admin Dashboard - EventNest{% endblock %}
 {% block content %}
-<div class="flex items-center justify-between mb-4">
+<div class="dash-header">
   <div>
-    <h1 class="section-title" style="margin-bottom:.25rem">Admin Dashboard</h1>
-    <p class="text-muted">Platform overview and management</p>
+    <h1 class="dash-title">Admin Dashboard</h1>
+    <p class="dash-sub">Platform overview &amp; management</p>
   </div>
-  <div class="flex gap-2">
+  <div class="admin-actions-bar">
     <a href="/admin/" class="btn btn-gradient">Django Admin</a>
-    <a href="{% url 'core:event_create' %}" class="btn btn-outline">+ Event</a>
+    <a href="{% url 'events:event_create' %}" class="btn btn-outline">+ Event</a>
   </div>
 </div>
 
-<div class="grid-4 mb-4">
+<div class="grid-stats mb-4">
   <div class="stat-card"><div class="stat-value">{{ total_users }}</div><div class="stat-label">Total Users</div></div>
   <div class="stat-card"><div class="stat-value">{{ total_events }}</div><div class="stat-label">Total Events</div></div>
   <div class="stat-card"><div class="stat-value">{{ total_tickets }}</div><div class="stat-label">Tickets Sold</div></div>
+  <div class="stat-card"><div class="stat-value">{{ total_cats }}</div><div class="stat-label">Categories</div></div>
 </div>
 
-<h2 style="font-family:var(--font-head);font-size:1.2rem;margin-bottom:1rem">Recent Events</h2>
-<div class="table-wrap">
-  <table>
-    <thead>
-      <tr><th>Title</th><th>Organiser</th><th>Status</th><th>Date</th><th>City</th><th>Actions</th></tr>
-    </thead>
-    <tbody>
-      {% for event in recent_events %}
-      <tr>
-        <td style="font-weight:500">{{ event.title }}</td>
-        <td class="text-sm text-muted">{{ event.organiser.username }}</td>
-        <td><span class="badge {% if event.status == 'published' %}badge-green{% elif event.status == 'draft' %}badge-orange{% elif event.status == 'cancelled' %}badge-red{% else %}badge-cyan{% endif %}">{{ event.status|title }}</span></td>
-        <td class="text-sm text-muted">{{ event.start_date|date:"M d, Y" }}</td>
-        <td class="text-sm text-muted">{{ event.city|default:"-" }}</td>
-        <td>
-          <div class="flex gap-1">
-            <a href="{% url 'core:event_detail' event.slug %}" class="btn btn-outline btn-sm">View</a>
-            <a href="{% url 'core:event_edit' event.slug %}" class="btn btn-outline btn-sm">Edit</a>
-          </div>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="grid-2 mb-4">
+  <!-- Recent Events -->
+  <div>
+    <h2 class="font-head mb-2 fs-h2">&#127881; Recent Events</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Title</th><th>Organiser</th><th>Status</th><th>Created By</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for event in recent_events %}
+          <tr>
+            <td class="font-bold text-sm">{{ event.title|truncatechars:30 }}</td>
+            <td class="text-muted text-sm">{{ event.organiser.username }}</td>
+            <td>
+              <span class="badge {% if event.status == 'published' %}badge-green{% elif event.status == 'draft' %}badge-orange{% elif event.status == 'cancelled' %}badge-red{% else %}badge-cyan{% endif %}">
+                {{ event.status|title }}
+              </span>
+              {% if event.deleted_at %}<span class="badge badge-red">Deleted</span>{% endif %}
+            </td>
+            <td class="text-muted text-sm">{{ event.created_by.username|default:"-" }}</td>
+            <td>
+              <div class="flex gap-1">
+                {% if not event.deleted_at %}
+                  <a href="{% url 'events:event_edit' event.slug %}" class="btn btn-outline btn-sm">Edit</a>
+                  <a href="{% url 'events:event_delete' event.slug %}" class="btn btn-danger btn-sm">&#128465;</a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Users -->
+  <div>
+    <h2 class="font-head mb-2 fs-h2">&#128101; Recent Users</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>User</th><th>Type</th><th>Role</th><th>Joined</th></tr></thead>
+        <tbody>
+          {% for u in recent_users %}
+          <tr>
+            <td>
+              <div class="font-bold text-sm">{{ u.username }}</div>
+              <div class="text-xs text-muted">{{ u.email }}</div>
+            </td>
+            <td>
+              <span class="badge {% if u.account_type == 'system' %}badge-orange{% else %}badge-cyan{% endif %}">
+                {{ u.account_type|title }}
+              </span>
+            </td>
+            <td><span class="badge badge-purple">{{ u.role }}</span></td>
+            <td class="text-muted text-sm">{{ u.date_joined|date:"M d, Y" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

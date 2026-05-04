@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}My Tickets - EventNest{% endblock %}
+{% block content %}
+<div class="section-header mb-4">
+  <h1 class="section-title mb-0">&#127919; My Tickets</h1>
+  <a href="{% url 'events:event_list' %}" class="btn btn-gradient btn-sm">Find More Events</a>
+</div>
+
+{% if tickets %}
+<div class="grid-2">
+  {% for ticket in tickets %}
+  <div class="ticket-card">
+    <div class="ticket-stripe ticket-stripe-{{ ticket.status }}"></div>
+    <div class="ticket-body">
+      <div class="flex items-center justify-between mb-2">
+        <span class="badge {% if ticket.status == 'confirmed' %}badge-green{% elif ticket.status == 'cancelled' %}badge-red{% elif ticket.status == 'attended' %}badge-cyan{% else %}badge-orange{% endif %}">
+          {% if ticket.status == 'confirmed' %}&#10003; {% elif ticket.status == 'cancelled' %}&#10005; {% endif %}{{ ticket.status|title }}
+        </span>
+        <span class="ticket-code">{{ ticket.ticket_code }}</span>
+      </div>
+
+      <h3 class="font-head mb-1" style="font-size:1rem;line-height:1.3">
+        <a href="{% url 'events:event_detail' ticket.event.slug %}">{{ ticket.event.title }}</a>
+      </h3>
+
+      <div class="event-card-meta mb-3">
+        <span>&#128197; {{ ticket.event.start_date|date:"F d, Y" }}</span>
+        <span>&#128336; {{ ticket.event.start_date|time:"g:i A" }}</span>
+        {% if ticket.event.city %}<span>&#128205; {{ ticket.event.city }}</span>{% endif %}
+        <span>&#128181; {% if ticket.amount_paid > 0 %}&#8377;{{ ticket.amount_paid }}{% else %}Free{% endif %}</span>
+      </div>
+
+      <div class="flex gap-2 items-center">
+        <a href="{% url 'events:event_detail' ticket.event.slug %}" class="btn btn-outline btn-sm">View Event</a>
+        {% if ticket.status == 'confirmed' and ticket.event.is_upcoming %}
+        <form method="post" action="{% url 'events:cancel_ticket' ticket.id %}" onsubmit="return confirm('Cancel this ticket?')">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+        </form>
+        {% endif %}
+        <span class="text-xs text-muted ml-auto">{{ ticket.created_at|date:"M d, Y" }}</span>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card text-center" style="padding:4rem 2rem">
+  <div class="fs-icon-lg">&#127919;</div>
+  <h3 class="font-head mt-2 mb-1">No tickets yet</h3>
+  <p class="text-muted mb-3">Register for events to see your tickets here</p>
+  <a href="{% url 'events:event_list' %}" class="btn btn-gradient">Explore Events</a>
+</div>
+{% endif %}
+{% endblock %}
