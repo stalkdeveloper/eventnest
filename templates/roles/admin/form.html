@@ -1,0 +1,72 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block nav_roles %}active{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'admin_roles:role_list' %}" class="btn btn-outline btn-sm">&larr; Back to Roles</a>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.perm-section      { margin-bottom:1.25rem; }
+.perm-section-head { font-size:.75rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;padding-bottom:.3rem;border-bottom:1px solid var(--border); }
+.perm-grid         { display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.28rem; }
+.perm-row          { display:flex;align-items:center;gap:.5rem;padding:.32rem .5rem;border-radius:var(--radius-xs);transition:background .15s;cursor:pointer; }
+.perm-row:hover    { background:var(--bg2); }
+.perm-row input    { accent-color:var(--accent);width:15px;height:15px;flex-shrink:0;cursor:pointer; }
+.perm-row label    { font-size:.8rem;color:var(--text);cursor:pointer;font-family:monospace; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:900px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="form-group mb-0">
+          <label class="form-label">Role Name *</label>
+          <input type="text" name="name" value="{{ group.name|default:'' }}" class="form-input" required style="max-width:360px">
+        </div>
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <p class="panel-section-title mb-1">Permissions</p>
+        <p class="text-sm text-muted mb-3">Select model-level permissions. Grouped by app.</p>
+        {% regroup all_perms by content_type.app_label as perm_groups %}
+        {% for app_group in perm_groups %}
+        <div class="perm-section">
+          <div class="perm-section-head">{{ app_group.grouper }}</div>
+          <div class="perm-grid">
+            {% for perm in app_group.list %}
+            <label class="perm-row">
+              <input type="checkbox" name="permissions" value="{{ perm.pk }}" class="perm-cb" data-pk="{{ perm.pk }}">
+              {{ perm.codename }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <button type="submit" class="btn btn-gradient">{{ action }} Role</button>
+      <a href="{% url 'admin_roles:role_list' %}" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script id="selected-perms-data" type="application/json">{{ selected_perm_ids|safe }}</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var selected = JSON.parse(document.getElementById('selected-perms-data').textContent || '[]');
+  document.querySelectorAll('.perm-cb').forEach(function (cb) {
+    cb.checked = selected.indexOf(parseInt(cb.dataset.pk)) !== -1;
+  });
+});
+</script>
+{% endblock %}

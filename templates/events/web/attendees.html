@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Attendees — {{ event.title }}{% endblock %}
+{% block content %}
+<div class="section-header mb-4">
+  <div>
+    <a href="{% url 'web_events:organiser_events' %}" class="text-sm text-muted">&larr; My Events</a>
+    <h1 class="section-title mt-1 mb-0">Attendees</h1>
+    <p class="text-muted text-sm">{{ event.title }}</p>
+  </div>
+  <div class="stat-card text-center" style="min-width:100px"><div class="stat-value">{{ tickets|length }}</div><div class="stat-label">Registered</div></div>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Ticket</th><th>Status</th><th>Paid</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for t in tickets %}
+      <tr>
+        <td class="text-xs text-muted">{{ forloop.counter }}</td>
+        <td class="font-bold text-sm">{{ t.attendee.get_full_name|default:t.attendee.username }}</td>
+        <td class="text-muted text-sm">{{ t.attendee.email }}</td>
+        <td><span class="ticket-code">{{ t.ticket_code }}</span></td>
+        <td><span class="badge {% if t.status == 'confirmed' %}badge-green{% elif t.status == 'cancelled' %}badge-red{% else %}badge-orange{% endif %}">{{ t.status|title }}</span></td>
+        <td class="text-sm">{% if t.amount_paid > 0 %}<span class="price-tag">&#8377;{{ t.amount_paid }}</span>{% else %}<span class="free-tag">Free</span>{% endif %}</td>
+        <td class="text-muted text-sm">{{ t.created_at|date:"M d, Y" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="text-center text-muted" style="padding:2rem">No attendees yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

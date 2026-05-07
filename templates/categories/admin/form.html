@@ -1,0 +1,58 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block nav_categories %}active{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'admin_categories:category_list' %}" class="btn btn-outline btn-sm">&larr; Back</a>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:560px">
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Title *</label>
+          <input type="text" name="title" value="{{ cat.title|default:'' }}" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Slug <span class="text-muted">(auto-generated if blank)</span></label>
+          <input type="text" name="slug" value="{{ cat.slug|default:'' }}" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Parent Category <span class="text-muted">(optional)</span></label>
+          <select name="parent" class="form-input form-select">
+            <option value="">— Root category —</option>
+            {% for rc in root_cats %}
+            <option value="{{ rc.id }}" {% if cat.parent_id == rc.id %}selected{% endif %}>{{ rc.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea name="description" rows="3" class="form-input">{{ cat.description|default:'' }}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Color</label>
+          <div class="flex items-center gap-2">
+            <input type="color" name="color" value="{{ cat.color|default:'#6366f1' }}" class="form-input" style="width:60px;height:40px;padding:.2rem;cursor:pointer">
+            <span class="text-sm text-muted">Pick a colour for this category</span>
+          </div>
+        </div>
+        <div class="flex gap-2 mt-3">
+          <button type="submit" class="btn btn-gradient">{{ action }} Category</button>
+          <a href="{% url 'admin_categories:category_list' %}" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% if cat %}
+  <p class="text-xs text-muted mt-2">
+    Created by {{ cat.created_by.username|default:"—" }} on {{ cat.created_at|date:"M d, Y" }}
+    {% if cat.updated_by %}&nbsp;&middot;&nbsp; Updated by {{ cat.updated_by.username }} on {{ cat.updated_at|date:"M d, Y" }}{% endif %}
+  </p>
+  {% endif %}
+</div>
+{% endblock %}

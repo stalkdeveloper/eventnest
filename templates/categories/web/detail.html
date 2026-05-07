@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}{{ cat.title }} — EventNest{% endblock %}
+{% block content %}
+<div class="section-header mb-4">
+  <div>
+    <a href="{% url 'web_categories:category_list' %}" class="text-sm text-muted">&larr; All Categories</a>
+    <h1 class="section-title mt-1 mb-0">{{ cat.title }}</h1>
+    {% if cat.description %}<p class="text-muted">{{ cat.description }}</p>{% endif %}
+  </div>
+</div>
+{% if events %}
+<div class="grid-3">
+  {% for event in events %}
+  <a href="{% url 'web_events:event_detail' event.slug %}">
+    <div class="event-card">
+      <div class="event-card-img"><span class="event-card-img-placeholder">&#127881;</span></div>
+      <div class="event-card-body">
+        <div class="event-card-title">{{ event.title }}</div>
+        <div class="event-card-meta">
+          <span>&#128197; {{ event.start_date|date:"M d, Y" }}</span>
+          {% if event.city %}<span>&#128205; {{ event.city }}</span>{% endif %}
+        </div>
+      </div>
+      <div class="event-card-footer">
+        {% if event.is_free %}<span class="free-tag">FREE</span>{% else %}<span class="price-tag">&#8377;{{ event.ticket_price }}</span>{% endif %}
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="text-center" style="padding:4rem 0"><p class="text-muted">No events in this category yet.</p></div>
+{% endif %}
+{% endblock %}

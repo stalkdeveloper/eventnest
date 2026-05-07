@@ -1,0 +1,73 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Categories{% endblock %}
+{% block page_title %}Category Management{% endblock %}
+{% block nav_categories %}active{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'admin_categories:category_create' %}" class="btn btn-gradient btn-sm">+ Create Category</a>
+{% endblock %}
+
+{% block content %}
+{% if categories %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>#</th><th>Title</th><th>Parent</th><th>Slug</th><th>Color</th><th>Created By</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for cat in categories %}
+      <tr {% if cat.parent %}class="cat-child-row"{% endif %}>
+        <td class="text-muted text-xs">{{ cat.id }}</td>
+        <td>
+          {% if cat.parent %}
+            <span class="cat-parent-indicator">&#8627;</span>
+          {% endif %}
+          <div class="flex items-center gap-2">
+            <span style="width:12px;height:12px;border-radius:50%;background:{{ cat.color }};display:inline-block;flex-shrink:0"></span>
+            <span class="font-bold text-sm">{{ cat.title }}</span>
+          </div>
+        </td>
+        <td class="text-muted text-sm">{{ cat.parent.title|default:"—" }}</td>
+        <td class="text-xs" style="font-family:monospace;color:var(--text2)">{{ cat.slug }}</td>
+        <td>
+          <div class="flex items-center gap-1">
+            <span style="width:18px;height:18px;border-radius:4px;background:{{ cat.color }};display:inline-block;border:1px solid var(--border)"></span>
+            <span class="text-xs text-muted" style="font-family:monospace">{{ cat.color }}</span>
+          </div>
+        </td>
+        <td class="text-muted text-sm">{{ cat.created_by.username|default:"—" }}</td>
+        <td>
+          {% if cat.deleted_at %}
+            <span class="chip chip-deleted">Deleted</span>
+          {% else %}
+            <span class="chip chip-active">Active</span>
+          {% endif %}
+        </td>
+        <td>
+          <div class="table-actions">
+            {% if not cat.deleted_at %}
+            <a href="{% url 'admin_categories:category_edit' cat.id %}" class="btn btn-outline btn-sm">Edit</a>
+            {% endif %}
+            <form method="post" action="{% url 'admin_categories:category_delete' cat.id %}"
+                  onsubmit="return confirm('{% if cat.deleted_at %}Restore{% else %}Delete{% endif %} {{ cat.title }}?')">
+              {% csrf_token %}
+              <button type="submit" class="btn {% if cat.deleted_at %}btn-success{% else %}btn-danger{% endif %} btn-sm">
+                {% if cat.deleted_at %}Restore{% else %}Delete{% endif %}
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="panel-empty">
+  <div class="panel-empty-icon">&#127991;</div>
+  <div class="panel-empty-title">No categories yet</div>
+  <p class="panel-empty-sub mb-2">Create your first category to organise events</p>
+  <a href="{% url 'admin_categories:category_create' %}" class="btn btn-gradient btn-sm">Create Category</a>
+</div>
+{% endif %}
+{% endblock %}

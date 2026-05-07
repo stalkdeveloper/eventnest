@@ -1,0 +1,105 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Events{% endblock %}
+{% block page_title %}Event Management{% endblock %}
+{% block nav_events %}active{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'web_events:event_create' %}" class="btn btn-gradient btn-sm">+ Create Event</a>
+{% endblock %}
+
+{% block content %}
+<div class="panel-filter-bar">
+  <form method="get" class="flex flex-wrap gap-2 items-end w-full">
+    <div class="panel-filter-group" style="flex:1;min-width:180px">
+      <label class="panel-filter-label">Search</label>
+      <input type="text" name="q" value="{{ q }}" placeholder="Title, city&hellip;" class="form-input">
+    </div>
+    <div class="panel-filter-group">
+      <label class="panel-filter-label">Status</label>
+      <select name="status" class="form-input form-select">
+        <option value="">All Statuses</option>
+        <option value="draft"     {% if status_filter == 'draft'     %}selected{% endif %}>Draft</option>
+        <option value="published" {% if status_filter == 'published' %}selected{% endif %}>Published</option>
+        <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+        <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+      </select>
+    </div>
+    <div class="panel-filter-group">
+      <label class="panel-filter-label">Show</label>
+      <select name="deleted" class="form-input form-select">
+        <option value=""  {% if not deleted_filter %}selected{% endif %}>Active only</option>
+        <option value="1" {% if deleted_filter == '1' %}selected{% endif %}>Deleted only</option>
+      </select>
+    </div>
+    <div class="flex gap-1">
+      <button type="submit" class="btn btn-gradient btn-sm">Filter</button>
+      <a href="{% url 'admin_events:event_list' %}" class="btn btn-outline btn-sm">Clear</a>
+    </div>
+  </form>
+</div>
+
+{% if events %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Title</th><th>Organiser</th><th>Category</th><th>Status</th><th>Date</th><th>Created By</th><th>Attendees</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for event in events %}
+      <tr>
+        <td>
+          <div class="font-bold text-sm">{{ event.title|truncatechars:32 }}</div>
+          {% if event.city %}<div class="text-xs text-muted">&#128205; {{ event.city }}</div>{% endif %}
+        </td>
+        <td class="text-sm">{{ event.organiser.username }}</td>
+        <td class="text-sm text-muted">{{ event.category.title|default:"—" }}</td>
+        <td>
+          <span class="chip chip-{{ event.status }}">{{ event.status|title }}</span>
+          {% if event.deleted_at %}<span class="chip chip-deleted">Deleted</span>{% endif %}
+        </td>
+        <td class="text-sm text-muted">{{ event.start_date|date:"M d, Y" }}</td>
+        <td class="text-sm text-muted">{{ event.created_by.username|default:"—" }}</td>
+        <td>
+          <span class="badge badge-purple">{{ event.tickets_sold }}</span>
+          {% if event.max_capacity %}<span class="text-xs text-muted"> / {{ event.max_capacity }}</span>{% endif %}
+        </td>
+        <td>
+          <div class="table-actions">
+            {% if not event.deleted_at %}
+            <!-- Inline status change -->
+            <form method="post" action="{% url 'admin_events:event_status' event.id %}" class="inline-role-form">
+              {% csrf_token %}
+              <select name="status" class="inline-role-select">
+                <option value="draft"     {% if event.status == 'draft'     %}selected{% endif %}>Draft</option>
+                <option value="published" {% if event.status == 'published' %}selected{% endif %}>Published</option>
+                <option value="cancelled" {% if event.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                <option value="completed" {% if event.status == 'completed' %}selected{% endif %}>Completed</option>
+              </select>
+              <button type="submit" class="btn btn-gradient btn-sm">Set</button>
+            </form>
+            <a href="{% url 'web_events:event_edit' event.slug %}" class="btn btn-outline btn-sm">Edit</a>
+            <a href="{% url 'web_events:event_attendees' event.slug %}" class="btn btn-outline btn-sm">&#128101;</a>
+            {% endif %}
+
+            <form method="post" action="{% url 'admin_events:event_delete' event.id %}"
+                  onsubmit="return confirm('{% if event.deleted_at %}Restore{% else %}Delete{% endif %} this event?')">
+              {% csrf_token %}
+              <button type="submit" class="btn {% if event.deleted_at %}btn-success{% else %}btn-danger{% endif %} btn-sm">
+                {% if event.deleted_at %}Restore{% else %}Delete{% endif %}
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="panel-empty">
+  <div class="panel-empty-icon">&#127881;</div>
+  <div class="panel-empty-title">No events found</div>
+  <p class="panel-empty-sub">Try adjusting the filters</p>
+</div>
+{% endif %}
+{% endblock %}

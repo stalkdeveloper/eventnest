@@ -1,5 +1,5 @@
 """
-Master seed command - calls individual seeder files.
+Master seed command — calls individual seeder files.
 
 Usage:
   python manage.py seed                  # run all seeders

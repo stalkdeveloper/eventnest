@@ -1,5 +1,5 @@
 """
-Events seeder - sample events with realistic data.
+Events seeder — sample events with realistic data.
 """
 from django.utils import timezone
 from django.utils.text import slugify
@@ -9,7 +9,7 @@ from datetime import timedelta
 
 EVENTS_DATA = [
     {
-        'title':        'TechFest 2025 - AI & Beyond',
+        'title':        'TechFest 2025 — AI & Beyond',
         'description':  (
             'Join us for the biggest tech conference in the region. '
             'Speakers from Google, Microsoft, and leading AI startups '
@@ -48,7 +48,7 @@ EVENTS_DATA = [
         'organiser':    'organiser',
     },
     {
-        'title':        'Startup Pitch Day - Season 4',
+        'title':        'Startup Pitch Day — Season 4',
         'description':  (
             'Watch 20 promising startups pitch to a panel of top investors. '
             'Networking session, fireside chats, and investor Q&A included.'
@@ -86,7 +86,7 @@ EVENTS_DATA = [
         'organiser':    'admin',
     },
     {
-        'title':        'Modern Art Exhibition - Emerging Voices',
+        'title':        'Modern Art Exhibition — Emerging Voices',
         'description':  (
             'A curated showcase of contemporary paintings, sculptures, '
             'and digital art from 50 emerging artists across the country.'
@@ -144,7 +144,7 @@ EVENTS_DATA = [
         'organiser':    'organiser',
     },
     {
-        'title':        'IPL Watch Party - Grand Finale',
+        'title':        'IPL Watch Party — Grand Finale',
         'description':  (
             'Watch the IPL grand finale on a massive screen with fellow fans. '
             'Free snacks, lucky draws, and cricket trivia all night.'
@@ -186,7 +186,7 @@ def run(stdout=None):
         admin_user = CustomUser.objects.filter(is_superuser=True).first()
 
     if not organiser or not admin_user:
-        log('  [skip] No organiser or admin found - run users seeder first')
+        log('  [skip] No organiser or admin found — run users seeder first')
         return
 
     for data in EVENTS_DATA:

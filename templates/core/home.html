@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}EventNest - Discover & Host Events{% endblock %}
+{% block title %}EventNest — Discover & Host Events{% endblock %}
 {% block content %}
 
 <div class="hero">
@@ -10,9 +10,9 @@
   </h1>
   <p class="hero-sub">From tech conferences to music festivals &mdash; find your next experience or bring your vision to life.</p>
   <div class="hero-actions">
-    <a href="{% url 'events:event_list' %}" class="btn btn-gradient btn-lg">Explore Events</a>
+    <a href="{% url 'web_events:event_list' %}" class="btn btn-gradient btn-lg">Explore Events</a>
     {% if user.is_authenticated %}
-      <a href="{% url 'core:dashboard' %}" class="btn btn-primary btn-lg">My Dashboard</a>
+      <a href="{% url 'web_dashboard:dashboard' %}" class="btn btn-primary btn-lg">My Dashboard</a>
     {% else %}
       <a href="{% url 'accounts:register' %}" class="btn btn-outline btn-lg">Get Started Free</a>
     {% endif %}
@@ -25,9 +25,9 @@
 
 {% if nav_categories %}
 <div class="cats mb-4">
-  <a href="{% url 'events:event_list' %}" class="cat-pill active">All</a>
+  <a href="{% url 'web_events:event_list' %}" class="cat-pill active">All</a>
   {% for cat in nav_categories %}
-  <a href="{% url 'events:event_list' %}?category={{ cat.slug }}" class="cat-pill">{{ cat.title }}</a>
+  <a href="{% url 'web_events:event_list' %}?category={{ cat.slug }}" class="cat-pill">{{ cat.title }}</a>
   {% endfor %}
 </div>
 {% endif %}
@@ -35,11 +35,11 @@
 {% if featured_events %}
 <div class="section-header">
   <h2 class="section-title mb-0">&#11088; Featured Events</h2>
-  <a href="{% url 'events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
+  <a href="{% url 'web_events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
 </div>
 <div class="grid-3 mb-4">
   {% for event in featured_events %}
-  <a href="{% url 'events:event_detail' event.slug %}">
+  <a href="{% url 'web_events:event_detail' event.slug %}">
     <div class="event-card">
       <div class="event-card-img">
         <span class="event-card-img-placeholder">{% if event.category %}{{ event.category.title|first }}{% else %}&#127881;{% endif %}</span>
@@ -70,11 +70,11 @@
 {% if upcoming_events %}
 <div class="section-header mt-4">
   <h2 class="section-title mb-0">&#128197; Upcoming Events</h2>
-  <a href="{% url 'events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
+  <a href="{% url 'web_events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
 </div>
 <div class="grid-4">
   {% for event in upcoming_events %}
-  <a href="{% url 'events:event_detail' event.slug %}">
+  <a href="{% url 'web_events:event_detail' event.slug %}">
     <div class="event-card">
       <div class="event-card-img" style="height:130px">
         <span class="event-card-img-placeholder">&#127881;</span>
@@ -100,7 +100,7 @@
 <div class="text-center" style="padding:5rem 0">
   <div style="font-size:3.5rem">&#127881;</div>
   <h2 class="font-head mt-2 mb-1">No events yet</h2>
-  <p class="text-muted mb-3">Run <code>python manage.py seed</code> to add sample data</p>
+  <p class="text-muted mb-3">Run <code style="background:var(--bg2);padding:.2rem .5rem;border-radius:4px">python manage.py seed</code> to add sample data</p>
 </div>
 {% endif %}
 {% endblock %}

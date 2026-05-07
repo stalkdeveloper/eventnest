@@ -1,5 +1,5 @@
 """
-Categories seeder - root categories + nested children.
+Categories seeder — root categories + nested children.
 """
 
 ROOT_CATEGORIES = [

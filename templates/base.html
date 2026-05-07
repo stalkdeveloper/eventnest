@@ -2,30 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>{% block title %}EventNest{% endblock %}</title>
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/app.css' %}">
 {% block extra_css %}{% endblock %}
 </head>
 <body>
-
 <nav class="nav">
   <div class="nav-inner">
-    <a href="{% url 'core:home' %}" class="nav-logo">&#11043; EventNest</a>
+    <a href="{% url 'web_home:home' %}" class="nav-logo">&#11043; EventNest</a>
     <div class="nav-links">
-      <a href="{% url 'events:event_list' %}" class="nav-link">Explore</a>
+      <a href="{% url 'web_events:event_list' %}" class="nav-link">Explore</a>
       {% if user.is_authenticated %}
         {% if user.is_system_user %}
-          <a href="{% url 'panel:dashboard' %}" class="nav-link">Admin Panel</a>
+          <a href="{% url 'admin_dashboard:dashboard' %}" class="nav-link">Admin Panel</a>
         {% else %}
-          <a href="{% url 'core:dashboard' %}" class="nav-link">Dashboard</a>
-          <a href="{% url 'events:my_tickets' %}" class="nav-link">My Tickets</a>
+          <a href="{% url 'web_dashboard:dashboard' %}" class="nav-link">Dashboard</a>
+          <a href="{% url 'web_events:my_tickets' %}" class="nav-link">My Tickets</a>
           {% if user.groups.all.0.name == 'Organiser' %}
-            <a href="{% url 'events:event_create' %}" class="nav-link">+ Event</a>
+            <a href="{% url 'web_events:event_create' %}" class="nav-link">+ Event</a>
           {% endif %}
         {% endif %}
-        <a href="{% url 'accounts:profile' %}" class="nav-link">Profile</a>
+        <a href="{% url 'accounts:profile' %}" class="nav-link">{{ user.username }}</a>
         <form method="post" action="{% url 'accounts:logout' %}">
           {% csrf_token %}
           <button type="submit" class="nav-btn nav-btn-ghost">Logout</button>
@@ -37,22 +36,15 @@
     </div>
   </div>
 </nav>
-
 {% if messages %}
 <div class="alerts">
   {% for msg in messages %}
-  <div class="alert alert-{% if msg.tags == 'error' %}error{% elif msg.tags == 'success' %}success{% elif msg.tags == 'warning' %}warning{% else %}info{% endif %}">
-    {{ msg }}
-  </div>
+  <div class="alert alert-{% if msg.tags == 'error' %}error{% elif msg.tags == 'success' %}success{% elif msg.tags == 'warning' %}warning{% else %}info{% endif %}">{{ msg }}</div>
   {% endfor %}
 </div>
 {% endif %}
-
 <main class="main">{% block content %}{% endblock %}</main>
-
-<footer class="footer">
-  <p>&#169; 2025 EventNest &mdash; Discover &amp; Host Amazing Events</p>
-</footer>
+<footer class="footer"><p>&#169; 2025 EventNest &mdash; Discover &amp; Host Amazing Events</p></footer>
 {% block extra_js %}{% endblock %}
 </body>
 </html>

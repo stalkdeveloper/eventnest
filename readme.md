@@ -1,6 +1,8 @@
 Learning eventnest project
 
-Learning eventnest project
+# env install
+
+python -m venv .venv
 
 # On windows
 .venv\Scripts\activate
@@ -8,9 +10,15 @@ Learning eventnest project
 # On Mac/Linux/GitBash
 source .venv/bin/activate
 
+pip install -r requirements.txt
+
+python manage.py migrate
+
+python manage.py runserver
+
 
 ``
-Ha, restructure kar do, pura project, such as events, categories, users, roles, etc.
+Ha, restructure kar do, pura project, such as events, categories, roles, etc.
 Role, Dashboard(For admin), Home(for web) to separate app banega.. or recommend
 
 
@@ -19,7 +27,7 @@ apps/
   ├── accounts/          # Auth — model + web views + admin views
   │   ├── models.py
   │   ├── web_views.py   # login, register, profile
-  │   ├── admin_views.py # user CRUD for panel
+  │   ├── admin_views.py # user CRUD for panel or make separate app for understanding and consistency
   │   ├── web_urls.py
   │   ├── views.py # rahega  but blank for consistency
   │   ├── urls.py

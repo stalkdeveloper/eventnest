@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Delete Event - EventNest{% endblock %}
+{% block title %}Delete Event — EventNest{% endblock %}
 {% block content %}
 <div class="text-center max-w-500">
   <div class="fs-icon-lg">&#128465;</div>
@@ -15,9 +15,9 @@
       <button type="submit" class="btn btn-danger btn-lg">Yes, Delete</button>
     </form>
     {% if user.is_system_user %}
-      <a href="{% url 'core:admin_dashboard' %}" class="btn btn-outline btn-lg">Cancel</a>
+      <a href="{% url 'admin_dashboard:dashboard' %}" class="btn btn-outline btn-lg">Cancel</a>
     {% else %}
-      <a href="{% url 'core:organiser_dashboard' %}" class="btn btn-outline btn-lg">Cancel</a>
+      <a href="{% url 'web_events:organiser_events' %}" class="btn btn-outline btn-lg">Cancel</a>
     {% endif %}
   </div>
 </div>

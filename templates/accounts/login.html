@@ -1,33 +1,23 @@
 {% extends 'base.html' %}
-{% block title %}Login - EventNest{% endblock %}
+{% block title %}Login — EventNest{% endblock %}
 {% block content %}
 <div class="auth-wrap">
   <div class="auth-box">
-    <div class="auth-logo">
-      <span class="auth-logo-text">&#11043; EventNest</span>
-    </div>
+    <div class="auth-logo"><span class="auth-logo-text">&#11043; EventNest</span></div>
     <h2 class="auth-title">Welcome back</h2>
-    <p class="auth-sub">Sign in to your account &mdash; works for all users</p>
-
+    <p class="auth-sub">Single login for all users &mdash; redirects by account type</p>
     <form method="post">
       {% csrf_token %}
       {% for field in form %}
       <div class="form-group">
         <label class="form-label">{{ field.label }}</label>
         {{ field }}
-        {% if field.errors %}
-          <div class="form-errors">
-            {% for e in field.errors %}<span class="form-error">{{ e }}</span>{% endfor %}
-          </div>
-        {% endif %}
+        {% if field.errors %}<div class="form-errors">{% for e in field.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>{% endif %}
       </div>
       {% endfor %}
-      {% if form.non_field_errors %}
-        <div class="alert alert-error mb-2">{{ form.non_field_errors.0 }}</div>
-      {% endif %}
+      {% if form.non_field_errors %}<div class="alert alert-error mb-2">{{ form.non_field_errors.0 }}</div>{% endif %}
       <button type="submit" class="btn btn-gradient btn-w-full mt-2">Sign In</button>
     </form>
-
     <div class="auth-footer mt-2">
       <a href="{% url 'accounts:password_reset' %}">Forgot password?</a>
       &nbsp;&middot;&nbsp;

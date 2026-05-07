@@ -1,82 +1,64 @@
 {% extends 'base.html' %}
-{% block title %}My Profile - EventNest{% endblock %}
+{% block title %}My Profile — EventNest{% endblock %}
 {% block content %}
-<div class="mb-4">
-  <h1 class="section-title mb-1">My Profile</h1>
-</div>
-
-<div class="card mb-4">
-  <div class="profile-cover"></div>
-  <div class="card-body pt-0">
-    <div class="flex items-end gap-3 mb-3 neg-mt-avatar">
-      <div class="profile-avatar" id="avatar-preview">
-        {% if profile_pic %}
-          <img src="{{ profile_pic.get_url }}" alt="Avatar">
-        {% else %}
-          {{ user.username|first|upper }}
-        {% endif %}
-      </div>
-      <div class="mb-1">
-        <label for="pic-upload" class="btn btn-outline btn-sm" style="cursor:pointer">&#128247; Change Photo</label>
-        <input type="file" id="pic-upload" accept="image/*" class="hidden">
-        <span id="upload-status" class="text-xs text-muted ml-auto"></span>
-      </div>
-    </div>
-
-    <div class="profile-meta-row">
-      <span class="profile-name">{{ user.get_full_name|default:user.username }}</span>
-      <span class="badge badge-purple">{{ user.role }}</span>
-      {% if user.is_verified %}<span class="badge badge-green">&#10003; Verified</span>{% endif %}
-      {% if user.is_system_user %}<span class="badge badge-orange">System</span>{% endif %}
-    </div>
-    <p class="text-sm text-muted mb-3">Member since {{ user.created_at|date:"F Y" }}</p>
-
-    <form method="post">
-      {% csrf_token %}
-      <div class="profile-form-grid">
-        {% for field in form %}
-        <div class="form-group {% if field.name == 'bio' %}profile-form-full{% endif %}">
-          <label class="form-label">{{ field.label }}</label>
-          {{ field }}
-          {% if field.errors %}
-            <div class="form-errors">{% for e in field.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
-          {% endif %}
+<div style="max-width:750px;margin:0 auto">
+  <h1 class="section-title">My Profile</h1>
+  <div class="card">
+    <div class="profile-cover"></div>
+    <div class="card-body pt-0">
+      <div class="flex items-end gap-3 mb-3 neg-mt-avatar">
+        <div class="profile-avatar" id="avatar-preview">
+          {% if profile_pic %}<img src="{{ profile_pic.get_url }}" alt="Avatar">{% else %}{{ user.username|first|upper }}{% endif %}
         </div>
-        {% endfor %}
+        <div class="mb-1">
+          <label for="pic-upload" class="btn btn-outline btn-sm" style="cursor:pointer">&#128247; Change Photo</label>
+          <input type="file" id="pic-upload" accept="image/*" class="hidden">
+          <span id="upload-status" class="text-xs text-muted ml-auto"></span>
+        </div>
       </div>
-      <div class="flex gap-2 mt-3">
-        <button type="submit" class="btn btn-gradient">Save Changes</button>
-        <a href="{% url 'accounts:password_change' %}" class="btn btn-outline">Change Password</a>
+      <div class="profile-meta-row">
+        <span class="profile-name">{{ user.get_full_name|default:user.username }}</span>
+        <span class="badge badge-purple">{{ user.role }}</span>
+        {% if user.is_verified %}<span class="badge badge-green">&#10003; Verified</span>{% endif %}
+        {% if user.is_system_user %}<span class="badge badge-orange">System</span>{% endif %}
       </div>
-    </form>
+      <p class="text-sm text-muted mb-3">Member since {{ user.created_at|date:"F Y" }}</p>
+      <form method="post">
+        {% csrf_token %}
+        <div class="profile-form-grid">
+          {% for field in form %}
+          <div class="form-group {% if field.name == 'bio' %}profile-form-full{% endif %}">
+            <label class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<div class="form-errors">{% for e in field.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        <div class="flex gap-2 mt-3">
+          <button type="submit" class="btn btn-gradient">Save Changes</button>
+          <a href="{% url 'accounts:password_change' %}" class="btn btn-outline">Change Password</a>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 {% endblock %}
-
 {% block extra_js %}
 <script>
-document.getElementById('pic-upload').addEventListener('change', function() {
-  const file = this.files[0];
-  if (!file) return;
-  const status = document.getElementById('upload-status');
+document.getElementById('pic-upload').addEventListener('change', function () {
+  var file = this.files[0]; if (!file) return;
+  var status = document.getElementById('upload-status');
   status.textContent = 'Uploading...';
-  const fd = new FormData();
-  fd.append('file', file);
-  const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
-  fetch('/media/upload/profile-picture/', { method: 'POST', headers: {'X-CSRFToken': csrf}, body: fd })
-    .then(r => r.json())
-    .then(d => {
-      if (d.url) {
-        document.getElementById('avatar-preview').innerHTML = '<img src="' + d.url + '" alt="Avatar">';
-        status.textContent = '✓ Updated';
-        status.className = 'text-xs';
-        status.style.color = 'var(--green)';
-      } else {
-        status.textContent = 'Failed: ' + (d.error || 'unknown');
-        status.style.color = 'var(--red)';
-      }
-    })
-    .catch(() => { status.textContent = 'Upload failed.'; status.style.color = 'var(--red)'; });
+  var fd = new FormData(); fd.append('file', file);
+  var csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  fetch('/media/upload/profile-picture/', {method:'POST',headers:{'X-CSRFToken':csrf},body:fd})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.url){
+        document.getElementById('avatar-preview').innerHTML='<img src="'+d.url+'" alt="Avatar">';
+        status.textContent='✓ Updated'; status.style.color='var(--green)';
+      } else { status.textContent='Failed'; status.style.color='var(--red)'; }
+    });
 });
 </script>
 {% endblock %}

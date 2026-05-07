@@ -3,28 +3,32 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get(
-    'SECRET_KEY',
-    'django-insecure-k2ur%-)e%vbo71o4ygxb4zxlcp6n6f)+0(%06j3jm8@th*i3qs'
-)
+SECRET_KEY    = os.environ.get('SECRET_KEY', 'django-insecure-k2ur%-)e%vbo71o4ygxb4zxlcp6n6f)+0(%06j3jm8@th*i3qs')
 DEBUG         = os.environ.get('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
-    # Django built-ins - NO admin app
+    # Django core (no admin app)
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Project apps
-    'apps.accounts.apps.AccountsConfig',
-    'apps.core.apps.CoreConfig',
-    'apps.panel.apps.PanelConfig',
-    'apps.categories.apps.CategoriesConfig',
-    'apps.events.apps.EventsConfig',
-    'apps.media.apps.MediaConfig',
-    'apps.database.apps.DatabaseConfig',
+
+    # ── Apps that OWN database tables (models + migrations) ─────────────────
+    'apps.accounts',     # CustomUser
+    'apps.categories',   # Category
+    'apps.events',       # Event, Ticket
+    'apps.media',        # Media
+
+    # ── Apps with NO models — only views/urls/templates ─────────────────────
+    # These still need to be here for management commands (database) and
+    # context processors (core). dashboard/roles have no models so optional,
+    # but listing them makes the project structure self-documenting.
+    'apps.core',
+    'apps.dashboard',
+    'apps.roles',
+    'apps.database',     # seeders (management commands)
 ]
 
 MIDDLEWARE = [
@@ -91,5 +95,4 @@ MEDIA_URL  = '/media-files/'
 MEDIA_ROOT = BASE_DIR / 'media_uploads'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND      = 'django.core.mail.backends.console.EmailBackend'

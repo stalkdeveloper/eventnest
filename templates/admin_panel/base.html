@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{% block title %}Panel{% endblock %} — EventNest Admin</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/app.css' %}">
+<link rel="stylesheet" href="{% static 'css/panel.css' %}">
+{% block extra_css %}{% endblock %}
+</head>
+<body class="panel-body">
+<div class="panel-layout">
+
+  <aside class="panel-sidebar">
+    <div class="panel-logo">
+      <a href="{% url 'admin_dashboard:dashboard' %}">&#11043; EventNest</a>
+      <span class="panel-logo-badge">Admin</span>
+    </div>
+    <nav class="panel-nav">
+      <div class="panel-nav-section">Overview</div>
+      <a href="{% url 'admin_dashboard:dashboard' %}"     class="panel-nav-link {% block nav_dashboard %}{% endblock %}">&#9783;&nbsp; Dashboard</a>
+
+      <div class="panel-nav-section">Manage</div>
+      <a href="{% url 'admin_accounts:user_list' %}"      class="panel-nav-link {% block nav_users %}{% endblock %}">&#128101;&nbsp; Users</a>
+      <a href="{% url 'admin_categories:category_list' %}" class="panel-nav-link {% block nav_categories %}{% endblock %}">&#127991;&nbsp; Categories</a>
+      <a href="{% url 'admin_events:event_list' %}"       class="panel-nav-link {% block nav_events %}{% endblock %}">&#127881;&nbsp; Events</a>
+      <a href="{% url 'admin_events:ticket_list' %}"      class="panel-nav-link {% block nav_tickets %}{% endblock %}">&#127919;&nbsp; Tickets</a>
+      <a href="{% url 'admin_roles:role_list' %}"         class="panel-nav-link {% block nav_roles %}{% endblock %}">&#128737;&nbsp; Roles</a>
+
+      <div class="panel-nav-section">Site</div>
+      <a href="{% url 'web_home:home' %}" class="panel-nav-link" target="_blank">&#127760;&nbsp; View Website</a>
+    </nav>
+    <div class="panel-sidebar-footer">
+      <div class="panel-user-info">
+        <div class="panel-user-avatar">{{ request.user.username|first|upper }}</div>
+        <div>
+          <div class="panel-user-name">{{ request.user.username }}</div>
+          <div class="panel-user-role">{% if request.user.is_superuser %}Superadmin{% else %}Sub-Admin{% endif %}</div>
+        </div>
+      </div>
+      <form method="post" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="panel-logout-btn">&#128682;&nbsp; Logout</button>
+      </form>
+    </div>
+  </aside>
+
+  <div class="panel-main">
+    <header class="panel-topbar">
+      <h1 class="panel-page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+      <div class="panel-topbar-actions">{% block topbar_actions %}{% endblock %}</div>
+    </header>
+    {% if messages %}
+    <div class="panel-alerts">
+      {% for msg in messages %}
+      <div class="alert alert-{% if msg.tags == 'error' %}error{% elif msg.tags == 'success' %}success{% elif msg.tags == 'warning' %}warning{% else %}info{% endif %}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="panel-content">{% block content %}{% endblock %}</div>
+  </div>
+
+</div>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

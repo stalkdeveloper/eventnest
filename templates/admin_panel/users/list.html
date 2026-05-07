@@ -1,0 +1,106 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Users{% endblock %}
+{% block page_title %}User Management{% endblock %}
+{% block nav_users %}active{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'admin_users:user_create' %}" class="btn btn-gradient btn-sm">+ Create User</a>
+{% endblock %}
+
+{% block content %}
+<div class="panel-filter-bar">
+  <form method="get" class="flex flex-wrap gap-2 items-end w-full">
+    <div class="panel-filter-group" style="flex:1;min-width:180px">
+      <label class="panel-filter-label">Search</label>
+      <input type="text" name="q" value="{{ q }}" placeholder="Name, email, username&hellip;" class="form-input">
+    </div>
+    <div class="panel-filter-group">
+      <label class="panel-filter-label">Role</label>
+      <select name="role" class="form-input form-select">
+        <option value="">All Roles</option>
+        {% for g in groups %}<option value="{{ g.name }}" {% if role_filter == g.name %}selected{% endif %}>{{ g.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="panel-filter-group">
+      <label class="panel-filter-label">Account Type</label>
+      <select name="type" class="form-input form-select">
+        <option value="">All Types</option>
+        <option value="platform" {% if type_filter == 'platform' %}selected{% endif %}>Platform</option>
+        <option value="system"   {% if type_filter == 'system'   %}selected{% endif %}>System</option>
+      </select>
+    </div>
+    <div class="flex gap-1">
+      <button type="submit" class="btn btn-gradient btn-sm">Filter</button>
+      <a href="{% url 'admin_users:user_list' %}" class="btn btn-outline btn-sm">Clear</a>
+    </div>
+  </form>
+</div>
+
+{% if users %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>#</th><th>User</th><th>Type</th><th>Role</th><th>Status</th><th>Joined</th><th>Quick Role</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td class="text-muted text-xs">{{ u.id }}</td>
+        <td>
+          <div class="font-bold text-sm">{{ u.username }}</div>
+          <div class="text-xs text-muted">{{ u.email }}</div>
+          {% if u.is_superuser %}<span class="chip chip-system" style="margin-top:.2rem;display:inline-flex;font-size:.65rem">Superadmin</span>{% endif %}
+        </td>
+        <td><span class="chip chip-{{ u.account_type }}">{{ u.account_type|title }}</span></td>
+        <td><span class="badge badge-purple">{{ u.role }}</span></td>
+        <td>{% if u.is_active %}<span class="chip chip-active">Active</span>{% else %}<span class="chip chip-inactive">Inactive</span>{% endif %}</td>
+        <td class="text-muted text-sm">{{ u.date_joined|date:"M d, Y" }}</td>
+        <td>
+          {% if not u.is_superuser %}
+          <form method="post" action="{% url 'admin_users:user_assign_role' u.id %}" class="inline-role-form">
+            {% csrf_token %}
+            <select name="group" class="inline-role-select">
+              {% for g in groups %}<option value="{{ g.id }}" {% if u.role == g.name %}selected{% endif %}>{{ g.name }}</option>{% endfor %}
+            </select>
+            <button type="submit" class="btn btn-gradient btn-sm">Save</button>
+          </form>
+          {% else %}<span class="text-xs text-muted">—</span>{% endif %}
+        </td>
+        <td>
+          <div class="table-actions">
+            <a href="{% url 'admin_users:user_edit' u.id %}" class="btn btn-outline btn-sm">Edit</a>
+            {% if request.user.is_superuser and not u.is_superuser %}
+              {% if u.role != 'Admin' %}
+              <form method="post" action="{% url 'admin_users:user_make_subadmin' u.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm badge-orange" onclick="return confirm('Promote {{ u.username }} to Sub-Admin?')">Sub-Admin</button>
+              </form>
+              {% endif %}
+              {% if u.role != 'Organiser' %}
+              <form method="post" action="{% url 'admin_users:user_make_organiser' u.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm" style="background:#dbeafe;border:1px solid #93c5fd;color:#1e40af" onclick="return confirm('Make {{ u.username }} an Organiser?')">Organiser</button>
+              </form>
+              {% endif %}
+            {% endif %}
+            {% if not u.is_superuser and u.id != request.user.id %}
+            <form method="post" action="{% url 'admin_users:user_delete' u.id %}" onsubmit="return confirm('Deactivate {{ u.username }}?')">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm">Deactivate</button>
+            </form>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="panel-empty">
+  <div class="panel-empty-icon">&#128101;</div>
+  <div class="panel-empty-title">No users found</div>
+  <p class="panel-empty-sub">Try adjusting search or filters</p>
+</div>
+{% endif %}
+{% endblock %}

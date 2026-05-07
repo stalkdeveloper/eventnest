@@ -4,7 +4,7 @@
 {% block nav_users %}active{% endblock %}
 
 {% block topbar_actions %}
-<a href="{% url 'panel:user_create' %}" class="btn btn-gradient btn-sm">+ Create User</a>
+<a href="{% url 'admin_users:user_create' %}" class="btn btn-gradient btn-sm">+ Create User</a>
 {% endblock %}
 
 {% block content %}
@@ -31,7 +31,7 @@
     </div>
     <div class="flex gap-1">
       <button type="submit" class="btn btn-gradient btn-sm">Filter</button>
-      <a href="{% url 'panel:user_list' %}" class="btn btn-outline btn-sm">Clear</a>
+      <a href="{% url 'admin_users:user_list' %}" class="btn btn-outline btn-sm">Clear</a>
     </div>
   </form>
 </div>
@@ -57,34 +57,34 @@
         <td class="text-muted text-sm">{{ u.date_joined|date:"M d, Y" }}</td>
         <td>
           {% if not u.is_superuser %}
-          <form method="post" action="{% url 'panel:user_assign_role' u.id %}" class="inline-role-form">
+          <form method="post" action="{% url 'admin_users:user_assign_role' u.id %}" class="inline-role-form">
             {% csrf_token %}
             <select name="group" class="inline-role-select">
               {% for g in groups %}<option value="{{ g.id }}" {% if u.role == g.name %}selected{% endif %}>{{ g.name }}</option>{% endfor %}
             </select>
             <button type="submit" class="btn btn-gradient btn-sm">Save</button>
           </form>
-          {% else %}<span class="text-xs text-muted">-</span>{% endif %}
+          {% else %}<span class="text-xs text-muted">—</span>{% endif %}
         </td>
         <td>
           <div class="table-actions">
-            <a href="{% url 'panel:user_edit' u.id %}" class="btn btn-outline btn-sm">Edit</a>
+            <a href="{% url 'admin_users:user_edit' u.id %}" class="btn btn-outline btn-sm">Edit</a>
             {% if request.user.is_superuser and not u.is_superuser %}
               {% if u.role != 'Admin' %}
-              <form method="post" action="{% url 'panel:user_make_subadmin' u.id %}">
+              <form method="post" action="{% url 'admin_users:user_make_subadmin' u.id %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm badge-orange" onclick="return confirm('Promote {{ u.username }} to Sub-Admin?')">Sub-Admin</button>
               </form>
               {% endif %}
               {% if u.role != 'Organiser' %}
-              <form method="post" action="{% url 'panel:user_make_organiser' u.id %}">
+              <form method="post" action="{% url 'admin_users:user_make_organiser' u.id %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm" style="background:#dbeafe;border:1px solid #93c5fd;color:#1e40af" onclick="return confirm('Make {{ u.username }} an Organiser?')">Organiser</button>
               </form>
               {% endif %}
             {% endif %}
             {% if not u.is_superuser and u.id != request.user.id %}
-            <form method="post" action="{% url 'panel:user_delete' u.id %}" onsubmit="return confirm('Deactivate {{ u.username }}?')">
+            <form method="post" action="{% url 'admin_users:user_delete' u.id %}" onsubmit="return confirm('Deactivate {{ u.username }}?')">
               {% csrf_token %}
               <button type="submit" class="btn btn-danger btn-sm">Deactivate</button>
             </form>

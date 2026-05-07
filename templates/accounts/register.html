@@ -1,32 +1,24 @@
 {% extends 'base.html' %}
-{% block title %}Register - EventNest{% endblock %}
+{% block title %}Register — EventNest{% endblock %}
 {% block content %}
 <div class="auth-wrap">
   <div class="auth-box">
-    <div class="auth-logo">
-      <span class="auth-logo-text">&#11043; EventNest</span>
-    </div>
+    <div class="auth-logo"><span class="auth-logo-text">&#11043; EventNest</span></div>
     <h2 class="auth-title">Create account</h2>
     <p class="auth-sub">Join EventNest and discover amazing events</p>
-
     <form method="post">
       {% csrf_token %}
       {% for field in form %}
       <div class="form-group">
         <label class="form-label">{{ field.label }}</label>
         {{ field }}
-        {% if field.errors %}
-          <div class="form-errors">{% for e in field.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
-        {% endif %}
+        {% if field.errors %}<div class="form-errors">{% for e in field.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>{% endif %}
         {% if field.help_text %}<p class="form-hint">{{ field.help_text }}</p>{% endif %}
       </div>
       {% endfor %}
       <button type="submit" class="btn btn-gradient btn-w-full mt-2">Create Account</button>
     </form>
-
-    <div class="auth-footer mt-2">
-      Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a>
-    </div>
+    <div class="auth-footer mt-2">Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a></div>
   </div>
 </div>
 {% endblock %}

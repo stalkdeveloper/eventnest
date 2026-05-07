@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Organiser Dashboard - EventNest{% endblock %}
+{% block title %}Organiser Dashboard — EventNest{% endblock %}
 {% block content %}
 <div class="dash-header">
   <div>
     <h1 class="dash-title">Organiser Dashboard</h1>
     <p class="dash-sub">Manage your events and track attendance</p>
   </div>
-  <a href="{% url 'events:event_create' %}" class="btn btn-gradient">+ Create Event</a>
+  <a href="{% url 'web_events:event_create' %}" class="btn btn-gradient">+ Create Event</a>
 </div>
 
 <div class="grid-stats mb-4">
@@ -25,16 +25,16 @@
     <tbody>
       {% for event in events %}
       <tr>
-        <td><a href="{% url 'events:event_detail' event.slug %}" class="link-accent">{{ event.title }}</a></td>
+        <td><a href="{% url 'web_events:event_detail' event.slug %}" class="link-accent">{{ event.title }}</a></td>
         <td>
           <span class="badge {% if event.status == 'published' %}badge-green{% elif event.status == 'draft' %}badge-orange{% elif event.status == 'cancelled' %}badge-red{% else %}badge-cyan{% endif %}">
             {{ event.status|title }}
           </span>
         </td>
         <td class="text-sm text-muted">{{ event.start_date|date:"M d, Y" }}</td>
-        <td class="text-sm text-muted">{{ event.city|default:"-" }}</td>
+        <td class="text-sm text-muted">{{ event.city|default:"—" }}</td>
         <td>
-          <a href="{% url 'events:event_attendees' event.slug %}" class="link-accent">
+          <a href="{% url 'web_events:event_attendees' event.slug %}" class="link-accent">
             {{ event.confirmed_tickets }}{% if event.max_capacity %}<span class="text-muted"> / {{ event.max_capacity }}</span>{% endif %}
           </a>
         </td>
@@ -44,9 +44,9 @@
         </td>
         <td>
           <div class="flex gap-1">
-            <a href="{% url 'events:event_edit' event.slug %}" class="btn btn-outline btn-sm">Edit</a>
-            <a href="{% url 'events:event_attendees' event.slug %}" class="btn btn-outline btn-sm">&#128101;</a>
-            <a href="{% url 'events:event_delete' event.slug %}" class="btn btn-danger btn-sm">&#128465;</a>
+            <a href="{% url 'web_events:event_edit' event.slug %}" class="btn btn-outline btn-sm">Edit</a>
+            <a href="{% url 'web_events:event_attendees' event.slug %}" class="btn btn-outline btn-sm">&#128101;</a>
+            <a href="{% url 'web_events:event_delete' event.slug %}" class="btn btn-danger btn-sm">&#128465;</a>
           </div>
         </td>
       </tr>
@@ -58,7 +58,7 @@
 <div class="card text-center" style="padding:3rem 2rem">
   <div class="fs-icon-md">&#127881;</div>
   <h3 class="font-head mt-2 mb-1">No events yet</h3>
-  <a href="{% url 'events:event_create' %}" class="btn btn-gradient mt-2">Create Event</a>
+  <a href="{% url 'web_events:event_create' %}" class="btn btn-gradient mt-2">Create Event</a>
 </div>
 {% endif %}
 {% endblock %}

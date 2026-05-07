@@ -4,7 +4,7 @@
 {% block nav_events %}active{% endblock %}
 
 {% block topbar_actions %}
-<a href="{% url 'panel:event_list' %}" class="btn btn-outline btn-sm">&larr; Back to Events</a>
+<a href="{% url 'admin_events:event_list' %}" class="btn btn-outline btn-sm">&larr; Back to Events</a>
 {% endblock %}
 
 {% block content %}
@@ -34,7 +34,7 @@
             <div class="form-group">
               <label class="form-label">Category</label>
               <select name="category" class="form-input form-select">
-                <option value="">- None -</option>
+                <option value="">— None —</option>
                 {% for rc in categories %}
                 <optgroup label="{{ rc.title }}">
                   <option value="{{ rc.id }}" {% if form.initial.category == rc.id %}selected{% endif %}>{{ rc.title }}</option>
@@ -155,7 +155,7 @@
 
       <div class="flex gap-2">
         <button type="submit" class="btn btn-gradient">{{ action }} Event</button>
-        <a href="{% url 'panel:event_list' %}" class="btn btn-outline">Cancel</a>
+        <a href="{% url 'admin_events:event_list' %}" class="btn btn-outline">Cancel</a>
       </div>
     </div>
 

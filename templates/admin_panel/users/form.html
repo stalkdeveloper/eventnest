@@ -1,0 +1,47 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block nav_users %}active{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'admin_users:user_list' %}" class="btn btn-outline btn-sm">&larr; Back to Users</a>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:640px">
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="grid-2">
+          {% for field in form %}
+          <div class="form-group {% if field.name in 'bio,password' %}profile-form-full{% endif %}">
+            <label class="form-label">
+              {{ field.label }}
+              {% if field.field.required %}<span style="color:var(--red)">*</span>{% endif %}
+            </label>
+            {{ field }}
+            {% if field.errors %}
+              <div class="form-errors">{% for e in field.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>
+            {% endif %}
+            {% if field.help_text %}<p class="form-hint">{{ field.help_text }}</p>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+
+        {% if action == 'Edit' and target %}
+        <div class="alert alert-info mb-3">
+          <strong>Note:</strong> Password is not changed here.
+          Use the <a href="{% url 'accounts:password_change' %}" style="color:var(--accent);font-weight:600">Password Change</a> page.
+        </div>
+        {% endif %}
+
+        <div class="flex gap-2 mt-3">
+          <button type="submit" class="btn btn-gradient">{{ action }} User</button>
+          <a href="{% url 'admin_users:user_list' %}" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

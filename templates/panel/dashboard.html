@@ -4,8 +4,8 @@
 {% block nav_dashboard %}active{% endblock %}
 
 {% block topbar_actions %}
-<a href="{% url 'events:event_create' %}" class="btn btn-gradient btn-sm">+ Create Event</a>
-<a href="{% url 'panel:user_create' %}" class="btn btn-outline btn-sm">+ Add User</a>
+<a href="{% url 'web_events:event_create' %}" class="btn btn-gradient btn-sm">+ Create Event</a>
+<a href="{% url 'admin_users:user_create' %}" class="btn btn-outline btn-sm">+ Add User</a>
 {% endblock %}
 
 {% block content %}
@@ -37,7 +37,7 @@
   <div>
     <div class="panel-section-header">
       <span class="panel-section-title">&#127881; Recent Events</span>
-      <a href="{% url 'panel:event_list' %}" class="btn btn-outline btn-sm">View All</a>
+      <a href="{% url 'admin_events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
     </div>
     <div class="table-wrap">
       <table>
@@ -53,7 +53,7 @@
               <span class="chip chip-{{ event.status }}">{{ event.status|title }}</span>
               {% if event.deleted_at %}<span class="chip chip-deleted">Deleted</span>{% endif %}
             </td>
-            <td class="text-muted text-sm">{{ event.created_by.username|default:"-" }}</td>
+            <td class="text-muted text-sm">{{ event.created_by.username|default:"—" }}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -65,7 +65,7 @@
   <div>
     <div class="panel-section-header">
       <span class="panel-section-title">&#128101; Recent Users</span>
-      <a href="{% url 'panel:user_list' %}" class="btn btn-outline btn-sm">View All</a>
+      <a href="{% url 'admin_users:user_list' %}" class="btn btn-outline btn-sm">View All</a>
     </div>
     <div class="table-wrap">
       <table>

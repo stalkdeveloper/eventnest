@@ -1,0 +1,30 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Attendees{% endblock %}
+{% block page_title %}Attendees — {{ event.title|truncatechars:30 }}{% endblock %}
+{% block nav_events %}active{% endblock %}
+{% block topbar_actions %}
+<a href="{% url 'admin_events:event_detail' event.id %}" class="btn btn-outline btn-sm">&larr; Back to Event</a>
+{% endblock %}
+{% block content %}
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>#</th><th>User</th><th>Email</th><th>Ticket Code</th><th>Status</th><th>Paid</th><th>Registered</th><th>Created By</th></tr></thead>
+    <tbody>
+      {% for t in tickets %}
+      <tr>
+        <td class="text-xs text-muted">{{ forloop.counter }}</td>
+        <td class="font-bold text-sm">{{ t.attendee.get_full_name|default:t.attendee.username }}</td>
+        <td class="text-muted text-sm">{{ t.attendee.email }}</td>
+        <td><span class="ticket-code">{{ t.ticket_code }}</span></td>
+        <td><span class="chip chip-{{ t.status }}">{{ t.status|title }}</span></td>
+        <td class="text-sm">{% if t.amount_paid > 0 %}<span class="price-tag">&#8377;{{ t.amount_paid }}</span>{% else %}<span class="free-tag">Free</span>{% endif %}</td>
+        <td class="text-muted text-sm">{{ t.created_at|date:"M d, Y" }}</td>
+        <td class="text-muted text-sm">{{ t.created_by.username|default:"—" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8" class="text-center text-muted" style="padding:2rem">No attendees yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

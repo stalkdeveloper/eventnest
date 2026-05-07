@@ -4,7 +4,7 @@
 {% block nav_roles %}active{% endblock %}
 
 {% block topbar_actions %}
-<a href="{% url 'panel:role_create' %}" class="btn btn-gradient btn-sm">+ Create Role</a>
+<a href="{% url 'admin_roles:role_create' %}" class="btn btn-gradient btn-sm">+ Create Role</a>
 {% endblock %}
 
 {% block content %}
@@ -33,9 +33,9 @@
 
       <div class="divider"></div>
       <div class="flex gap-1 mt-2">
-        <a href="{% url 'panel:role_edit' group.id %}" class="btn btn-outline btn-sm">Edit</a>
+        <a href="{% url 'admin_roles:role_edit' group.id %}" class="btn btn-outline btn-sm">Edit</a>
         {% if group.name not in 'Admin,Organiser,Guest' %}
-        <form method="post" action="{% url 'panel:role_delete' group.id %}"
+        <form method="post" action="{% url 'admin_roles:role_delete' group.id %}"
               onsubmit="return confirm('Delete role {{ group.name }}? Users will lose this role.')">
           {% csrf_token %}
           <button type="submit" class="btn btn-danger btn-sm">Delete</button>

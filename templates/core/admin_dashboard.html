@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Admin Dashboard - EventNest{% endblock %}
+{% block title %}Admin Dashboard — EventNest{% endblock %}
 {% block content %}
 <div class="dash-header">
   <div>
@@ -8,7 +8,7 @@
   </div>
   <div class="admin-actions-bar">
     <a href="/admin/" class="btn btn-gradient">Django Admin</a>
-    <a href="{% url 'events:event_create' %}" class="btn btn-outline">+ Event</a>
+    <a href="{% url 'web_events:event_create' %}" class="btn btn-outline">+ Event</a>
   </div>
 </div>
 
@@ -37,12 +37,12 @@
               </span>
               {% if event.deleted_at %}<span class="badge badge-red">Deleted</span>{% endif %}
             </td>
-            <td class="text-muted text-sm">{{ event.created_by.username|default:"-" }}</td>
+            <td class="text-muted text-sm">{{ event.created_by.username|default:"—" }}</td>
             <td>
               <div class="flex gap-1">
                 {% if not event.deleted_at %}
-                  <a href="{% url 'events:event_edit' event.slug %}" class="btn btn-outline btn-sm">Edit</a>
-                  <a href="{% url 'events:event_delete' event.slug %}" class="btn btn-danger btn-sm">&#128465;</a>
+                  <a href="{% url 'web_events:event_edit' event.slug %}" class="btn btn-outline btn-sm">Edit</a>
+                  <a href="{% url 'web_events:event_delete' event.slug %}" class="btn btn-danger btn-sm">&#128465;</a>
                 {% endif %}
               </div>
             </td>

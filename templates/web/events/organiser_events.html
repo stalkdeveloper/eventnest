@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}My Events — EventNest{% endblock %}
+{% block content %}
+<div class="dash-header">
+  <div>
+    <h1 class="dash-title">My Events</h1>
+    <p class="dash-sub">Manage your events and track attendance</p>
+  </div>
+  <a href="{% url 'web_events:event_create' %}" class="btn btn-gradient">+ Create Event</a>
+</div>
+
+<div class="grid-stats mb-4">
+  <div class="stat-card"><div class="stat-value">{{ total_events }}</div><div class="stat-label">Total Events</div></div>
+  <div class="stat-card"><div class="stat-value">{{ published }}</div><div class="stat-label">Published</div></div>
+  <div class="stat-card"><div class="stat-value">{{ total_attendees }}</div><div class="stat-label">Total Attendees</div></div>
+</div>
+
+{% if events %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Title</th><th>Status</th><th>Date</th><th>City</th><th>Attendees</th><th>Price</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for event in events %}
+      <tr>
+        <td><a href="{% url 'web_events:event_detail' event.slug %}" class="link-accent font-bold">{{ event.title }}</a></td>
+        <td>
+          <span class="badge {% if event.status == 'published' %}badge-green{% elif event.status == 'draft' %}badge-orange{% elif event.status == 'cancelled' %}badge-red{% else %}badge-cyan{% endif %}">
+            {{ event.status|title }}
+          </span>
+        </td>
+        <td class="text-sm text-muted">{{ event.start_date|date:"M d, Y" }}</td>
+        <td class="text-sm text-muted">{{ event.city|default:"—" }}</td>
+        <td>
+          <a href="{% url 'web_events:event_attendees' event.slug %}" class="link-accent font-bold">
+            {{ event.confirmed_tickets }}
+          </a>
+        </td>
+        <td class="text-sm">
+          {% if event.is_free %}<span class="free-tag">Free</span>
+          {% else %}<span class="price-tag">&#8377;{{ event.ticket_price }}</span>{% endif %}
+        </td>
+        <td>
+          <div class="flex gap-1">
+            <a href="{% url 'web_events:event_edit' event.slug %}" class="btn btn-outline btn-sm">Edit</a>
+            <a href="{% url 'web_events:event_attendees' event.slug %}" class="btn btn-outline btn-sm">&#128101;</a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card text-center" style="padding:3rem 2rem">
+  <div style="font-size:2.5rem">&#127881;</div>
+  <h3 class="font-head mt-2 mb-1">No events yet</h3>
+  <a href="{% url 'web_events:event_create' %}" class="btn btn-gradient mt-2">Create Event</a>
+</div>
+{% endif %}
+{% endblock %}

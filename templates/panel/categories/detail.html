@@ -4,9 +4,9 @@
 {% block nav_categories %}active{% endblock %}
 
 {% block topbar_actions %}
-<a href="{% url 'panel:category_list' %}" class="btn btn-outline btn-sm">&larr; All Categories</a>
+<a href="{% url 'admin_categories:category_list' %}" class="btn btn-outline btn-sm">&larr; All Categories</a>
 {% if not cat.deleted_at %}
-<a href="{% url 'panel:category_edit' cat.id %}" class="btn btn-gradient btn-sm">Edit</a>
+<a href="{% url 'admin_categories:category_edit' cat.id %}" class="btn btn-gradient btn-sm">Edit</a>
 {% endif %}
 {% endblock %}
 
@@ -29,9 +29,9 @@
         </div>
         <div class="divider"></div>
         <div style="font-size:.82rem;display:flex;flex-direction:column;gap:.4rem">
-          <div><span class="text-muted">Created by:</span> {{ cat.created_by.username|default:"-" }} &mdash; {{ cat.created_at|date:"M d, Y" }}</div>
-          <div><span class="text-muted">Updated by:</span> {{ cat.updated_by.username|default:"-" }} &mdash; {{ cat.updated_at|date:"M d, Y" }}</div>
-          {% if cat.deleted_at %}<div><span class="text-muted">Deleted by:</span> {{ cat.deleted_by.username|default:"-" }} &mdash; {{ cat.deleted_at|date:"M d, Y" }}</div>{% endif %}
+          <div><span class="text-muted">Created by:</span> {{ cat.created_by.username|default:"—" }} &mdash; {{ cat.created_at|date:"M d, Y" }}</div>
+          <div><span class="text-muted">Updated by:</span> {{ cat.updated_by.username|default:"—" }} &mdash; {{ cat.updated_at|date:"M d, Y" }}</div>
+          {% if cat.deleted_at %}<div><span class="text-muted">Deleted by:</span> {{ cat.deleted_by.username|default:"—" }} &mdash; {{ cat.deleted_at|date:"M d, Y" }}</div>{% endif %}
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@
           <div class="flex items-center justify-between" style="padding:.5rem .75rem;border-radius:var(--radius-sm);background:var(--bg2)">
             <div class="flex items-center gap-2">
               <span style="width:10px;height:10px;border-radius:50%;background:{{ child.color }};display:inline-block"></span>
-              <a href="{% url 'panel:category_detail' child.id %}" class="text-sm font-bold link-accent">{{ child.title }}</a>
+              <a href="{% url 'admin_categories:category_detail' child.id %}" class="text-sm font-bold link-accent">{{ child.title }}</a>
             </div>
             {% if child.deleted_at %}<span class="chip chip-deleted">Deleted</span>{% else %}<span class="chip chip-active">Active</span>{% endif %}
           </div>
@@ -67,7 +67,7 @@
             <tbody>
               {% for event in events %}
               <tr>
-                <td><a href="{% url 'panel:event_detail' event.id %}" class="text-sm font-bold link-accent">{{ event.title|truncatechars:28 }}</a></td>
+                <td><a href="{% url 'admin_events:event_detail' event.id %}" class="text-sm font-bold link-accent">{{ event.title|truncatechars:28 }}</a></td>
                 <td><span class="chip chip-{{ event.status }}">{{ event.status|title }}</span></td>
                 <td class="text-muted text-sm">{{ event.start_date|date:"M d, Y" }}</td>
               </tr>

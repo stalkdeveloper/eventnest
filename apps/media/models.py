@@ -37,7 +37,7 @@ class Media(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.source_type} - {self.original_file_name} ({self.mediable_type}:{self.mediable_id})"
+        return f"{self.source_type} — {self.original_file_name} ({self.mediable_type}:{self.mediable_id})"
 
     def get_url(self):
         if self.full_url:

@@ -4,7 +4,7 @@
 {% block nav_users %}active{% endblock %}
 
 {% block topbar_actions %}
-<a href="{% url 'panel:user_list' %}" class="btn btn-outline btn-sm">&larr; Back to Users</a>
+<a href="{% url 'admin_users:user_list' %}" class="btn btn-outline btn-sm">&larr; Back to Users</a>
 {% endblock %}
 
 {% block content %}
@@ -38,7 +38,7 @@
 
         <div class="flex gap-2 mt-3">
           <button type="submit" class="btn btn-gradient">{{ action }} User</button>
-          <a href="{% url 'panel:user_list' %}" class="btn btn-outline">Cancel</a>
+          <a href="{% url 'admin_users:user_list' %}" class="btn btn-outline">Cancel</a>
         </div>
       </form>
     </div>
