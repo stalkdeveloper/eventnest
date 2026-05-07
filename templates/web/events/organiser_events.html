@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}My Events — EventNest{% endblock %}
+{% block title %}My Events - EventNest{% endblock %}
 {% block content %}
 <div class="dash-header">
   <div>
@@ -31,7 +31,7 @@
           </span>
         </td>
         <td class="text-sm text-muted">{{ event.start_date|date:"M d, Y" }}</td>
-        <td class="text-sm text-muted">{{ event.city|default:"—" }}</td>
+        <td class="text-sm text-muted">{{ event.city|default:"-" }}</td>
         <td>
           <a href="{% url 'web_events:event_attendees' event.slug %}" class="link-accent font-bold">
             {{ event.confirmed_tickets }}

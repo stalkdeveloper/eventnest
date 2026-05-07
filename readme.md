@@ -24,7 +24,7 @@ Role, Dashboard(For admin), Home(for web) to separate app banega.. or recommend
 
 
 apps/
-  ├── accounts/          # Auth — model + web views + admin views
+  ├── accounts/          # Auth - model + web views + admin views
   │   ├── models.py
   │   ├── web_views.py   # login, register, profile
   │   ├── admin_views.py # user CRUD for panel or make separate app for understanding and consistency
@@ -33,7 +33,7 @@ apps/
   │   ├── urls.py
   │   └── admin_urls.py
   │
-  ├── events/            # Events — model + web views + admin views
+  ├── events/            # Events - model + web views + admin views
   │   ├── models.py
   │   ├── migrations/
   │   ├── views.py # rahega  but blank for consistency

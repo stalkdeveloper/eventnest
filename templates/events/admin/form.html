@@ -27,7 +27,7 @@
             <div class="form-group">
               <label class="form-label">Category</label>
               <select name="category" class="form-input form-select">
-                <option value="">— None —</option>
+                <option value="">- None -</option>
                 {% for cat in categories %}
                 <optgroup label="{{ cat.title }}">
                   <option value="{{ cat.id }}" {% if event.category_id == cat.id %}selected{% endif %}>{{ cat.title }}</option>

@@ -1,2 +1,2 @@
-# views.py — intentionally blank
+# views.py - intentionally blank
 # Admin views → admin_views.py

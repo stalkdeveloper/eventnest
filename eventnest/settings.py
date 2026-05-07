@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'apps.events',       # Event, Ticket
     'apps.media',        # Media
 
-    # ── Apps with NO models — only views/urls/templates ─────────────────────
+    # ── Apps with NO models - only views/urls/templates ─────────────────────
     # These still need to be here for management commands (database) and
     # context processors (core). dashboard/roles have no models so optional,
     # but listing them makes the project structure self-documenting.
@@ -92,7 +92,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT      = BASE_DIR / 'staticfiles'
 
 MEDIA_URL  = '/media-files/'
-MEDIA_ROOT = BASE_DIR / 'media_uploads'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND      = 'django.core.mail.backends.console.EmailBackend'

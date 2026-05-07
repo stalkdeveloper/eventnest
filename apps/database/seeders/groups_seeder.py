@@ -1,5 +1,5 @@
 """
-Groups seeder — uses Django's built-in default permissions.
+Groups seeder - uses Django's built-in default permissions.
 No custom permissions are created; we rely on the auto-generated
 add_*, change_*, delete_*, view_* permissions Django creates.
 """

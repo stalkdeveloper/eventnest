@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ event.title }} — EventNest{% endblock %}
+{% block title %}{{ event.title }} - EventNest{% endblock %}
 {% block content %}
 <div class="event-banner">
   {% if banner %}<img src="{{ banner.get_url }}" alt="{{ event.title }}">{% else %}&#127881;{% endif %}
@@ -40,7 +40,7 @@
     {% endif %}
 
     <div class="text-xs text-muted mt-3">
-      Created by {{ event.created_by.username|default:"—" }}
+      Created by {{ event.created_by.username|default:"-" }}
       &nbsp;&middot;&nbsp;
       Last updated {{ event.updated_at|date:"M d, Y" }}
       {% if event.updated_by %} by {{ event.updated_by.username }}{% endif %}

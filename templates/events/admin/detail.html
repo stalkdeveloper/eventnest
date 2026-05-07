@@ -22,9 +22,9 @@
         <div class="divider"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;font-size:.85rem;margin-top:1rem">
           <div><span class="text-muted">Type:</span> {{ event.event_type|title }}</div>
-          <div><span class="text-muted">Category:</span> {{ event.category.title|default:"—" }}</div>
-          <div><span class="text-muted">City:</span> {{ event.city|default:"—" }}</div>
-          <div><span class="text-muted">Venue:</span> {{ event.venue|default:"—" }}</div>
+          <div><span class="text-muted">Category:</span> {{ event.category.title|default:"-" }}</div>
+          <div><span class="text-muted">City:</span> {{ event.city|default:"-" }}</div>
+          <div><span class="text-muted">Venue:</span> {{ event.venue|default:"-" }}</div>
           <div><span class="text-muted">Start:</span> {{ event.start_date|date:"M d, Y g:i A" }}</div>
           <div><span class="text-muted">End:</span> {{ event.end_date|date:"M d, Y g:i A" }}</div>
           <div><span class="text-muted">Price:</span> {% if event.is_free %}Free{% else %}&#8377;{{ event.ticket_price }}{% endif %}</div>
@@ -32,9 +32,9 @@
         </div>
         <div class="divider"></div>
         <div style="font-size:.82rem;display:flex;flex-direction:column;gap:.4rem">
-          <div><span class="text-muted">Created by:</span> {{ event.created_by.username|default:"—" }} &mdash; {{ event.created_at|date:"M d, Y g:i A" }}</div>
-          <div><span class="text-muted">Updated by:</span> {{ event.updated_by.username|default:"—" }} &mdash; {{ event.updated_at|date:"M d, Y g:i A" }}</div>
-          {% if event.deleted_at %}<div><span class="text-muted">Deleted by:</span> {{ event.deleted_by.username|default:"—" }} &mdash; {{ event.deleted_at|date:"M d, Y g:i A" }}</div>{% endif %}
+          <div><span class="text-muted">Created by:</span> {{ event.created_by.username|default:"-" }} &mdash; {{ event.created_at|date:"M d, Y g:i A" }}</div>
+          <div><span class="text-muted">Updated by:</span> {{ event.updated_by.username|default:"-" }} &mdash; {{ event.updated_at|date:"M d, Y g:i A" }}</div>
+          {% if event.deleted_at %}<div><span class="text-muted">Deleted by:</span> {{ event.deleted_by.username|default:"-" }} &mdash; {{ event.deleted_at|date:"M d, Y g:i A" }}</div>{% endif %}
           <div><span class="text-muted">Organiser:</span> {{ event.organiser.username }} ({{ event.organiser.email }})</div>
         </div>
       </div>

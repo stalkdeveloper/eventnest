@@ -24,7 +24,7 @@
         <div class="form-group">
           <label class="form-label">Parent Category <span class="text-muted">(optional)</span></label>
           <select name="parent" class="form-input form-select">
-            <option value="">— Root category —</option>
+            <option value="">- Root category -</option>
             {% for rc in root_cats %}
             <option value="{{ rc.id }}" {% if cat.parent_id == rc.id %}selected{% endif %}>{{ rc.title }}</option>
             {% endfor %}
@@ -50,7 +50,7 @@
   </div>
   {% if cat %}
   <p class="text-xs text-muted mt-2">
-    Created by {{ cat.created_by.username|default:"—" }} on {{ cat.created_at|date:"M d, Y" }}
+    Created by {{ cat.created_by.username|default:"-" }} on {{ cat.created_at|date:"M d, Y" }}
     {% if cat.updated_by %}&nbsp;&middot;&nbsp; Updated by {{ cat.updated_by.username }} on {{ cat.updated_at|date:"M d, Y" }}{% endif %}
   </p>
   {% endif %}

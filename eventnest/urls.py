@@ -1,5 +1,5 @@
 """
-EventNest — Master URL configuration
+EventNest - Master URL configuration
 -------------------------------------
 Pattern: include each app's web_urls and admin_urls separately.
 No app needs to be in INSTALLED_APPS just for URLs.

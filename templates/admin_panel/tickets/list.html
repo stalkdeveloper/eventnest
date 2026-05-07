@@ -52,7 +52,7 @@
           {% else %}<span class="free-tag">Free</span>{% endif %}
         </td>
         <td class="text-muted text-sm">{{ t.created_at|date:"M d, Y" }}</td>
-        <td class="text-muted text-sm">{{ t.created_by.username|default:"—" }}</td>
+        <td class="text-muted text-sm">{{ t.created_by.username|default:"-" }}</td>
       </tr>
       {% endfor %}
     </tbody>

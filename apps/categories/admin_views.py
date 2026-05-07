@@ -63,7 +63,7 @@ def category_edit(request, cat_id):
         messages.success(request, f'Category "{cat.title}" updated.')
         return redirect('admin_categories:category_list')
     return render(request, 'categories/admin/form.html', {
-        'action': 'Edit', 'title': f'Edit — {cat.title}',
+        'action': 'Edit', 'title': f'Edit - {cat.title}',
         'cat': cat, 'root_cats': root_cats,
     })
 

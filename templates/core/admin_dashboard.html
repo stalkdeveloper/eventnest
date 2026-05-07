@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Admin Dashboard — EventNest{% endblock %}
+{% block title %}Admin Dashboard - EventNest{% endblock %}
 {% block content %}
 <div class="dash-header">
   <div>
@@ -37,7 +37,7 @@
               </span>
               {% if event.deleted_at %}<span class="badge badge-red">Deleted</span>{% endif %}
             </td>
-            <td class="text-muted text-sm">{{ event.created_by.username|default:"—" }}</td>
+            <td class="text-muted text-sm">{{ event.created_by.username|default:"-" }}</td>
             <td>
               <div class="flex gap-1">
                 {% if not event.deleted_at %}

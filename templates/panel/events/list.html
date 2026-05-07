@@ -52,13 +52,13 @@
           {% if event.city %}<div class="text-xs text-muted">&#128205; {{ event.city }}</div>{% endif %}
         </td>
         <td class="text-sm">{{ event.organiser.username }}</td>
-        <td class="text-sm text-muted">{{ event.category.title|default:"—" }}</td>
+        <td class="text-sm text-muted">{{ event.category.title|default:"-" }}</td>
         <td>
           <span class="chip chip-{{ event.status }}">{{ event.status|title }}</span>
           {% if event.deleted_at %}<span class="chip chip-deleted">Deleted</span>{% endif %}
         </td>
         <td class="text-sm text-muted">{{ event.start_date|date:"M d, Y" }}</td>
-        <td class="text-sm text-muted">{{ event.created_by.username|default:"—" }}</td>
+        <td class="text-sm text-muted">{{ event.created_by.username|default:"-" }}</td>
         <td>
           <span class="badge badge-purple">{{ event.tickets_sold }}</span>
           {% if event.max_capacity %}<span class="text-xs text-muted"> / {{ event.max_capacity }}</span>{% endif %}

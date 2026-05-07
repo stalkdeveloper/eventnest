@@ -34,7 +34,7 @@
             <div class="form-group">
               <label class="form-label">Category</label>
               <select name="category" class="form-input form-select">
-                <option value="">— None —</option>
+                <option value="">- None -</option>
                 {% for rc in categories %}
                 <optgroup label="{{ rc.title }}">
                   <option value="{{ rc.id }}" {% if form.initial.category == rc.id %}selected{% endif %}>{{ rc.title }}</option>

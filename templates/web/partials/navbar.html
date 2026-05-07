@@ -1,0 +1,59 @@
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="{% url 'web_home:home' %}" class="nav-logo">
+      EventNest
+    </a>
+
+    <div class="nav-links">
+      <a href="{% url 'web_events:event_list' %}" class="nav-link">
+        Explore
+      </a>
+
+      {% if user.is_authenticated %}
+
+        {% if user.is_system_user %}
+          <a href="{% url 'admin_dashboard:dashboard' %}" class="nav-link">
+            Admin Panel
+          </a>
+        {% else %}
+          <a href="{% url 'web_dashboard:dashboard' %}" class="nav-link">
+            Dashboard
+          </a>
+
+          <a href="{% url 'web_events:my_tickets' %}" class="nav-link">
+            My Tickets
+          </a>
+
+          {% if user.groups.all.0.name == 'Organiser' %}
+            <a href="{% url 'web_events:event_create' %}" class="nav-link">
+              + Event
+            </a>
+          {% endif %}
+
+        {% endif %}
+
+        <a href="{% url 'accounts:profile' %}" class="nav-link">
+          Profile
+        </a>
+
+        <form method="post" action="{% url 'accounts:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="nav-btn nav-btn-ghost">
+            Logout
+          </button>
+        </form>
+
+      {% else %}
+
+        <a href="{% url 'accounts:login' %}" class="nav-btn nav-btn-ghost">
+          Login
+        </a>
+
+        <a href="{% url 'accounts:register' %}" class="nav-btn nav-btn-primary">
+          Sign Up
+        </a>
+
+      {% endif %}
+    </div>
+  </div>
+</nav>

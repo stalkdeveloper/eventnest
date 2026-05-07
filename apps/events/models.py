@@ -112,7 +112,7 @@ class Ticket(TimeStampedModel):
         ordering        = ['-created_at']
 
     def __str__(self):
-        return f'{self.ticket_code} — {self.attendee.email} @ {self.event.title}'
+        return f'{self.ticket_code} - {self.attendee.email} @ {self.event.title}'
 
     def get_qr(self):
         from apps.media.models import Media

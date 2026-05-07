@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}My Events — EventNest{% endblock %}
+{% block title %}My Events - EventNest{% endblock %}
 {% block content %}
 <div class="dash-header">
   <div><h1 class="dash-title">My Events</h1><p class="dash-sub">Manage your events</p></div>
@@ -20,7 +20,7 @@
         <td><a href="{% url 'web_events:event_detail' event.slug %}" class="link-accent font-bold">{{ event.title }}</a></td>
         <td><span class="badge {% if event.status == 'published' %}badge-green{% elif event.status == 'draft' %}badge-orange{% elif event.status == 'cancelled' %}badge-red{% else %}badge-cyan{% endif %}">{{ event.status|title }}</span></td>
         <td class="text-sm text-muted">{{ event.start_date|date:"M d, Y" }}</td>
-        <td class="text-sm text-muted">{{ event.city|default:"—" }}</td>
+        <td class="text-sm text-muted">{{ event.city|default:"-" }}</td>
         <td><a href="{% url 'web_events:event_attendees' event.slug %}" class="link-accent font-bold">{{ event.confirmed_tickets }}</a></td>
         <td class="text-sm">{% if event.is_free %}<span class="free-tag">Free</span>{% else %}<span class="price-tag">&#8377;{{ event.ticket_price }}</span>{% endif %}</td>
         <td>

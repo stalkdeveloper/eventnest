@@ -1,5 +1,5 @@
 {% extends 'admin_panel/base.html' %}
-{% block title %}Attendees — {{ event.title }}{% endblock %}
+{% block title %}Attendees - {{ event.title }}{% endblock %}
 {% block page_title %}Attendees{% endblock %}
 {% block nav_events %}active{% endblock %}
 
@@ -28,7 +28,7 @@
         <td><span class="chip chip-{{ t.status }}">{{ t.status|title }}</span></td>
         <td class="text-sm">{% if t.amount_paid > 0 %}<span class="price-tag">&#8377;{{ t.amount_paid }}</span>{% else %}<span class="free-tag">Free</span>{% endif %}</td>
         <td class="text-muted text-sm">{{ t.created_at|date:"M d, Y" }}</td>
-        <td class="text-muted text-sm">{{ t.created_by.username|default:"—" }}</td>
+        <td class="text-muted text-sm">{{ t.created_by.username|default:"-" }}</td>
       </tr>
       {% endfor %}
     </tbody>

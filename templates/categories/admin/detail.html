@@ -27,9 +27,9 @@
         </div>
         <div class="divider"></div>
         <div style="font-size:.82rem;display:flex;flex-direction:column;gap:.4rem">
-          <div><span class="text-muted">Created by:</span> {{ cat.created_by.username|default:"—" }} &mdash; {{ cat.created_at|date:"M d, Y" }}</div>
-          <div><span class="text-muted">Updated by:</span> {{ cat.updated_by.username|default:"—" }} &mdash; {{ cat.updated_at|date:"M d, Y" }}</div>
-          {% if cat.deleted_at %}<div><span class="text-muted">Deleted by:</span> {{ cat.deleted_by.username|default:"—" }} &mdash; {{ cat.deleted_at|date:"M d, Y" }}</div>{% endif %}
+          <div><span class="text-muted">Created by:</span> {{ cat.created_by.username|default:"-" }} &mdash; {{ cat.created_at|date:"M d, Y" }}</div>
+          <div><span class="text-muted">Updated by:</span> {{ cat.updated_by.username|default:"-" }} &mdash; {{ cat.updated_at|date:"M d, Y" }}</div>
+          {% if cat.deleted_at %}<div><span class="text-muted">Deleted by:</span> {{ cat.deleted_by.username|default:"-" }} &mdash; {{ cat.deleted_at|date:"M d, Y" }}</div>{% endif %}
         </div>
       </div>
     </div>

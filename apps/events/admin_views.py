@@ -112,7 +112,7 @@ def event_edit(request, event_id):
         messages.success(request, f'Event "{event.title}" updated.')
         return redirect('admin_events:event_list')
     return render(request, 'events/admin/form.html', {
-        'action': 'Edit', 'title': f'Edit — {event.title}',
+        'action': 'Edit', 'title': f'Edit - {event.title}',
         'event': event, 'categories': categories,
     })
 

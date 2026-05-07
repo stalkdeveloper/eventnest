@@ -66,7 +66,7 @@ def role_edit(request, role_id):
             messages.success(request, f'Role "{group.name}" updated.')
             return redirect('admin_roles:role_list')
     return render(request, 'roles/admin/form.html', {
-        'action': 'Edit', 'title': f'Edit Role — {group.name}',
+        'action': 'Edit', 'title': f'Edit Role - {group.name}',
         'group': group, 'all_perms': all_perms,
         'selected_perm_ids': json.dumps(selected_ids),
     })

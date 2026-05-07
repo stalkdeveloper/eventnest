@@ -54,7 +54,7 @@ def user_edit(request, user_id):
         return redirect('admin_accounts:user_list')
     return render(request, 'accounts/admin/form.html', {
         'form': form, 'action': 'Edit',
-        'title': f'Edit — {target.email}', 'target': target,
+        'title': f'Edit - {target.email}', 'target': target,
     })
 
 

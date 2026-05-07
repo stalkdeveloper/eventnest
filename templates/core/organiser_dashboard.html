@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Organiser Dashboard — EventNest{% endblock %}
+{% block title %}Organiser Dashboard - EventNest{% endblock %}
 {% block content %}
 <div class="dash-header">
   <div>
@@ -32,7 +32,7 @@
           </span>
         </td>
         <td class="text-sm text-muted">{{ event.start_date|date:"M d, Y" }}</td>
-        <td class="text-sm text-muted">{{ event.city|default:"—" }}</td>
+        <td class="text-sm text-muted">{{ event.city|default:"-" }}</td>
         <td>
           <a href="{% url 'web_events:event_attendees' event.slug %}" class="link-accent">
             {{ event.confirmed_tickets }}{% if event.max_capacity %}<span class="text-muted"> / {{ event.max_capacity }}</span>{% endif %}

@@ -24,7 +24,7 @@
             <a href="{% url 'admin_categories:category_detail' cat.id %}" class="link-accent font-bold text-sm">{{ cat.title }}</a>
           </div>
         </td>
-        <td class="text-muted text-sm">{{ cat.parent.title|default:"—" }}</td>
+        <td class="text-muted text-sm">{{ cat.parent.title|default:"-" }}</td>
         <td style="font-family:monospace;font-size:.78rem;color:var(--text2)">{{ cat.slug }}</td>
         <td>
           <div class="flex items-center gap-1">
@@ -32,7 +32,7 @@
             <span class="text-xs text-muted" style="font-family:monospace">{{ cat.color }}</span>
           </div>
         </td>
-        <td class="text-muted text-sm">{{ cat.created_by.username|default:"—" }}</td>
+        <td class="text-muted text-sm">{{ cat.created_by.username|default:"-" }}</td>
         <td>
           {% if cat.deleted_at %}<span class="chip chip-deleted">Deleted</span>
           {% else %}<span class="chip chip-active">Active</span>{% endif %}
