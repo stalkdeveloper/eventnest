@@ -1,171 +1,348 @@
-{% extends "admin/base.html" %}
-{% block title %}{{ title }} | EventNest Admin{% endblock %}
-{% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">&#11043; EventNest Admin</a></h1>
-{% endblock %}
-{% block extrastyle %}
-{{ block.super }}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#f4f5ff; --bg2:#eceeff; --card:#fff; --card2:#f8f9ff;
-  --border:#dde0ff; --text:#1a1a2e; --text2:#5a5a8a;
-  --accent:#5b5fcf; --accent2:#7c7ff5; --accent3:#a5a8ff;
-  --grad:linear-gradient(90deg,#CAD0FF,#E3E3E3);
-  --green:#16a34a; --red:#dc2626; --orange:#d97706;
-}
-*{font-family:'DM Sans',sans-serif!important;box-sizing:border-box}
-body,#container,#content-main,#content,.module{background:var(--bg)!important;color:var(--text)!important}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>{% block title %}Panel | EventNest Admin{% endblock %}</title>
 
-/* Header */
-#header{
-  background:var(--grad)!important;
-  padding:0 1.5rem!important; height:60px!important;
-  display:flex!important; align-items:center!important;
-  justify-content:space-between!important;
-  border-bottom:1px solid var(--border)!important;
-  box-shadow:0 2px 16px rgba(91,95,207,.12)!important;
-}
-#branding h1,#branding h1 a{
-  font-family:'Syne',sans-serif!important;
-  font-size:1.3rem!important; font-weight:800!important;
-  color:var(--accent)!important; letter-spacing:-.5px!important;
-}
-#user-tools{color:var(--text2)!important;font-size:.85rem!important}
-#user-tools a{color:var(--accent)!important;font-weight:600!important}
-#user-tools a:hover{color:var(--accent2)!important}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" href="{% static 'css/panel.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-/* Breadcrumbs */
-div.breadcrumbs{
-  background:var(--card)!important;
-  border-bottom:1px solid var(--border)!important;
-  padding:.65rem 1.5rem!important;
-  color:var(--text2)!important; font-size:.85rem!important;
-}
-div.breadcrumbs a{color:var(--accent)!important}
+  <style>
+    :root {
+      --bg:#f4f5ff; --bg2:#eceeff; --card:#fff; --card2:#f8f9ff;
+      --border:#dde0ff; --text:#1a1a2e; --text2:#5a5a8a;
+      --accent:#5b5fcf; --accent2:#7c7ff5; --accent3:#a5a8ff;
+      --grad:linear-gradient(90deg,#CAD0FF,#E3E3E3);
+      --green:#16a34a; --red:#dc2626; --orange:#d97706;
+    }
+    * {
+      font-family:'DM Sans',sans-serif!important;
+      box-sizing:border-box;
+    }
 
-/* Sidebar */
-#nav-sidebar{background:var(--card)!important;border-right:1px solid var(--border)!important}
-#nav-sidebar .current-app .section:link,
-#nav-sidebar .current-app .section:visited{color:var(--accent)!important;font-weight:700!important}
+    body,#container,#content-main,#content,.module{
+      background:var(--bg)!important;
+      color:var(--text)!important;
+    }
 
-/* Modules */
-.module{
-  background:var(--card)!important;
-  border:1px solid var(--border)!important;
-  border-radius:12px!important; overflow:hidden!important;
-  margin-bottom:1.5rem!important;
-  box-shadow:0 2px 12px rgba(91,95,207,.07)!important;
-}
-.module h2,.module caption{
-  background:var(--grad)!important;
-  color:var(--accent)!important;
-  border-bottom:1px solid var(--border)!important;
-  font-family:'Syne',sans-serif!important; font-weight:700!important;
-  padding:.85rem 1.25rem!important; font-size:.88rem!important;
-  text-transform:uppercase!important; letter-spacing:.04em!important;
-}
-#content-main{padding:1.5rem!important}
-#content{padding:0!important;background:var(--bg)!important}
+    .panel-body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      font-family:'DM Sans',sans-serif;
+    }
+    .panel-layout{
+      display:flex;
+      min-height:100vh;
+    }
 
-/* Table */
-.change-list .results table,.results table{
-  border:1px solid var(--border)!important;
-  border-radius:10px!important; overflow:hidden!important;
-  background:var(--card)!important;
-}
-#result_list thead th,#result_list thead th a{
-  background:var(--bg2)!important; color:var(--text2)!important;
-  font-size:.77rem!important; text-transform:uppercase!important;
-  letter-spacing:.05em!important; border:none!important;
-  padding:.8rem 1rem!important; font-weight:700!important;
-}
-#result_list tbody tr{background:var(--card)!important;border-bottom:1px solid var(--border)!important}
-#result_list tbody tr:hover{background:var(--bg2)!important}
-#result_list tbody td,#result_list tbody th{
-  padding:.85rem 1rem!important; border:none!important;
-  font-size:.88rem!important; color:var(--text)!important;
-}
+    .panel-sidebar{
+      width:260px;
+      background:var(--card);
+      border-right:1px solid var(--border);
+      display:flex;
+      flex-direction:column;
+    }
+    .panel-logo{
+      padding:1.2rem 1.5rem;
+      border-bottom:1px solid var(--border);
+      font-family:'Syne',sans-serif;
+      font-weight:800;
+      font-size:1.3rem;
+      letter-spacing:-.5px;
+      color:var(--accent);
+    }
+    .panel-logo a{
+      color:inherit;
+      text-decoration:none;
+    }
+    .panel-logo-badge{
+      font-size:.75rem;
+      margin-left:.4rem;
+      opacity:.7;
+    }
 
-/* Links */
-a:link,a:visited{color:var(--accent)!important}
-a:hover{color:var(--accent2)!important}
+    .panel-nav{
+      flex:1;
+      padding:1rem 0;
+    }
+    .panel-nav-section{
+      padding:0 1.5rem .5rem;
+      font-size:.83rem;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:var(--text2);
+    }
+    .panel-nav-link{
+      display:flex;
+      align-items:center;
+      gap:.6rem;
+      padding:.8rem 1.5rem;
+      text-decoration:none;
+      color:var(--text2);
+      border-left:3px solid transparent;
+      font-size:.9rem;
+    }
+    .panel-nav-link:hover{
+      background:var(--bg2);
+      border-left:3px solid var(--accent);
+      color:var(--accent);
+    }
+    .panel-nav-link.active{
+      background:var(--bg2);
+      border-left:3px solid var(--accent);
+      color:var(--accent);
+      font-weight:600;
+    }
 
-/* Submit row */
-.submit-row{
-  background:var(--bg2)!important;
-  border-top:1px solid var(--border)!important;
-  padding:1rem 1.25rem!important;
-}
-.submit-row input,.button,.historylink a,.deletelink,.addlink{
-  border-radius:8px!important; font-size:.88rem!important;
-  font-weight:600!important; padding:.55rem 1.2rem!important;
-  border:none!important; cursor:pointer!important;
-  transition:all .2s!important;
-}
-input[type=submit],input[type=button],.default{
-  background:var(--grad)!important;
-  color:var(--accent)!important;
-  border:1px solid var(--border)!important;
-}
-input[type=submit]:hover{box-shadow:0 4px 16px rgba(91,95,207,.2)!important}
-.deletelink{
-  background:#fee2e2!important; color:var(--red)!important;
-  border:1px solid #fca5a5!important;
-}
+    .panel-sidebar-footer{
+      padding:1rem 1.5rem;
+      border-top:1px solid var(--border);
+      background:var(--card2);
+    }
+    .panel-user-info{
+      display:flex;
+      align-items:center;
+      gap:.7rem;
+    }
+    .panel-user-avatar{
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      background:var(--accent);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.9rem;
+      font-weight:600;
+    }
+    .panel-user-name{
+      font-size:.9rem;
+      font-weight:600;
+      color:var(--text);
+    }
+    .panel-user-role{
+      font-size:.77rem;
+      color:var(--text2);
+    }
+    .panel-logout-btn{
+      padding:0;
+      margin-top:.3rem;
+      font-size:.83rem;
+      color:var(--red);
+      background:none;
+      border:none;
+      cursor:pointer;
+    }
 
-/* Form inputs */
-input[type=text],input[type=email],input[type=password],
-input[type=number],input[type=url],select,textarea{
-  background:var(--bg2)!important; border:1px solid var(--border)!important;
-  color:var(--text)!important; border-radius:8px!important;
-  padding:.65rem 1rem!important; font-size:.9rem!important;
-  outline:none!important; transition:border-color .2s!important;
-  width:100%!important;
-}
-input:focus,select:focus,textarea:focus{
-  border-color:var(--accent2)!important;
-  box-shadow:0 0 0 3px rgba(124,127,245,.12)!important;
-}
+    .panel-main{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+    }
+    .panel-topbar{
+      padding:1rem 1.5rem;
+      border-bottom:1px solid var(--border);
+      background:var(--card);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .panel-page-title{
+      font-size:1.15rem;
+      font-weight:600;
+      margin:0;
+      color:var(--text);
+    }
+    .panel-topbar-actions{
+      display:flex;
+      gap:.5rem;
+    }
+    .panel-topbar-actions a.btn{
+      text-decoration:none;
+      padding:.5rem .9rem;
+      font-size:.85rem;
+      border-radius:8px;
+      border:none;
+      cursor:pointer;
+      background:var(--accent);
+      color:#fff;
+      font-weight:600;
+    }
+    .panel-topbar-actions a.btn:hover{
+      background:var(--accent2);
+    }
 
-/* Form rows */
-.form-row{padding:1rem 1.25rem!important;border-bottom:1px solid var(--border)!important}
-.form-row:last-child{border-bottom:none!important}
-label{color:var(--text2)!important;font-size:.83rem!important;font-weight:600!important;text-transform:uppercase!important;letter-spacing:.03em!important}
-.help{color:var(--text2)!important;font-size:.78rem!important}
+    .panel-alerts{
+      padding:1rem 1.5rem;
+      display:flex;
+      flex-direction:column;
+      gap:.5rem;
+    }
+    .alert{
+      padding:.6rem .9rem;
+      border-radius:6px;
+      font-size:.87rem;
+    }
+    .alert-info{background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd;}
+    .alert-success{background:#dcfce7;color:#16a34a;border:1px solid #86efac;}
+    .alert-warning{background:#fef3c7;color:#d97706;border:1px solid #fcd34d;}
+    .alert-error{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;}
 
-/* Errors */
-.errornote,.errorlist li{
-  background:#fee2e2!important; border:1px solid #fca5a5!important;
-  color:var(--red)!important; border-radius:6px!important;
-  padding:.5rem .85rem!important;
-}
+    .panel-content{
+      padding:1.5rem;
+      flex:1;
+      min-height:0;
+      overflow:auto;
+    }
 
-/* Messages */
-.messagelist li{
-  border-radius:8px!important; padding:.75rem 1rem!important;
-  margin-bottom:.5rem!important; font-size:.88rem!important;
-}
-.messagelist li.success{background:#dcfce7!important;color:var(--green)!important;border:1px solid #86efac!important}
-.messagelist li.warning{background:#fef3c7!important;color:var(--orange)!important;border:1px solid #fcd34d!important}
-.messagelist li.error{background:#fee2e2!important;color:var(--red)!important;border:1px solid #fca5a5!important}
+    /* Table styling for your category list */
+    .table-wrap{
+      margin-top:1rem;
+    }
+    .table-wrap table{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:10px;
+      overflow:hidden;
+      background:var(--card);
+    }
+    .table-wrap thead th{
+      background:var(--bg2);
+      color:var(--text2);
+      padding:.8rem 1rem;
+      font-size:.77rem;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      border:none;
+      font-weight:700;
+    }
+    .table-wrap tbody tr{
+      background:var(--card);
+      border-bottom:1px solid var(--border);
+    }
+    .table-wrap tbody tr:hover{
+      background:var(--bg2);
+    }
+    .table-wrap tbody td,
+    .table-wrap tbody th{
+      padding:.85rem 1rem;
+      border:none;
+      font-size:.88rem;
+      color:var(--text);
+    }
+    .table-actions{
+      display:flex;
+      gap:.5rem;
+    }
 
-/* Filters */
-#changelist-filter{background:var(--card)!important;border-left:1px solid var(--border)!important}
-#changelist-filter h2{background:var(--bg2)!important;color:var(--text)!important;border-bottom:1px solid var(--border)!important}
-#changelist-filter ul li a{color:var(--text2)!important}
-#changelist-filter ul li.selected a{color:var(--accent)!important;font-weight:700!important}
+    .chip{
+      padding:.25rem .6rem;
+      border-radius:999px;
+      font-size:.75rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+    }
+    .chip-active{background:#dcfce7;color:#16a34a;border:1px solid #86efac;}
+    .chip-deleted{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;}
 
-/* Paginator */
-.paginator{color:var(--text2)!important}
-.paginator a{color:var(--accent)!important}
+    .panel-empty{
+      padding:4rem 2rem;
+      text-align:center;
+      border:1px dashed var(--border);
+      border-radius:12px;
+      background:var(--card2);
+      margin-top:1rem;
+    }
+    .panel-empty-icon{
+      font-size:2.5rem;
+      margin-bottom:.5rem;
+    }
+    .panel-empty-title{
+      font-size:1.1rem;
+      font-weight:600;
+      margin-bottom:.4rem;
+    }
+    .panel-empty-sub{
+      color:var(--text2);
+      font-size:.9rem;
+      margin-bottom:.8rem;
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="panel-body">
+  <div class="panel-layout">
+    <aside class="panel-sidebar">
+      <div class="panel-logo">
+        <a href="{% url 'admin_dashboard:dashboard' %}">&#11043; EventNest</a>
+        <span class="panel-logo-badge">Admin</span>
+      </div>
 
-/* Dashboard specific */
-.dashboard #content{padding:1.5rem!important}
-#nav-sidebar .module{border-radius:8px!important;margin:0 .5rem .5rem!important}
+      <nav class="panel-nav">
+        <div class="panel-nav-section">Overview</div>
+        <a href="{% url 'admin_dashboard:dashboard' %}"
+           class="panel-nav-link {% block nav_dashboard %}{% endblock %}">&#9783;&nbsp; Dashboard</a>
 
-/* Checkbox */
-input[type=checkbox]{accent-color:var(--accent)!important;width:16px!important;height:16px!important}
-</style>
-{% endblock %}
+        <div class="panel-nav-section">Manage</div>
+        <a href="{% url 'admin_accounts:user_list' %}"
+           class="panel-nav-link {% block nav_users %}{% endblock %}">&#128101;&nbsp; Users</a>
+        <a href="{% url 'admin_categories:category_list' %}"
+           class="panel-nav-link {% block nav_categories %}{% endblock %}">&#127991;&nbsp; Categories</a>
+        <a href="{% url 'admin_events:event_list' %}"
+           class="panel-nav-link {% block nav_events %}{% endblock %}">&#127881;&nbsp; Events</a>
+        <a href="{% url 'admin_events:ticket_list' %}"
+           class="panel-nav-link {% block nav_tickets %}{% endblock %}">&#127919;&nbsp; Tickets</a>
+        <a href="{% url 'admin_roles:role_list' %}"
+           class="panel-nav-link {% block nav_roles %}{% endblock %}">&#128737;&nbsp; Roles</a>
+
+        <div class="panel-nav-section">Site</div>
+        <a href="{% url 'web_home:home' %}"
+           class="panel-nav-link" target="_blank">&#127760;&nbsp; View Website</a>
+      </nav>
+
+      <div class="panel-sidebar-footer">
+        <div class="panel-user-info">
+          <div class="panel-user-avatar">{{ request.user.username|first|upper }}</div>
+          <div>
+            <div class="panel-user-name">{{ request.user.username }}</div>
+            <div class="panel-user-role">
+              {% if request.user.is_superuser %}Superadmin{% else %}Sub‑Admin{% endif %}
+            </div>
+          </div>
+        </div>
+        <form method="post" action="{% url 'accounts:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="panel-logout-btn">&#128682;&nbsp; Logout</button>
+        </form>
+      </div>
+    </aside>
+
+    <div class="panel-main">
+      <header class="panel-topbar">
+        <h1 class="panel-page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+        <div class="panel-topbar-actions">{% block topbar_actions %}{% endblock %}</div>
+      </header>
+
+      {% if messages %}
+      <div class="panel-alerts">
+        {% for msg in messages %}
+        <div class="alert alert-{{ msg.tags|default:'info' }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="panel-content">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
