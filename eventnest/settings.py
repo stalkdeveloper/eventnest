@@ -18,7 +18,8 @@ INSTALLED_APPS = [
     # ── Apps that OWN database tables (models + migrations) ─────────────────
     'apps.accounts',     # CustomUser
     'apps.categories',   # Category
-    'apps.events',       # Event, Ticket
+    'apps.events',       # Event
+    'apps.tickets',      # Ticket
     'apps.media',        # Media
 
     # ── Apps with NO models - only views/urls/templates ─────────────────────

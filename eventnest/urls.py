@@ -13,18 +13,19 @@ handler404 = 'apps.core.error_views.error_404'
 handler500 = 'apps.core.error_views.error_500'
 
 urlpatterns = [
-
     # ── Public website ──────────────────────────────────────────────────────
     path('', include('apps.core.web_urls')),               # /
     path('', include('apps.accounts.web_urls')),           # /login/ /register/ /profile/
-    path('', include('apps.events.web_urls')),             # /events/* /my-tickets/
+    path('', include('apps.events.web_urls')),             # /events/*
+    path('', include('apps.tickets.web_urls')),            # /my-tickets/ /tickets/*
     path('', include('apps.categories.web_urls')),         # /categories/*
     path('', include('apps.dashboard.web_urls')),          # /dashboard/
 
     # ── Admin panel ─────────────────────────────────────────────────────────
     path('', include('apps.dashboard.admin_urls')),        # /admin/dashboard/
     path('', include('apps.accounts.admin_urls')),         # /admin/users/*
-    path('', include('apps.events.admin_urls')),           # /admin/events/* /admin/tickets/
+    path('', include('apps.events.admin_urls')),           # /admin/events/*
+    path('', include('apps.tickets.admin_urls')),          # /admin/tickets/*
     path('', include('apps.categories.admin_urls')),       # /admin/categories/*
     path('', include('apps.roles.admin_urls')),            # /admin/roles/*
 

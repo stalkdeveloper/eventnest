@@ -28,7 +28,7 @@
       <div class="flex gap-2 items-center">
         <a href="{% url 'web_events:event_detail' ticket.event.slug %}" class="btn btn-outline btn-sm">View Event</a>
         {% if ticket.status == 'confirmed' and ticket.event.is_upcoming %}
-        <form method="post" action="{% url 'web_events:cancel_ticket' ticket.id %}" onsubmit="return confirm('Cancel this ticket?')">
+        <form method="post" action="{% url 'web_tickets:cancel_ticket' ticket.id %}" onsubmit="return confirm('Cancel this ticket?')">
           {% csrf_token %}
           <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
         </form>

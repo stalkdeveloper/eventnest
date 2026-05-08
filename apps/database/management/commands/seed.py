@@ -57,7 +57,8 @@ class Command(BaseCommand):
 
     def _flush(self):
         from apps.accounts.models import CustomUser
-        from apps.events.models import Event, Ticket
+        from apps.events.models import Event
+        from apps.tickets.models import Ticket
         from apps.categories.models import Category
         from django.contrib.auth.models import Group
 

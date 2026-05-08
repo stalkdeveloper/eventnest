@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ticket Details - {{ ticket.ticket_code }} | EventNest{% endblock %}
+
+{% block content %}
+<div class="panel-content">
+  <!-- Breadcrumb -->
+  <div class="panel-topbar mb-4">
+    <a href="{% url 'web_tickets:my_tickets' %}" class="btn btn-outline btn-sm">
+      ← Back to My Tickets
+    </a>
+  </div>
+
+  <div class="grid-2 gap-4">
+    <!-- Main Ticket Info -->
+    <div>
+      <!-- Hero Header -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <!-- Status & Cancel Button Row -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-{{ ticket.status }} fs-6 px-3 py-2 rounded-pill fw-semibold">
+                    {{ ticket.status|title }}
+                </span>
+                {% if ticket.status == 'confirmed' and ticket.event.is_upcoming %}
+                <form method="post" action="{% url 'web_tickets:cancel_ticket' ticket.id %}" class="d-inline"
+                        onsubmit="return confirm('Cancel this ticket?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm px-3">Cancel Ticket</button>
+                </form>
+                {% endif %}
+                </div>
+                
+                <!-- Title & Code -->
+                <h1 class="display-5 fw-bold mb-2">{{ ticket.event.title }}</h1>
+                <code class="bg-light text-dark px-3 py-2 rounded fs-5 fw-medium border opacity-90">
+                {{ ticket.ticket_code }}
+                </code>
+            </div>
+        </div>
+
+      <!-- Event Details Card -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="panel-section-title mb-3">Event Details</h3>
+          <div class="detail-meta-grid mb-4">
+            <div><span class="text-muted">Event:</span> 
+              <a href="{% url 'web_events:event_detail' ticket.event.slug %}" class="link-accent font-bold">
+                {{ ticket.event.title }}
+              </a>
+            </div>
+            <div><span class="text-muted">Type:</span> 
+              <span class="chip chip-{{ ticket.event.event_type }}">{{ ticket.event.get_event_type_display }}</span>
+            </div>
+            <div><span class="text-muted">Date:</span> {{ ticket.event.start_date|date:"MMM d, yyyy 'at' h:mm a" }}</div>
+            {% if ticket.event.venue %}
+            <div><span class="text-muted">Venue:</span> {{ ticket.event.venue }}</div>
+            {% endif %}
+          </div>
+
+          {% if ticket.event.event_type == 'offline' %}
+          <div class="detail-meta-grid">
+            <div><span class="text-muted">Address:</span> {{ ticket.event.address }}, {{ ticket.event.city }}</div>
+          </div>
+          {% elif ticket.event.online_link %}
+          <div><span class="text-muted">Join Link:</span> 
+            <a href="{{ ticket.event.online_link }}" class="link-accent" target="_blank">{{ ticket.event.online_link|slice:":50" }}...</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Ticket Info Card -->
+      <div class="card">
+        <div class="card-body">
+          <h3 class="panel-section-title mb-3">Ticket Information</h3>
+          <div class="detail-meta-grid">
+            <div><span class="text-muted">Code:</span> 
+              <code class="ticket-code">{{ ticket.ticket_code }}</code>
+            </div>
+            <div><span class="text-muted">Booked:</span> {{ ticket.created_at|date:"MMM d, yyyy 'at' h:mm a" }}</div>
+            <div><span class="text-muted">Price:</span> 
+              {% if ticket.amount_paid > 0 %}
+                <span class="text-success font-bold">₹{{ ticket.amount_paid }}</span>
+              {% else %}
+                <span class="free-tag">FREE</span>
+              {% endif %}
+            </div>
+            {% if ticket.notes %}
+            <div><span class="text-muted">Notes:</span> {{ ticket.notes }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div>
+      <!-- Attendee Card -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="panel-section-title mb-3">Attendee</h3>
+          <div class="detail-meta-grid">
+            <div><span class="text-muted">Name:</span> {{ ticket.attendee.get_full_name|default:ticket.attendee.username }}</div>
+            <div><span class="text-muted">Email:</span> {{ ticket.attendee.email }}</div>
+            {% if ticket.attendee.phone_number %}
+            <div><span class="text-muted">Phone:</span> {{ ticket.attendee.phone_number }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- QR Code -->
+      {% if ticket.get_qr %}
+      <div class="card mb-4">
+        <div class="card-body text-center">
+          <h3 class="panel-section-title mb-2">QR Code</h3>
+          <img src="{{ ticket.get_qr.url }}" alt="QR Code" class="img-fluid rounded shadow-sm mb-2" style="max-width: 180px;">
+          <p class="text-muted text-sm">Scan at entrance</p>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Actions -->
+      <div class="card sticky-top">
+        <div class="card-body">
+          <div class="d-grid gap-2">
+            <button onclick="window.print()" class="btn btn-outline">
+              <i class="fas fa-print me-2"></i>Print Ticket
+            </button>
+            <a href="{% url 'web_events:event_detail' ticket.event.slug %}" class="btn btn-outline-secondary">
+              <i class="fas fa-external-link-alt me-2"></i>Event Page
+            </a>
+            <a href="{% url 'web_tickets:my_tickets' %}" class="btn btn-outline">
+              <i class="fas fa-list me-2"></i>My Tickets
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

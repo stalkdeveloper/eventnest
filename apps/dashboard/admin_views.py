@@ -3,7 +3,8 @@ from django.shortcuts import render
 from apps.core.decorators import system_required
 from apps.accounts.models import CustomUser
 from apps.categories.models import Category
-from apps.events.models import Event, Ticket
+from apps.events.models import Event
+from apps.tickets.models import Ticket
 
 
 @system_required
