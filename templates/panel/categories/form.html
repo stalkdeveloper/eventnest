@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<div style="max-width:580px">
+<div class="panel-form-narrow">
   <div class="card">
     <div class="card-body">
       <form method="post">
@@ -17,7 +17,7 @@
         <div class="form-group">
           <label class="form-label">
             {{ field.label }}
-            {% if field.field.required %}<span style="color:var(--red)">*</span>{% endif %}
+            {% if field.field.required %}<span class="required-star">*</span>{% endif %}
           </label>
           {% if field.name == 'parent' %}
             <select name="parent" class="form-input form-select">

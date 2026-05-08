@@ -7,7 +7,7 @@
     <h1 class="section-title mt-1 mb-0">Attendees</h1>
     <p class="text-muted text-sm">{{ event.title }}</p>
   </div>
-  <div class="stat-card text-center" style="min-width:120px">
+  <div class="stat-card text-center stat-card--inline">
     <div class="stat-value">{{ tickets|length }}</div>
     <div class="stat-label">Registered</div>
   </div>
@@ -42,7 +42,7 @@
   </table>
 </div>
 {% else %}
-<div class="card text-center" style="padding:4rem 2rem">
+<div class="card text-center empty-state">
   <div class="fs-icon-md">&#128101;</div>
   <p class="text-muted mt-2">No attendees yet.</p>
 </div>

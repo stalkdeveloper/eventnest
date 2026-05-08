@@ -10,7 +10,7 @@
 {% block content %}
 <div class="panel-filter-bar">
   <form method="get" class="flex flex-wrap gap-2 items-end w-full">
-    <div class="panel-filter-group" style="flex:1;min-width:180px">
+    <div class="panel-filter-group panel-filter-group--grow">
       <label class="panel-filter-label">Search</label>
       <input type="text" name="q" value="{{ q }}" placeholder="Name, email&hellip;" class="form-input">
     </div>
@@ -48,7 +48,7 @@
         <td>
           <div class="font-bold text-sm">{{ u.username }}</div>
           <div class="text-xs text-muted">{{ u.email }}</div>
-          {% if u.is_superuser %}<span class="chip chip-system" style="font-size:.65rem;margin-top:.2rem;display:inline-flex">Superadmin</span>{% endif %}
+          {% if u.is_superuser %}<span class="chip chip-system chip-superadmin">Superadmin</span>{% endif %}
         </td>
         <td><span class="chip chip-{{ u.account_type }}">{{ u.account_type|title }}</span></td>
         <td><span class="badge badge-purple">{{ u.role }}</span></td>
@@ -78,7 +78,7 @@
               {% if u.role != 'Organiser' %}
               <form method="post" action="{% url 'admin_accounts:user_make_organiser' u.id %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-sm" style="background:#dbeafe;border:1px solid #93c5fd;color:#1e40af" onclick="return confirm('Make {{ u.username }} Organiser?')">Organiser</button>
+                <button type="submit" class="btn btn-organiser btn-sm" onclick="return confirm('Make {{ u.username }} Organiser?')">Organiser</button>
               </form>
               {% endif %}
             {% endif %}

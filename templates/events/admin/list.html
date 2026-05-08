@@ -10,7 +10,7 @@
 {% block content %}
 <div class="panel-filter-bar">
   <form method="get" class="flex flex-wrap gap-2 items-end w-full">
-    <div class="panel-filter-group" style="flex:1;min-width:180px">
+    <div class="panel-filter-group panel-filter-group--grow">
       <label class="panel-filter-label">Search</label>
       <input type="text" name="q" value="{{ q }}" placeholder="Title, city, organiser&hellip;" class="form-input">
     </div>
@@ -84,7 +84,7 @@
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="7" class="text-center text-muted" style="padding:2rem">No events found.</td></tr>
+      <tr><td colspan="7" class="text-center text-muted table-empty-cell">No events found.</td></tr>
       {% endfor %}
     </tbody>
   </table>

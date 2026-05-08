@@ -23,16 +23,16 @@
             <span class="cat-parent-indicator">&#8627;</span>
           {% endif %}
           <div class="flex items-center gap-2">
-            <span style="width:12px;height:12px;border-radius:50%;background:{{ cat.color }};display:inline-block;flex-shrink:0"></span>
+            <span class="cat-color-dot cat-color-dot--md" style="background:{{ cat.color }}"></span>
             <span class="font-bold text-sm">{{ cat.title }}</span>
           </div>
         </td>
         <td class="text-muted text-sm">{{ cat.parent.title|default:"-" }}</td>
-        <td class="text-xs" style="font-family:monospace;color:var(--text2)">{{ cat.slug }}</td>
+        <td class="text-xs mono">{{ cat.slug }}</td>
         <td>
           <div class="flex items-center gap-1">
-            <span style="width:18px;height:18px;border-radius:4px;background:{{ cat.color }};display:inline-block;border:1px solid var(--border)"></span>
-            <span class="text-xs text-muted" style="font-family:monospace">{{ cat.color }}</span>
+            <span class="cat-color-dot cat-color-dot--lg" style="background:{{ cat.color }}"></span>
+            <span class="text-xs text-muted mono">{{ cat.color }}</span>
           </div>
         </td>
         <td class="text-muted text-sm">{{ cat.created_by.username|default:"-" }}</td>

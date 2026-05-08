@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}My Profile - EventNest{% endblock %}
 {% block content %}
-<div style="max-width:750px;margin:0 auto">
+<div class="profile-wrap">
   <h1 class="section-title">My Profile</h1>
   <div class="card">
     <div class="profile-cover"></div>
@@ -11,7 +11,7 @@
           {% if profile_pic %}<img src="{{ profile_pic.get_url }}" alt="Avatar">{% else %}{{ user.username|first|upper }}{% endif %}
         </div>
         <div class="mb-1">
-          <label for="pic-upload" class="btn btn-outline btn-sm" style="cursor:pointer">&#128247; Change Photo</label>
+          <label for="pic-upload" class="btn btn-outline btn-sm cursor-pointer">&#128247; Change Photo</label>
           <input type="file" id="pic-upload" accept="image/*" class="hidden">
           <span id="upload-status" class="text-xs text-muted ml-auto"></span>
         </div>

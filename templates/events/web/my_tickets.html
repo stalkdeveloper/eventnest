@@ -40,8 +40,8 @@
   {% endfor %}
 </div>
 {% else %}
-<div class="card text-center" style="padding:4rem 2rem">
-  <div style="font-size:3rem">&#127919;</div>
+<div class="card text-center empty-state">
+  <div class="empty-icon-lg">&#127919;</div>
   <h3 class="font-head mt-2 mb-1">No tickets yet</h3>
   <p class="text-muted mb-3">Register for events to see your tickets here</p>
   <a href="{% url 'web_events:event_list' %}" class="btn btn-gradient">Explore Events</a>

@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<div style="max-width:640px">
+<div class="panel-form-medium">
   <div class="card">
     <div class="card-body">
       <form method="post">
@@ -16,7 +16,7 @@
         <div class="profile-form-grid">
           {% for field in form %}
           <div class="form-group {% if field.name in 'bio,password' %}profile-form-full{% endif %}">
-            <label class="form-label">{{ field.label }}{% if field.field.required %} <span style="color:var(--red)">*</span>{% endif %}</label>
+            <label class="form-label">{{ field.label }}{% if field.field.required %} <span class="required-star">*</span>{% endif %}</label>
             {{ field }}
             {% if field.errors %}<div class="form-errors">{% for e in field.errors %}<span class="form-error">{{ e }}</span>{% endfor %}</div>{% endif %}
             {% if field.help_text %}<p class="form-hint">{{ field.help_text }}</p>{% endif %}

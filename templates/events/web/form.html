@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}{{ action }} Event - EventNest{% endblock %}
 {% block content %}
-<div style="max-width:820px;margin:0 auto">
+<div class="profile-wrap">
   <h1 class="section-title">{{ action }} Event</h1>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}

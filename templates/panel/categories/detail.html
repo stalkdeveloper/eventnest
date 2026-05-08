@@ -16,19 +16,19 @@
     <div class="card mb-3">
       <div class="card-body">
         <div class="flex items-center gap-2 mb-2">
-          <span style="width:20px;height:20px;border-radius:50%;background:{{ cat.color }};display:inline-block;border:2px solid var(--border)"></span>
-          <h2 class="font-head" style="font-size:1.3rem">{{ cat.title }}</h2>
+          <span class="cat-color-dot cat-color-dot--xl" style="background:{{ cat.color }}"></span>
+          <h2 class="font-head detail-title">{{ cat.title }}</h2>
           {% if cat.deleted_at %}<span class="chip chip-deleted">Deleted</span>{% else %}<span class="chip chip-active">Active</span>{% endif %}
         </div>
         <p class="text-muted text-sm mb-3">{{ cat.description|default:"No description." }}</p>
-        <div style="font-size:.85rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+        <div class="detail-meta-grid mt-2">
           <div><span class="text-muted">Slug:</span> <code>{{ cat.slug }}</code></div>
           <div><span class="text-muted">Color:</span> {{ cat.color }}</div>
           <div><span class="text-muted">Parent:</span> {{ cat.parent.title|default:"Root" }}</div>
           <div><span class="text-muted">Children:</span> {{ children|length }}</div>
         </div>
         <div class="divider"></div>
-        <div style="font-size:.82rem;display:flex;flex-direction:column;gap:.4rem">
+        <div class="detail-audit">
           <div><span class="text-muted">Created by:</span> {{ cat.created_by.username|default:"-" }} &mdash; {{ cat.created_at|date:"M d, Y" }}</div>
           <div><span class="text-muted">Updated by:</span> {{ cat.updated_by.username|default:"-" }} &mdash; {{ cat.updated_at|date:"M d, Y" }}</div>
           {% if cat.deleted_at %}<div><span class="text-muted">Deleted by:</span> {{ cat.deleted_by.username|default:"-" }} &mdash; {{ cat.deleted_at|date:"M d, Y" }}</div>{% endif %}
@@ -42,9 +42,9 @@
         <p class="panel-section-title mb-2">Sub-categories ({{ children|length }})</p>
         <div class="flex flex-col gap-1">
           {% for child in children %}
-          <div class="flex items-center justify-between" style="padding:.5rem .75rem;border-radius:var(--radius-sm);background:var(--bg2)">
+          <div class="sub-cat-item">
             <div class="flex items-center gap-2">
-              <span style="width:10px;height:10px;border-radius:50%;background:{{ child.color }};display:inline-block"></span>
+              <span class="cat-color-dot cat-color-dot--sm" style="background:{{ child.color }}"></span>
               <a href="{% url 'admin_categories:category_detail' child.id %}" class="text-sm font-bold link-accent">{{ child.title }}</a>
             </div>
             {% if child.deleted_at %}<span class="chip chip-deleted">Deleted</span>{% else %}<span class="chip chip-active">Active</span>{% endif %}

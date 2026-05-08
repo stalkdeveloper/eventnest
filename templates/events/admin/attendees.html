@@ -22,7 +22,7 @@
         <td class="text-muted text-sm">{{ t.created_by.username|default:"-" }}</td>
       </tr>
       {% empty %}
-      <tr><td colspan="8" class="text-center text-muted" style="padding:2rem">No attendees yet.</td></tr>
+      <tr><td colspan="8" class="text-center text-muted table-empty-cell">No attendees yet.</td></tr>
       {% endfor %}
     </tbody>
   </table>

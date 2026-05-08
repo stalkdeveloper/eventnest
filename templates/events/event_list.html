@@ -7,11 +7,11 @@
 
 <form method="get" class="card mb-4">
   <div class="card-body flex flex-wrap gap-2 items-end">
-    <div class="form-group mb-0" style="flex:1;min-width:200px">
+    <div class="form-group mb-0 filter-search">
       <label class="form-label">Search</label>
       <input type="text" name="q" value="{{ query }}" placeholder="Search events&hellip;" class="form-input">
     </div>
-    <div class="form-group mb-0" style="min-width:160px">
+    <div class="form-group mb-0 filter-category">
       <label class="form-label">Category</label>
       <select name="category" class="form-input form-select">
         <option value="">All Categories</option>
@@ -25,7 +25,7 @@
         {% endfor %}
       </select>
     </div>
-    <div class="form-group mb-0" style="min-width:140px">
+    <div class="form-group mb-0 filter-type">
       <label class="form-label">Type</label>
       <select name="type" class="form-input form-select">
         <option value="">All Types</option>
@@ -74,8 +74,8 @@
   {% endfor %}
 </div>
 {% else %}
-<div class="text-center" style="padding:4rem 0">
-  <div style="font-size:2.5rem">&#128269;</div>
+<div class="text-center empty-state">
+  <div class="empty-icon">&#128269;</div>
   <h3 class="font-head mt-2 mb-1">No events found</h3>
   <p class="text-muted">Try adjusting your search or filters.</p>
 </div>

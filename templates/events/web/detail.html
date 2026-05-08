@@ -19,7 +19,7 @@
       <span>&#128101; {{ event.tickets_sold }} registered</span>
     </div>
     <div class="divider"></div>
-    <div class="mb-3" style="line-height:1.85">{{ event.description|linebreaks }}</div>
+    <div class="mb-3 event-description">{{ event.description|linebreaks }}</div>
     {% if event.address %}
     <div class="info-box mb-2">
       <div class="info-box-title">&#128205; Venue Address</div>
@@ -40,7 +40,7 @@
         {% if event.max_capacity > 0 %}
         <div class="mb-3">
           <div class="flex justify-between text-xs text-muted mb-1"><span>Availability</span><span>{{ event.spots_left }} / {{ event.max_capacity }}</span></div>
-          <div class="avail-bar-track"><div class="avail-bar-fill" style="width:{% widthratio event.tickets_sold event.max_capacity 100 %}%"></div></div>
+          <div class="avail-bar-track"><div class="avail-bar-fill" style="--fill:{% widthratio event.tickets_sold event.max_capacity 100 %}%;width:var(--fill)"></div></div>
         </div>
         {% endif %}
         <div class="text-sm text-muted mb-3 flex flex-col gap-1">
