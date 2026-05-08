@@ -29,7 +29,6 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=100)),
                 ('slug', models.SlugField(max_length=120, unique=True)),
                 ('description', models.TextField(blank=True)),
-                ('color', models.CharField(default='#6366f1', max_length=7)),
                 
                 ('level_type', models.CharField(
                     choices=[

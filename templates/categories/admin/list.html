@@ -12,17 +12,23 @@
   <table>
     <thead>
       <tr>
-        <th>#</th><th>Title</th><th>Level</th><th>Entity</th><th>Parent</th><th>Slug</th><th>Color</th><th>Created By</th><th>Status</th><th>Actions</th>
+        <th>#</th>
+        <th>Title</th>
+        <th>Level</th>
+        <th>Entity</th>
+        <th>Parent</th>
+        <th>Created By</th>
+        <th>Status</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       {% for cat in categories %}
       <tr>
-        <td class="text-xs text-muted">{{ cat.id }}</td>
+        <td class="text-xs text-muted">{{ forloop.counter }}</td>
         <td style="padding-left: {{ cat.get_level_indent }}rem;">
-          {% if cat.parent %}<span class="cat-parent-indicator">&#8627; </span>{% endif %}
+          {% if cat.parent %}<span class="">&#8627; </span>{% endif %}
           <div class="flex items-center gap-2">
-            <span class="cat-color-dot cat-color-dot--md" style="background:{{ cat.color }}"></span>
             <a href="{% url 'admin_categories:category_detail' cat.id %}" class="link-accent font-bold text-sm">{{ cat.title }}</a>
           </div>
         </td>
@@ -33,13 +39,6 @@
           <span class="chip chip-{{ cat.entity_type }}">{{ cat.get_entity_type_display }}</span>
         </td>
         <td class="text-muted text-sm">{{ cat.parent.title|default:"-" }}</td>
-        <td class="mono text-xs">{{ cat.slug }}</td>
-        <td>
-          <div class="flex items-center gap-1">
-            <span class="cat-color-dot cat-color-dot--lg" style="background:{{ cat.color }}"></span>
-            <span class="text-xs text-muted mono">{{ cat.color }}</span>
-          </div>
-        </td>
         <td class="text-muted text-sm">{{ cat.created_by.username|default:"-" }}</td>
         <td>
           {% if cat.deleted_at %}<span class="chip chip-deleted">Deleted</span>

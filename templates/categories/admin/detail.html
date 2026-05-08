@@ -14,14 +14,13 @@
     <div class="card mb-3">
       <div class="card-body">
         <div class="flex items-center gap-2 mb-2">
-          <span class="cat-color-dot cat-color-dot--xl" style="background:{{ cat.color }}"></span>
+          <span class="cat-color-dot cat-color-dot--xl"></span>
           <h2 class="font-head detail-title">{{ cat.title }}</h2>
           {% if cat.deleted_at %}<span class="chip chip-deleted">Deleted</span>{% else %}<span class="chip chip-active">Active</span>{% endif %}
         </div>
         <p class="text-muted text-sm mb-3">{{ cat.description|default:"No description." }}</p>
         <div class="detail-meta-grid mt-2">
           <div><span class="text-muted">Slug:</span> <code>{{ cat.slug }}</code></div>
-          <div><span class="text-muted">Color:</span> {{ cat.color }}</div>
           <div><span class="text-muted">Parent:</span> {{ cat.parent.title|default:"Root" }}</div>
           <div><span class="text-muted">Children:</span> {{ children|length }}</div>
         </div>

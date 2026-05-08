@@ -79,7 +79,6 @@ def category_edit(request, cat_id):
         cat.title = request.POST.get('title', cat.title).strip()
         cat.slug = request.POST.get('slug', '').strip() or slugify(cat.title)
         cat.description = request.POST.get('description', '')
-        cat.color = request.POST.get('color', '#6366f1')
         cat.level_type = request.POST.get('level_type', cat.level_type)
         cat.entity_type = request.POST.get('entity_type', cat.entity_type)
         cat.updated_by = request.user

@@ -13,7 +13,6 @@ class Category(TimeStampedModel):
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, max_length=120)
     description = models.TextField(blank=True)
-    color = models.CharField(max_length=7, default='#6366f1')
     
     LEVEL_TYPES = [
         ('grand_parent', 'Grand Parent'),
