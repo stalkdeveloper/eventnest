@@ -4,21 +4,20 @@
 {% block nav_dashboard %}active{% endblock %}
 
 {% block topbar_actions %}
-<a href="{% url 'admin_events:event_create' %}" class="btn btn-gradient btn-sm">+ Create Event</a>
-<a href="{% url 'admin_accounts:user_create' %}" class="btn btn-outline btn-sm">+ Add User</a>
+
 {% endblock %}
 
 {% block content %}
 <div class="panel-stats">
-  <div class="panel-stat"><div class="panel-stat-icon">&#128101;</div><div class="panel-stat-value">{{ total_users }}</div><div class="panel-stat-label">Total Users</div></div>
-  <div class="panel-stat"><div class="panel-stat-icon">&#127881;</div><div class="panel-stat-value">{{ total_events }}</div><div class="panel-stat-label">Total Events</div></div>
-  <div class="panel-stat"><div class="panel-stat-icon">&#127919;</div><div class="panel-stat-value">{{ total_tickets }}</div><div class="panel-stat-label">Tickets Sold</div></div>
-  <div class="panel-stat"><div class="panel-stat-icon">&#127991;</div><div class="panel-stat-value">{{ total_cats }}</div><div class="panel-stat-label">Categories</div></div>
+  <div class="panel-stat"><div class="panel-stat-icon"><i class="bi bi-people-fill"></i></div><div class="panel-stat-value">{{ total_users }}</div><div class="panel-stat-label">Total Users</div></div>
+  <div class="panel-stat"><div class="panel-stat-icon"><i class="bi bi-calendar3-event-fill"></i></div><div class="panel-stat-value">{{ total_events }}</div><div class="panel-stat-label">Total Events</div></div>
+  <div class="panel-stat"><div class="panel-stat-icon"><i class="bi bi-ticket-perforated-fill"></i></div><div class="panel-stat-value">{{ total_tickets }}</div><div class="panel-stat-label">Tickets Sold</div></div>
+  <div class="panel-stat"><div class="panel-stat-icon"><i class="bi bi-tags-fill"></i></div><div class="panel-stat-value">{{ total_cats }}</div><div class="panel-stat-label">Categories</div></div>
 </div>
 <div class="grid-2">
   <div>
     <div class="panel-section-header">
-      <span class="panel-section-title">&#127881; Recent Events</span>
+      <span class="panel-section-title"><i class="bi bi-calendar3-event-fill"></i> Recent Events</span>
       <a href="{% url 'admin_events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
     </div>
     <div class="table-wrap">
