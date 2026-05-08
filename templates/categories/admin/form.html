@@ -31,6 +31,22 @@
           </select>
         </div>
         <div class="form-group">
+          <label class="form-label">Level Type</label>
+          <select name="level_type" class="form-input form-select">
+            {% for value, label in LEVEL_TYPES %}
+            <option value="{{ value }}" {% if cat.level_type == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Entity Type</label>
+          <select name="entity_type" class="form-input form-select">
+            {% for value, label in ENTITY_TYPES %}
+            <option value="{{ value }}" {% if cat.entity_type == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
           <label class="form-label">Description</label>
           <textarea name="description" rows="3" class="form-input">{{ cat.description|default:'' }}</textarea>
         </div>

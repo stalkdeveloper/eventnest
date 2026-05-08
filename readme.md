@@ -20,6 +20,9 @@ python manage.py migrate
 python manage.py runserver
 
 
+python manage.py startapp appname apps/tickets
+
+
 ``
 Ha, restructure kar do, pura project, such as events, categories, roles, etc.
 Role, Dashboard(For admin), Home(for web) to separate app banega.. or recommend

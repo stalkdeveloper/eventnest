@@ -11,18 +11,26 @@
 <div class="table-wrap">
   <table>
     <thead>
-      <tr><th>#</th><th>Title</th><th>Parent</th><th>Slug</th><th>Color</th><th>Created By</th><th>Status</th><th>Actions</th></tr>
+      <tr>
+        <th>#</th><th>Title</th><th>Level</th><th>Entity</th><th>Parent</th><th>Slug</th><th>Color</th><th>Created By</th><th>Status</th><th>Actions</th>
+      </tr>
     </thead>
     <tbody>
       {% for cat in categories %}
       <tr>
         <td class="text-xs text-muted">{{ cat.id }}</td>
-        <td>
+        <td style="padding-left: {{ cat.get_level_indent }}rem;">
           {% if cat.parent %}<span class="cat-parent-indicator">&#8627; </span>{% endif %}
           <div class="flex items-center gap-2">
             <span class="cat-color-dot cat-color-dot--md" style="background:{{ cat.color }}"></span>
             <a href="{% url 'admin_categories:category_detail' cat.id %}" class="link-accent font-bold text-sm">{{ cat.title }}</a>
           </div>
+        </td>
+        <td>
+          <span class="chip chip-{{ cat.level_type_computed }}">{{ cat.get_level_type_display }}</span>
+        </td>
+        <td>
+          <span class="chip chip-{{ cat.entity_type }}">{{ cat.get_entity_type_display }}</span>
         </td>
         <td class="text-muted text-sm">{{ cat.parent.title|default:"-" }}</td>
         <td class="mono text-xs">{{ cat.slug }}</td>
@@ -53,9 +61,24 @@
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="8" class="text-center text-muted table-empty-cell">No categories yet.</td></tr>
+      <tr><td colspan="10" class="text-center text-muted table-empty-cell">No categories yet.</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
+<!-- Pagination -->
+{% if categories.has_other_pages %}
+<div class="flex justify-center mt-6 gap-2">
+  {% if categories.has_previous %}
+    <a href="?page=1" class="btn btn-outline btn-sm">&laquo; First</a>
+    <a href="?page={{ categories.previous_page_number }}" class="btn btn-outline btn-sm">Previous</a>
+  {% endif %}
+  <span class="text-sm text-muted py-2 px-4">Page {{ categories.number }} of {{ categories.paginator.num_pages }}</span>
+  {% if categories.has_next %}
+    <a href="?page={{ categories.next_page_number }}" class="btn btn-outline btn-sm">Next</a>
+    <a href="?page={{ categories.paginator.num_pages }}" class="btn btn-outline btn-sm">Last &raquo;</a>
+  {% endif %}
+</div>
+{% endif %}
 {% endblock %}
