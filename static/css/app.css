@@ -1453,7 +1453,7 @@ code {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
   z-index: 500;
   overflow: hidden;
 }
@@ -1496,12 +1496,15 @@ code {
     border-radius: 0;
     background: transparent;
   }
+
   .nav-dropdown.open {
     display: block;
   }
+
   .nav-dropdown-wrap {
     width: 100%;
   }
+
   .nav-dropdown-btn {
     width: 100%;
     text-align: left;
@@ -1526,7 +1529,7 @@ code {
 
 .event-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 28px rgba(0,0,0,.4);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .4);
 }
 
 .event-card-banner {
@@ -1567,17 +1570,17 @@ code {
 }
 
 .event-card-type--offline {
-  background: rgba(52,211,153,.15);
+  background: rgba(52, 211, 153, .15);
   color: var(--green);
 }
 
 .event-card-type--online {
-  background: rgba(34,211,238,.12);
+  background: rgba(34, 211, 238, .12);
   color: var(--cyan);
 }
 
 .event-card-type--hybrid {
-  background: rgba(251,146,60,.12);
+  background: rgba(251, 146, 60, .12);
   color: var(--orange);
 }
 
@@ -1587,7 +1590,7 @@ code {
   font-size: .7rem;
   font-weight: 700;
   text-transform: uppercase;
-  background: rgba(52,211,153,.12);
+  background: rgba(52, 211, 153, .12);
   color: var(--green);
 }
 
@@ -1758,7 +1761,7 @@ code {
 
 .cat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .3);
   border-color: var(--accent);
 }
 
@@ -1801,7 +1804,7 @@ code {
   font-size: .72rem;
   color: var(--accent);
   font-weight: 600;
-  background: rgba(124,107,255,.12);
+  background: rgba(124, 107, 255, .12);
   padding: .1rem .42rem;
   border-radius: 5px;
 }
@@ -1881,7 +1884,7 @@ code {
    REGISTERED BOX  (event detail sidebar)
    ============================================================ */
 .registered-box {
-  background: rgba(52,211,153,.08);
+  background: rgba(52, 211, 153, .08);
   border: 1px solid var(--green);
   border-radius: var(--radius-sm);
   padding: .9rem 1rem;
@@ -2018,11 +2021,30 @@ code {
   letter-spacing: .04em;
 }
 
-.badge-purple { background: rgba(192,132,252,.15); color: var(--purple); }
-.badge-cyan   { background: rgba(34,211,238,.12);  color: var(--cyan);   }
-.badge-green  { background: rgba(52,211,153,.12);  color: var(--green);  }
-.badge-orange { background: rgba(251,146,60,.12);  color: var(--orange); }
-.badge-red    { background: rgba(248,113,113,.12); color: var(--red);    }
+.badge-purple {
+  background: rgba(192, 132, 252, .15);
+  color: var(--purple);
+}
+
+.badge-cyan {
+  background: rgba(34, 211, 238, .12);
+  color: var(--cyan);
+}
+
+.badge-green {
+  background: rgba(52, 211, 153, .12);
+  color: var(--green);
+}
+
+.badge-orange {
+  background: rgba(251, 146, 60, .12);
+  color: var(--orange);
+}
+
+.badge-red {
+  background: rgba(248, 113, 113, .12);
+  color: var(--red);
+}
 
 /* ============================================================
    INFO BOX  (event detail venue / online)
@@ -2206,6 +2228,7 @@ code {
   .event-layout {
     grid-template-columns: 1fr;
   }
+
   .event-sidebar {
     position: static;
   }
@@ -2216,14 +2239,17 @@ code {
     height: 200px;
     font-size: 2.5rem;
   }
+
   .events-filter-form {
     flex-direction: column;
   }
+
   .events-filter-search,
   .events-filter-select {
     width: 100%;
     min-width: unset;
   }
+
   .event-layout {
     grid-template-columns: 1fr;
     gap: 1.25rem;
