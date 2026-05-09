@@ -1,68 +1,74 @@
+{% load static %}
 <nav class="nav">
   <div class="nav-inner">
-    <a href="{% url 'web_home:home' %}" class="nav-logo">
-      EventNest
-    </a>
+    <a href="{% url 'web_home:home' %}" class="nav-logo">&#11043; EventNest</a>
 
     <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
 
     <div class="nav-links" id="nav-links">
-      <a href="{% url 'web_events:event_list' %}" class="nav-link">
-        Explore
-      </a>
+      <a href="{% url 'web_events:event_list' %}" class="nav-link">Explore</a>
+
+      <!-- Categories dropdown -->
+      <div class="nav-dropdown-wrap">
+        <button class="nav-link nav-dropdown-btn" id="catDropBtn" aria-haspopup="true" aria-expanded="false">
+          Categories <span class="nav-caret">&#9660;</span>
+        </button>
+        <div class="nav-dropdown" id="catDropMenu" role="menu">
+          <a href="{% url 'web_categories:category_list' %}" class="nav-dropdown-item nav-dropdown-all">
+            &#9632; All Categories
+          </a>
+          {% for cat in nav_categories %}
+          <a href="{% url 'web_categories:category_detail' cat.slug %}" class="nav-dropdown-item">
+            {{ cat.title }}
+          </a>
+          {% endfor %}
+        </div>
+      </div>
 
       {% if user.is_authenticated %}
-
         {% if user.is_system_user %}
-          <a href="{% url 'admin_dashboard:dashboard' %}" class="nav-link">
-            Admin Panel
-          </a>
+          <a href="{% url 'admin_dashboard:dashboard' %}" class="nav-link">Admin Panel</a>
         {% else %}
-          <a href="{% url 'web_dashboard:dashboard' %}" class="nav-link">
-            Dashboard
-          </a>
-
-          <a href="{% url 'web_tickets:my_tickets' %}" class="nav-link">
-            My Tickets
-          </a>
-
+          <a href="{% url 'web_dashboard:dashboard' %}" class="nav-link">Dashboard</a>
+          <a href="{% url 'web_tickets:my_tickets' %}" class="nav-link">My Tickets</a>
           {% if user.groups.all.0.name == 'Organiser' %}
-            <a href="{% url 'web_events:event_create' %}" class="nav-link">
-              + Event
-            </a>
+            <a href="{% url 'web_events:event_create' %}" class="nav-link nav-link-accent">+ Event</a>
           {% endif %}
-
         {% endif %}
 
-        <a href="{% url 'accounts:profile' %}" class="nav-link">
-          Profile
-        </a>
+        <a href="{% url 'accounts:profile' %}" class="nav-link">Profile</a>
 
         <form method="post" action="{% url 'accounts:logout' %}">
           {% csrf_token %}
-          <button type="submit" class="nav-btn nav-btn-ghost">
-            Logout
-          </button>
+          <button type="submit" class="nav-btn nav-btn-ghost">Logout</button>
         </form>
-
       {% else %}
-
-        <a href="{% url 'accounts:login' %}" class="nav-btn nav-btn-ghost">
-          Login
-        </a>
-
-        <a href="{% url 'accounts:register' %}" class="nav-btn nav-btn-primary">
-          Sign Up
-        </a>
-
+        <a href="{% url 'accounts:login' %}" class="nav-btn nav-btn-ghost">Login</a>
+        <a href="{% url 'accounts:register' %}" class="nav-btn nav-btn-primary">Sign Up</a>
       {% endif %}
     </div>
   </div>
 </nav>
+
 <script>
+  // Hamburger
   document.getElementById('nav-toggle').addEventListener('click', function () {
     document.getElementById('nav-links').classList.toggle('open');
   });
+  // Categories dropdown
+  const catBtn  = document.getElementById('catDropBtn');
+  const catMenu = document.getElementById('catDropMenu');
+  if (catBtn) {
+    catBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      const open = catMenu.classList.toggle('open');
+      catBtn.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', function () {
+      catMenu.classList.remove('open');
+      catBtn.setAttribute('aria-expanded', 'false');
+    });
+  }
 </script>

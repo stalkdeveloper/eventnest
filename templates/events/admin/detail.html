@@ -30,11 +30,22 @@
           <div><span class="text-muted">Price:</span> {% if event.is_free %}Free{% else %}&#8377;{{ event.ticket_price }}{% endif %}</div>
           <div><span class="text-muted">Capacity:</span> {% if event.max_capacity %}{{ event.max_capacity }}{% else %}Unlimited{% endif %}</div>
         </div>
+        {% with tags=event.tags.all %}
+        {% if tags %}
+        <div class="divider"></div>
+        <div class="flex flex-wrap gap-1 mt-2">
+          <span class="text-muted text-sm" style="flex-basis:100%;margin-bottom:.25rem">Tags:</span>
+          {% for tag in tags %}
+          <span class="tag-badge" style="--tc:{{ tag.color }}">{{ tag.name }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
         <div class="divider"></div>
         <div class="detail-audit">
-          <div><span class="text-muted">Created by:</span> {{ event.created_by.username|default:"-" }} &mdash; {{ event.created_at|date:"M d, Y g:i A" }}</div>
-          <div><span class="text-muted">Updated by:</span> {{ event.updated_by.username|default:"-" }} &mdash; {{ event.updated_at|date:"M d, Y g:i A" }}</div>
-          {% if event.deleted_at %}<div><span class="text-muted">Deleted by:</span> {{ event.deleted_by.username|default:"-" }} &mdash; {{ event.deleted_at|date:"M d, Y g:i A" }}</div>{% endif %}
+          <div><span class="text-muted">Created by:</span> {{ event.created_by.username|default:"-" }} - {{ event.created_at|date:"M d, Y g:i A" }}</div>
+          <div><span class="text-muted">Updated by:</span> {{ event.updated_by.username|default:"-" }} - {{ event.updated_at|date:"M d, Y g:i A" }}</div>
+          {% if event.deleted_at %}<div><span class="text-muted">Deleted by:</span> {{ event.deleted_by.username|default:"-" }} - {{ event.deleted_at|date:"M d, Y g:i A" }}</div>{% endif %}
           <div><span class="text-muted">Organiser:</span> {{ event.organiser.username }} ({{ event.organiser.email }})</div>
         </div>
       </div>

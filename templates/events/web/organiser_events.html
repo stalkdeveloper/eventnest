@@ -37,4 +37,16 @@
 {% else %}
 <div class="card text-center empty-state-sm"><div class="empty-icon">&#127881;</div><h3 class="font-head mt-2 mb-1">No events yet</h3><a href="{% url 'web_events:event_create' %}" class="btn btn-gradient mt-2">Create Event</a></div>
 {% endif %}
+
+{% if page_obj.has_other_pages %}
+<div class="web-pagination">
+  {% if page_obj.has_previous %}
+  <a href="?page={{ page_obj.previous_page_number }}" class="web-pag-btn">&larr; Prev</a>
+  {% endif %}
+  <span class="web-pag-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+  <a href="?page={{ page_obj.next_page_number }}" class="web-pag-btn">Next &rarr;</a>
+  {% endif %}
+</div>
+{% endif %}
 {% endblock %}

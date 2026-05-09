@@ -1,79 +1,109 @@
 {% extends 'base.html' %}
 {% block title %}Explore Events - EventNest{% endblock %}
 {% block content %}
-<div class="section-header mb-3">
-  <h1 class="section-title mb-0">Explore Events</h1>
+
+<section class="events-hero">
+  <h1 class="section-title">Explore Events</h1>
+  <p class="section-sub">Discover events near you or online</p>
+</section>
+
+<div class="events-filter-bar">
+  <form method="get" class="events-filter-form">
+    <div class="events-filter-search">
+      <input type="text" name="q" value="{{ query }}" placeholder="Search events, city…" class="form-input">
+    </div>
+    <select name="category" class="form-input events-filter-select">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+      <option value="{{ cat.slug }}" {% if current_category == cat.slug %}selected{% endif %}>{{ cat.title }}</option>
+      {% for child in cat.children.all %}
+      <option value="{{ child.slug }}" {% if current_category == child.slug %}selected{% endif %}>&nbsp;&#8627; {{ child.title }}</option>
+      {% endfor %}
+      {% endfor %}
+    </select>
+    <select name="type" class="form-input events-filter-select">
+      <option value="">All Types</option>
+      <option value="offline" {% if current_type == 'offline' %}selected{% endif %}>Offline</option>
+      <option value="online"  {% if current_type == 'online'  %}selected{% endif %}>Online</option>
+      <option value="hybrid"  {% if current_type == 'hybrid'  %}selected{% endif %}>Hybrid</option>
+    </select>
+    <button type="submit" class="btn btn-gradient">Search</button>
+    {% if query or current_category or current_type or current_tag %}
+    <a href="{% url 'web_events:event_list' %}" class="btn btn-outline">Clear</a>
+    {% endif %}
+  </form>
 </div>
-<form method="get" class="card mb-4">
-  <div class="card-body flex flex-wrap gap-2 items-end filter-form-inner">
-    <div class="form-group mb-0 filter-search">
-      <label class="form-label">Search</label>
-      <input type="text" name="q" value="{{ query }}" placeholder="Search events&hellip;" class="form-input">
-    </div>
-    <div class="form-group mb-0 filter-category">
-      <label class="form-label">Category</label>
-      <select name="category" class="form-input form-select">
-        <option value="">All Categories</option>
-        {% for cat in categories %}
-        <optgroup label="{{ cat.title }}">
-          <option value="{{ cat.slug }}" {% if current_category == cat.slug %}selected{% endif %}>{{ cat.title }}</option>
-          {% for child in cat.children.all %}
-          <option value="{{ child.slug }}" {% if current_category == child.slug %}selected{% endif %}>&nbsp;&nbsp;&#8627; {{ child.title }}</option>
-          {% endfor %}
-        </optgroup>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="form-group mb-0 filter-type">
-      <label class="form-label">Type</label>
-      <select name="type" class="form-input form-select">
-        <option value="">All Types</option>
-        <option value="online"  {% if current_type == 'online'  %}selected{% endif %}>Online</option>
-        <option value="offline" {% if current_type == 'offline' %}selected{% endif %}>Offline</option>
-        <option value="hybrid"  {% if current_type == 'hybrid'  %}selected{% endif %}>Hybrid</option>
-      </select>
-    </div>
-    <div class="flex gap-1">
-      <button type="submit" class="btn btn-gradient">Filter</button>
-      <a href="{% url 'web_events:event_list' %}" class="btn btn-outline">Clear</a>
-    </div>
-  </div>
-</form>
+
+{% if all_tags %}
+<div class="events-tag-row">
+  <a href="{% url 'web_events:event_list' %}{% if query %}?q={{ query }}{% endif %}"
+     class="events-tag-chip {% if not current_tag %}active{% endif %}">All</a>
+  {% for tag in all_tags %}
+  <a href="?{% if query %}q={{ query }}&{% endif %}{% if current_category %}category={{ current_category }}&{% endif %}{% if current_type %}type={{ current_type }}&{% endif %}tag={{ tag.slug }}"
+     class="events-tag-chip {% if current_tag == tag.slug %}active{% endif %}"
+     style="--tc:{{ tag.color }}">
+    <span class="events-tag-chip-dot" style="background:{{ tag.color }}"></span>
+    {{ tag.name }}
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
 {% if events %}
-<p class="text-sm text-muted mb-3">{{ events|length }} event{{ events|length|pluralize }} found</p>
 <div class="grid-3">
   {% for event in events %}
-  <a href="{% url 'web_events:event_detail' event.slug %}">
+  <a href="{% url 'web_events:event_detail' event.slug %}" class="event-card-link">
     <div class="event-card">
-      <div class="event-card-img">
-        <span class="event-card-img-placeholder">{% if event.category %}{{ event.category.title|first }}{% else %}E{% endif %}</span>
-      </div>
+      {% with banner=event.get_banner %}
+      {% if banner %}
+      <div class="event-card-banner" style="background-image:url('{{ banner.file.url }}')"></div>
+      {% else %}
+      <div class="event-card-banner event-card-banner--placeholder">{{ event.title|first|upper }}</div>
+      {% endif %}
+      {% endwith %}
       <div class="event-card-body">
         <div class="event-card-meta">
-          {% if event.category %}<span class="badge badge-purple">{{ event.category.title }}</span>{% endif %}
-          <span class="badge {% if event.event_type == 'online' %}badge-cyan{% elif event.event_type == 'hybrid' %}badge-orange{% else %}badge-green{% endif %}">{{ event.event_type|title }}</span>
+          <span class="event-card-type event-card-type--{{ event.event_type }}">{{ event.event_type|title }}</span>
+          {% if event.is_free %}<span class="event-card-free">Free</span>{% endif %}
         </div>
-        <div class="event-card-title">{{ event.title }}</div>
-        <p class="text-xs text-muted">{{ event.description|truncatewords:14 }}</p>
-        <div class="event-card-meta">
-          <span>&#128197; {{ event.start_date|date:"M d, Y" }}</span>
-          {% if event.city %}<span>&#128205; {{ event.city }}</span>{% endif %}
+        <h3 class="event-card-title">{{ event.title|truncatechars:55 }}</h3>
+        <div class="event-card-date">
+          &#128197; {{ event.start_date|date:"M d, Y" }}
+          {% if event.city %}&bull; &#128205; {{ event.city }}{% endif %}
         </div>
-      </div>
-      <div class="event-card-footer">
-        {% if event.is_free %}<span class="free-tag">FREE</span>
-        {% else %}<span class="price-tag">&#8377;{{ event.ticket_price }}</span>{% endif %}
-        <span class="btn btn-gradient btn-sm">View</span>
+        {% with tags=event.tags.all %}
+        {% if tags %}
+        <div class="event-card-tags">
+          {% for tag in tags|slice:":3" %}
+          <span class="event-tag-badge" style="--tc:{{ tag.color }}">{{ tag.name }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
       </div>
     </div>
   </a>
   {% endfor %}
 </div>
+
+{% if page_obj.has_other_pages %}
+<div class="web-pagination">
+  {% if page_obj.has_previous %}
+  <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}{% if current_tag %}&tag={{ current_tag }}{% endif %}" class="web-pag-btn">&larr; Prev</a>
+  {% endif %}
+  <span class="web-pag-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+  <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}{% if current_tag %}&tag={{ current_tag }}{% endif %}" class="web-pag-btn">Next &rarr;</a>
+  {% endif %}
+</div>
+{% endif %}
+
 {% else %}
-<div class="text-center empty-state">
-  <div class="empty-icon">&#128269;</div>
-  <h3 class="font-head mt-2 mb-1">No events found</h3>
-  <p class="text-muted">Try adjusting your search or filters.</p>
+<div class="empty-state">
+  <div class="empty-icon-lg">&#128197;</div>
+  <h3 class="fs-h3 mb-1">No events found</h3>
+  <p class="text-muted mb-2">Try adjusting your search or filters.</p>
+  <a href="{% url 'web_events:event_list' %}" class="btn btn-gradient">View all events</a>
 </div>
 {% endif %}
 {% endblock %}

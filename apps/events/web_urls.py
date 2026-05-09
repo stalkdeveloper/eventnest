@@ -11,4 +11,7 @@ urlpatterns = [
     path('events/<slug:slug>/register/', web_views.register_for_event, name='register_event'),
     path('events/<slug:slug>/edit/', web_views.event_edit, name='event_edit'),
     path('events/<slug:slug>/attendees/', web_views.event_attendees, name='event_attendees'),
+
+    # Tag browse page: /tags/<slug>/
+    path('tags/<slug:slug>/', web_views.tag_events, name='tag_events'),
 ]

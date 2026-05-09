@@ -2,21 +2,21 @@
 {% block title %}Tickets{% endblock %}
 {% block page_title %}Ticket Management{% endblock %}
 {% block nav_tickets %}active{% endblock %}
+
 {% block content %}
 <div class="panel-filter-bar">
   <form method="get" class="flex flex-wrap gap-2 items-end w-full">
     <div class="panel-filter-group panel-filter-group--grow">
       <label class="panel-filter-label">Search</label>
-      <input type="text" name="q" value="{{ q }}" placeholder="Code, email, event&hellip;" class="form-input">
+      <input type="text" name="q" value="{{ q }}" placeholder="Code, email, event…" class="form-input">
     </div>
     <div class="panel-filter-group">
       <label class="panel-filter-label">Status</label>
       <select name="status" class="form-input form-select">
-        <option value="">All</option>
-        <option value="confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmed</option>
-        <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
-        <option value="pending"   {% if status_filter == 'pending'   %}selected{% endif %}>Pending</option>
-        <option value="attended"  {% if status_filter == 'attended'  %}selected{% endif %}>Attended</option>
+        <option value="">All Statuses</option>
+        {% for val, label in status_choices %}
+        <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
       </select>
     </div>
     <div class="flex gap-1">
@@ -25,19 +25,55 @@
     </div>
   </form>
 </div>
+
 <div class="table-wrap">
   <table>
-    <thead><tr><th>Code</th><th>Attendee</th><th>Event</th><th>Status</th><th>Paid</th><th>Date</th><th>Created By</th></tr></thead>
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Attendee</th>
+        <th>Event</th>
+        <th>Status</th>
+        <th>Amount</th>
+        <th>Registered</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
     <tbody>
       {% for t in tickets %}
       <tr>
         <td><span class="ticket-code">{{ t.ticket_code }}</span></td>
-        <td><div class="font-bold text-sm">{{ t.attendee.username }}</div><div class="text-xs text-muted">{{ t.attendee.email }}</div></td>
-        <td><a href="{% url 'admin_events:event_detail' t.event.id %}" class="link-accent text-sm">{{ t.event.title|truncatechars:28 }}</a></td>
+        <td>
+          <div class="font-bold text-sm">{{ t.attendee.username }}</div>
+          <div class="text-xs text-muted">{{ t.attendee.email }}</div>
+        </td>
+        <td>
+          <a href="{% url 'admin_events:event_detail' t.event.id %}" class="link-accent text-sm font-bold">
+            {{ t.event.title|truncatechars:28 }}
+          </a>
+        </td>
         <td><span class="chip chip-{{ t.status }}">{{ t.status|title }}</span></td>
-        <td class="text-sm">{% if t.amount_paid > 0 %}<span class="price-tag">&#8377;{{ t.amount_paid }}</span>{% else %}<span class="free-tag">Free</span>{% endif %}</td>
+        <td class="text-sm">
+          {% if t.amount_paid > 0 %}
+            <span class="price-tag">&#8377;{{ t.amount_paid }}</span>
+          {% else %}
+            <span class="free-tag">Free</span>
+          {% endif %}
+        </td>
         <td class="text-muted text-sm">{{ t.created_at|date:"M d, Y" }}</td>
-        <td class="text-muted text-sm">{{ t.created_by.username|default:"-" }}</td>
+        <td>
+          <div class="table-actions">
+            <form method="post" action="{% url 'admin_tickets:ticket_status' t.id %}" class="inline-role-form">
+              {% csrf_token %}
+              <select name="status" class="inline-role-select">
+                {% for val, label in status_choices %}
+                <option value="{{ val }}" {% if t.status == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+              <button type="submit" class="btn btn-gradient btn-sm">Set</button>
+            </form>
+          </div>
+        </td>
       </tr>
       {% empty %}
       <tr><td colspan="7" class="text-center text-muted table-empty-cell">No tickets found.</td></tr>
@@ -45,4 +81,16 @@
     </tbody>
   </table>
 </div>
+
+{% if page_obj.has_other_pages %}
+<div class="panel-pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="pagination-btn">&larr; Prev</a>
+  {% endif %}
+  <span class="pagination-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} &bull; {{ page_obj.paginator.count }} total</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="pagination-btn">Next &rarr;</a>
+  {% endif %}
+</div>
+{% endif %}
 {% endblock %}

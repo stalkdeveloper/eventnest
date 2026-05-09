@@ -2,29 +2,39 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
 from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator
 from apps.core.decorators import system_required
 from .models import Ticket
 
 
 @system_required
 def ticket_list(request):
-    q = request.GET.get('q', '')
+    q        = request.GET.get('q', '')
     status_f = request.GET.get('status', '')
-    tickets = Ticket.all_objects.select_related('event', 'attendee', 'created_by').order_by('-created_at')
-    
+
+    tickets = Ticket.all_objects.select_related(
+        'event', 'attendee', 'created_by'
+    ).order_by('-created_at')
+
     if q:
         tickets = tickets.filter(
-            Q(ticket_code__icontains=q) | 
-            Q(attendee__email__icontains=q) | 
+            Q(ticket_code__icontains=q) |
+            Q(attendee__email__icontains=q) |
+            Q(attendee__username__icontains=q) |
             Q(event__title__icontains=q)
         )
     if status_f:
         tickets = tickets.filter(status=status_f)
-    
+
+    paginator = Paginator(tickets, 25)
+    page_obj  = paginator.get_page(request.GET.get('page'))
+
     return render(request, 'tickets/admin/list.html', {
-        'tickets': tickets, 
-        'q': q, 
+        'tickets': page_obj,
+        'page_obj': page_obj,
+        'q': q,
         'status_filter': status_f,
+        'status_choices': Ticket.Status.choices,
     })
 
 

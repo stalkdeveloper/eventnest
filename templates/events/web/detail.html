@@ -1,31 +1,52 @@
 {% extends 'base.html' %}
 {% block title %}{{ event.title }} - EventNest{% endblock %}
 {% block content %}
+
 <div class="event-banner">
   {% if banner %}<img src="{{ banner.get_url }}" alt="{{ event.title }}">{% else %}&#127881;{% endif %}
   <div class="event-banner-badges">
     {% if event.category %}<span class="badge badge-purple">{{ event.category.title }}</span>{% endif %}
-    <span class="badge {% if event.event_type == 'online' %}badge-cyan{% else %}badge-green{% endif %}">{{ event.event_type|title }}</span>
+    <span class="badge {% if event.event_type == 'online' %}badge-cyan{% elif event.event_type == 'hybrid' %}badge-orange{% else %}badge-green{% endif %}">{{ event.event_type|title }}</span>
     {% if event.is_free %}<span class="badge badge-green">FREE</span>{% endif %}
   </div>
 </div>
+
 <div class="event-layout">
   <div>
-    <h1 class="font-head mb-3 fs-h1">{{ event.title }}</h1>
+    <h1 class="font-head fs-h1 mb-1">{{ event.title }}</h1>
+
     <div class="event-meta-row">
       <span>&#128197; {{ event.start_date|date:"F d, Y, g:i A" }}</span>
       {% if event.city %}<span>&#128205; {{ event.city }}</span>{% endif %}
       {% if event.venue %}<span>&#127963; {{ event.venue }}</span>{% endif %}
       <span>&#128101; {{ event.tickets_sold }} registered</span>
     </div>
+
+    {% with all_event_tags=event.tags.all %}
+    {% if all_event_tags %}
+    <div class="event-detail-tags">
+      {% for tag in all_event_tags %}
+      <a href="{% url 'web_events:tag_events' tag.slug %}"
+         class="event-detail-tag" style="--tc:{{ tag.color }}">
+        <span class="event-detail-tag-dot" style="background:{{ tag.color }}"></span>
+        {{ tag.name }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
     <div class="divider"></div>
-    <div class="mb-3 event-description">{{ event.description|linebreaks }}</div>
+
+    <div class="event-description mb-3">{{ event.description|linebreaks }}</div>
+
     {% if event.address %}
     <div class="info-box mb-2">
       <div class="info-box-title">&#128205; Venue Address</div>
       <p class="text-sm text-muted">{{ event.address }}</p>
     </div>
     {% endif %}
+
     {% if event.online_link %}
     <div class="info-box info-box-online">
       <div class="info-box-title">&#127760; Online Event</div>
@@ -33,24 +54,33 @@
     </div>
     {% endif %}
   </div>
+
   <div class="event-sidebar">
     <div class="card">
       <div class="card-body">
         <div class="event-price-big">{% if event.is_free %}FREE{% else %}&#8377;{{ event.ticket_price }}{% endif %}</div>
+
         {% if event.max_capacity > 0 %}
-        <div class="mb-3">
-          <div class="flex justify-between text-xs text-muted mb-1"><span>Availability</span><span>{{ event.spots_left }} / {{ event.max_capacity }}</span></div>
-          <div class="avail-bar-track"><div class="avail-bar-fill" style="--fill:{% widthratio event.tickets_sold event.max_capacity 100 %}%;width:var(--fill)"></div></div>
+        <div class="mb-2">
+          <div class="flex justify-between text-xs text-muted mb-1">
+            <span>Availability</span>
+            <span>{{ event.spots_left }} / {{ event.max_capacity }}</span>
+          </div>
+          <div class="avail-bar-track">
+            <div class="avail-bar-fill" style="--fill:{% widthratio event.tickets_sold event.max_capacity 100 %}%"></div>
+          </div>
         </div>
         {% endif %}
+
         <div class="text-sm text-muted mb-3 flex flex-col gap-1">
           <span>&#128197; Ends {{ event.end_date|date:"M d, Y" }}</span>
           <span>&#128101; {{ event.tickets_sold }} registered</span>
         </div>
+
         {% if user.is_authenticated %}
           {% if user_ticket %}
           <div class="registered-box">
-            <div class="registered-box-title">&#10003; You&apos;re Registered!</div>
+            <div class="registered-box-title">&#10003; You're Registered!</div>
             <div class="registered-box-code">{{ user_ticket.ticket_code }}</div>
           </div>
           {% elif event.spots_left == 0 %}

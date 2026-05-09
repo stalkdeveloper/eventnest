@@ -86,7 +86,7 @@
             <form method="post" action="{% url 'web_events:register_event' event.slug %}">
               {% csrf_token %}
               <button type="submit" class="btn btn-gradient btn-w-full">
-                {% if event.is_free %}Register Free{% else %}Get Ticket &mdash; &#8377;{{ event.ticket_price }}{% endif %}
+                {% if event.is_free %}Register Free{% else %}Get Ticket - &#8377;{{ event.ticket_price }}{% endif %}
               </button>
             </form>
           {% endif %}

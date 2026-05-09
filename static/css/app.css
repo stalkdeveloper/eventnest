@@ -1,5 +1,5 @@
 /* ============================================================
-   EventNest — app.css
+   EventNest - app.css
    ============================================================ */
 
 /* ── CSS Variables ──────────────────────────────────────────── */
@@ -1414,5 +1414,818 @@ code {
   .error-actions {
     flex-direction: column;
     align-items: stretch;
+  }
+}
+
+/* ============================================================
+   NAV DROPDOWN
+   ============================================================ */
+.nav-dropdown-wrap {
+  position: relative;
+}
+
+.nav-dropdown-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+}
+
+.nav-caret {
+  font-size: .6rem;
+  opacity: .6;
+  transition: transform .2s;
+}
+
+.nav-dropdown-btn[aria-expanded="true"] .nav-caret {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 200px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  z-index: 500;
+  overflow: hidden;
+}
+
+.nav-dropdown.open {
+  display: block;
+}
+
+.nav-dropdown-item {
+  display: block;
+  padding: .55rem 1rem;
+  font-size: .875rem;
+  color: var(--muted);
+  transition: background .12s, color .12s;
+  text-decoration: none;
+}
+
+.nav-dropdown-item:hover {
+  background: var(--bg3);
+  color: var(--text);
+}
+
+.nav-dropdown-all {
+  color: var(--accent);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-link-accent {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .nav-dropdown {
+    position: static;
+    box-shadow: none;
+    border: none;
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+    background: transparent;
+  }
+  .nav-dropdown.open {
+    display: block;
+  }
+  .nav-dropdown-wrap {
+    width: 100%;
+  }
+  .nav-dropdown-btn {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* ============================================================
+   EVENT CARDS  (web - dark theme)
+   ============================================================ */
+.event-card-link {
+  text-decoration: none;
+  display: block;
+}
+
+.event-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  transition: transform .2s, box-shadow .2s;
+}
+
+.event-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,.4);
+}
+
+.event-card-banner {
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.event-card-banner--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg3), var(--border));
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.event-card-body {
+  padding: 1rem;
+}
+
+.event-card-meta {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+  margin-bottom: .5rem;
+}
+
+.event-card-type {
+  padding: .15rem .5rem;
+  border-radius: 5px;
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.event-card-type--offline {
+  background: rgba(52,211,153,.15);
+  color: var(--green);
+}
+
+.event-card-type--online {
+  background: rgba(34,211,238,.12);
+  color: var(--cyan);
+}
+
+.event-card-type--hybrid {
+  background: rgba(251,146,60,.12);
+  color: var(--orange);
+}
+
+.event-card-free {
+  padding: .15rem .5rem;
+  border-radius: 5px;
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(52,211,153,.12);
+  color: var(--green);
+}
+
+.event-card-title {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: .25rem 0 .4rem;
+  line-height: 1.4;
+}
+
+.event-card-date {
+  font-size: .8rem;
+  color: var(--muted);
+  display: flex;
+  gap: .35rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* tag badges on cards */
+.event-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  margin-top: .55rem;
+}
+
+.event-tag-badge {
+  display: inline-block;
+  padding: .12rem .45rem;
+  border-radius: 12px;
+  font-size: .68rem;
+  font-weight: 600;
+  /* --tc set via inline CSS custom property - only way to pass dynamic color */
+  background: color-mix(in srgb, var(--tc, var(--accent)) 14%, transparent);
+  color: var(--tc, var(--accent));
+  border: 1px solid color-mix(in srgb, var(--tc, var(--accent)) 30%, transparent);
+}
+
+/* ============================================================
+   EVENTS FILTER BAR  (web)
+   ============================================================ */
+.events-hero {
+  text-align: center;
+  padding: 2rem 0 .5rem;
+}
+
+.section-sub {
+  color: var(--muted);
+  text-align: center;
+  margin-top: -.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.events-filter-bar {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.events-filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  align-items: flex-end;
+}
+
+.events-filter-search {
+  flex: 1;
+  min-width: 200px;
+}
+
+.events-filter-select {
+  min-width: 140px;
+  flex: 0 0 auto;
+}
+
+/* ============================================================
+   TAG CHIPS  (web filter row)
+   ============================================================ */
+.events-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  margin-bottom: 1.25rem;
+}
+
+.events-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .28rem .72rem;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--bg2);
+  font-size: .8rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--muted);
+  transition: border-color .15s, color .15s, background .15s;
+}
+
+.events-tag-chip:hover,
+.events-tag-chip.active {
+  border-color: var(--tc, var(--accent));
+  color: var(--tc, var(--accent));
+  background: color-mix(in srgb, var(--tc, var(--accent)) 10%, transparent);
+}
+
+.events-tag-chip-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   TAG PAGE HERO BADGE
+   ============================================================ */
+.tag-hero {
+  text-align: center;
+  padding: 2rem 0 1rem;
+}
+
+.tag-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .45rem 1.1rem;
+  border-radius: 24px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: .75rem;
+  border: 2px solid var(--tc, var(--accent));
+  background: color-mix(in srgb, var(--tc, var(--accent)) 10%, transparent);
+  color: var(--tc, var(--accent));
+}
+
+.tag-hero-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   CATEGORY CARDS  (web)
+   ============================================================ */
+.cat-card-link {
+  text-decoration: none;
+  display: block;
+}
+
+.cat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  transition: transform .18s, box-shadow .18s, border-color .15s;
+}
+
+.cat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.3);
+  border-color: var(--accent);
+}
+
+.cat-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--bg3), var(--border));
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.cat-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.cat-card-title {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 .15rem;
+}
+
+.cat-card-desc {
+  font-size: .8rem;
+  color: var(--muted);
+  margin: 0 0 .2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cat-card-count {
+  font-size: .72rem;
+  color: var(--accent);
+  font-weight: 600;
+  background: rgba(124,107,255,.12);
+  padding: .1rem .42rem;
+  border-radius: 5px;
+}
+
+.cat-card-arrow {
+  color: var(--border);
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: color .15s, transform .15s;
+}
+
+.cat-card:hover .cat-card-arrow {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+.cat-hero {
+  text-align: center;
+  padding: 2rem 0 .5rem;
+}
+
+/* ============================================================
+   WEB PAGINATION
+   ============================================================ */
+.web-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.web-pag-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: .42rem .95rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--accent);
+  font-size: .85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .15s, border-color .15s;
+}
+
+.web-pag-btn:hover {
+  background: var(--bg3);
+  border-color: var(--accent);
+}
+
+.web-pag-info {
+  font-size: .83rem;
+  color: var(--muted);
+}
+
+/* ============================================================
+   AVAILABILITY BAR  (event detail)
+   ============================================================ */
+.avail-bar-track {
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.avail-bar-fill {
+  height: 100%;
+  background: var(--grad);
+  border-radius: 3px;
+  width: var(--fill, 0%);
+  transition: width .4s ease;
+}
+
+/* ============================================================
+   REGISTERED BOX  (event detail sidebar)
+   ============================================================ */
+.registered-box {
+  background: rgba(52,211,153,.08);
+  border: 1px solid var(--green);
+  border-radius: var(--radius-sm);
+  padding: .9rem 1rem;
+  text-align: center;
+}
+
+.registered-box-title {
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: .4rem;
+  font-size: .95rem;
+}
+
+.registered-box-code {
+  font-family: monospace;
+  font-size: .85rem;
+  color: var(--accent2);
+  background: var(--bg3);
+  padding: .25rem .6rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* ============================================================
+   EVENT DETAIL LAYOUT
+   ============================================================ */
+.event-banner {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.event-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.event-banner-badges {
+  position: absolute;
+  top: .85rem;
+  left: .85rem;
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+}
+
+.event-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.event-sidebar {
+  position: sticky;
+  top: calc(var(--nav-h) + 1.5rem);
+}
+
+.event-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem 1.1rem;
+  font-size: .875rem;
+  color: var(--muted);
+  margin-bottom: .5rem;
+}
+
+.event-price-big {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  font-family: inherit;
+}
+
+/* ============================================================
+   EVENT DETAIL TAG CHIPS  (clickable)
+   ============================================================ */
+.event-detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin: .6rem 0 .25rem;
+}
+
+.event-detail-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .25rem .65rem;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: color-mix(in srgb, var(--tc, var(--accent)) 10%, transparent);
+  color: var(--tc, var(--accent));
+  border: 1px solid color-mix(in srgb, var(--tc, var(--accent)) 28%, transparent);
+  transition: background .15s, transform .1s;
+}
+
+.event-detail-tag:hover {
+  background: color-mix(in srgb, var(--tc, var(--accent)) 18%, transparent);
+  transform: translateY(-1px);
+}
+
+.event-detail-tag-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   BADGE  (event banner / chips)
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .2rem .55rem;
+  border-radius: 5px;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.badge-purple { background: rgba(192,132,252,.15); color: var(--purple); }
+.badge-cyan   { background: rgba(34,211,238,.12);  color: var(--cyan);   }
+.badge-green  { background: rgba(52,211,153,.12);  color: var(--green);  }
+.badge-orange { background: rgba(251,146,60,.12);  color: var(--orange); }
+.badge-red    { background: rgba(248,113,113,.12); color: var(--red);    }
+
+/* ============================================================
+   INFO BOX  (event detail venue / online)
+   ============================================================ */
+.info-box {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: .85rem 1rem;
+}
+
+.info-box-online {
+  border-color: color-mix(in srgb, var(--cyan) 35%, transparent);
+  background: color-mix(in srgb, var(--cyan) 6%, transparent);
+}
+
+.info-box-title {
+  font-weight: 700;
+  font-size: .875rem;
+  margin-bottom: .35rem;
+}
+
+/* ============================================================
+   SECTION HEADER
+   ============================================================ */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.section-title {
+  font-size: clamp(1.3rem, 3vw, 1.75rem);
+  font-weight: 800;
+  margin-bottom: .25rem;
+}
+
+.section-sub-label {
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ============================================================
+   FORM  (web)
+   ============================================================ */
+.form-group {
+  margin-bottom: 1.1rem;
+}
+
+.form-label {
+  display: block;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: .38rem;
+}
+
+.form-input {
+  display: block;
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: .6rem .9rem;
+  font-size: .9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color .15s;
+}
+
+.form-input:focus {
+  border-color: var(--accent);
+}
+
+.form-input::placeholder {
+  color: var(--muted);
+  opacity: .6;
+}
+
+.form-hint {
+  font-size: .76rem;
+  color: var(--muted);
+  margin-top: .3rem;
+}
+
+.required-star {
+  color: var(--red);
+}
+
+/* ============================================================
+   ORGANISER EVENTS  (web)
+   ============================================================ */
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   WEB TAG PICKER (event form)
+   ============================================================ */
+.web-tag-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.web-tag-option {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .35rem .75rem;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--bg3);
+  font-size: .84rem;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, color .15s;
+  user-select: none;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.web-tag-option:hover {
+  border-color: var(--tc, var(--accent));
+}
+
+.web-tag-option.selected {
+  border-color: var(--tc, var(--accent));
+  background: color-mix(in srgb, var(--tc, var(--accent)) 12%, transparent);
+  color: var(--tc, var(--accent));
+  font-weight: 600;
+}
+
+.web-tag-checkbox {
+  display: none;
+}
+
+.web-tag-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   EMPTY STATE  (shared)
+   ============================================================ */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.empty-state-sm {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: .5rem;
+}
+
+.empty-icon-lg {
+  font-size: 3.5rem;
+  margin-bottom: .5rem;
+}
+
+/* ============================================================
+   RESPONSIVE ADDITIONS
+   ============================================================ */
+@media (max-width: 900px) {
+  .event-layout {
+    grid-template-columns: 1fr;
+  }
+  .event-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .event-banner {
+    height: 200px;
+    font-size: 2.5rem;
+  }
+  .events-filter-form {
+    flex-direction: column;
+  }
+  .events-filter-search,
+  .events-filter-select {
+    width: 100%;
+    min-width: unset;
+  }
+  .event-layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 }

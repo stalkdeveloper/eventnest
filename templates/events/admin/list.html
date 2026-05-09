@@ -25,6 +25,15 @@
       </select>
     </div>
     <div class="panel-filter-group">
+      <label class="panel-filter-label">Tag</label>
+      <select name="tag" class="form-input form-select">
+        <option value="">All Tags</option>
+        {% for tag in all_tags %}
+        <option value="{{ tag.slug }}" {% if tag_filter == tag.slug %}selected{% endif %}>{{ tag.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="panel-filter-group">
       <label class="panel-filter-label">Show</label>
       <select name="deleted" class="form-input form-select">
         <option value="" {% if not deleted_filter %}selected{% endif %}>Active only</option>
@@ -41,7 +50,7 @@
 <div class="table-wrap">
   <table>
     <thead>
-      <tr><th>Title</th><th>Organiser</th><th>Category</th><th>Status</th><th>Date</th><th>Created By</th><th>Actions</th></tr>
+      <tr><th>Title</th><th>Tags</th><th>Organiser</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th></tr>
     </thead>
     <tbody>
       {% for event in events %}
@@ -50,6 +59,13 @@
           <a href="{% url 'admin_events:event_detail' event.id %}" class="link-accent font-bold text-sm">{{ event.title|truncatechars:30 }}</a>
           {% if event.city %}<div class="text-xs text-muted">&#128205; {{ event.city }}</div>{% endif %}
         </td>
+        <td>
+          <div class="perm-list">
+            {% for tag in event.tags.all %}
+            <span class="tag-badge" style="--tc:{{ tag.color }}">{{ tag.name }}</span>
+            {% empty %}<span class="text-xs text-muted">-</span>{% endfor %}
+          </div>
+        </td>
         <td class="text-sm">{{ event.organiser.username }}</td>
         <td class="text-sm text-muted">{{ event.category.title|default:"-" }}</td>
         <td>
@@ -57,7 +73,6 @@
           {% if event.deleted_at %}<span class="chip chip-deleted">Deleted</span>{% endif %}
         </td>
         <td class="text-sm text-muted">{{ event.start_date|date:"M d, Y" }}</td>
-        <td class="text-sm text-muted">{{ event.created_by.username|default:"-" }}</td>
         <td>
           <div class="table-actions">
             {% if not event.deleted_at %}
@@ -89,4 +104,17 @@
     </tbody>
   </table>
 </div>
+
+{% if page_obj.has_other_pages %}
+<div class="panel-pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if tag_filter %}&tag={{ tag_filter }}{% endif %}{% if deleted_filter %}&deleted={{ deleted_filter }}{% endif %}" class="pagination-btn">&larr; Prev</a>
+  {% endif %}
+  <span class="pagination-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} &bull; {{ page_obj.paginator.count }} total</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if tag_filter %}&tag={{ tag_filter }}{% endif %}{% if deleted_filter %}&deleted={{ deleted_filter }}{% endif %}" class="pagination-btn">Next &rarr;</a>
+  {% endif %}
+</div>
+{% endif %}
+
 {% endblock %}

@@ -1,5 +1,5 @@
 /* ============================================================
-   EventNest Admin Panel — panel.css
+   EventNest Admin Panel - panel.css
    Loaded after app.css. Overrides variables for the light
    admin theme and defines all panel-specific components.
    ============================================================ */
@@ -1026,4 +1026,611 @@ code {
   .perm-grid {
     grid-template-columns: 1fr;
   }
+}
+/* ── Pagination ──────────────────────────────────────────────── */
+.panel-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  padding: 1.25rem 0 .5rem;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: .4rem .9rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--accent);
+  font-size: .85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .15s, border-color .15s;
+}
+
+.pagination-btn:hover {
+  background: var(--bg2);
+  border-color: var(--accent3);
+}
+
+.pagination-info {
+  font-size: .83rem;
+  color: var(--text2);
+}
+
+/* ── Stat card link ──────────────────────────────────────── */
+.panel-stat-link {
+  display: block;
+  font-size: .72rem;
+  color: var(--accent);
+  text-decoration: none;
+  margin-top: .4rem;
+  font-weight: 600;
+  opacity: .8;
+  transition: opacity .15s;
+}
+.panel-stat-link:hover { opacity: 1; }
+
+/* ── Admin tag picker ────────────────────────────────────────── */
+.tag-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.tag-option {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .3rem .65rem;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--card2);
+  font-size: .82rem;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, color .15s;
+  user-select: none;
+  font-weight: 500;
+  color: var(--text2);
+}
+
+.tag-option:hover {
+  border-color: var(--tag-color, var(--accent));
+}
+
+.tag-option.selected {
+  border-color: var(--tag-color, var(--accent));
+  background: color-mix(in srgb, var(--tag-color, var(--accent)) 12%, transparent);
+  color: var(--tag-color, var(--accent));
+  font-weight: 600;
+}
+
+.tag-checkbox { display: none; }
+
+.tag-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Admin tag badge (table cells) ───────────────────────────── */
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .2rem;
+  padding: .12rem .42rem;
+  border-radius: 20px;
+  font-size: .7rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--tc, var(--accent)) 12%, transparent);
+  color: var(--tc, var(--accent));
+  border: 1px solid color-mix(in srgb, var(--tc, var(--accent)) 28%, transparent);
+}
+
+/* ── Price / Free tags in ticket list ────────────────────────── */
+.price-tag {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.free-tag {
+  font-weight: 700;
+  color: var(--green);
+  background: color-mix(in srgb, var(--green) 10%, transparent);
+  padding: .1rem .4rem;
+  border-radius: 5px;
+  font-size: .78rem;
+}
+
+/* ============================================================
+   NOTIFICATION PANEL
+   ============================================================ */
+
+.notif-wrap {
+  position: relative;
+}
+
+/* ── Panel dropdown ────────────────────────────────────────── */
+.notif-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 360px;
+  max-height: 520px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(91, 95, 207, .13);
+  z-index: 600;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.notif-panel.open {
+  display: flex;
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+.notif-header {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .85rem 1rem .7rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.notif-header-title {
+  font-weight: 800;
+  font-size: .95rem;
+  color: var(--text);
+  margin-right: auto;
+}
+
+.notif-header-actions {
+  display: flex;
+  gap: .25rem;
+}
+
+.notif-filter-btn {
+  padding: .22rem .65rem;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  font-size: .75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  font-family: inherit;
+}
+
+.notif-filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.notif-filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.notif-mark-all {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 1rem;
+  padding: .2rem .3rem;
+  border-radius: 6px;
+  transition: background .12s;
+  flex-shrink: 0;
+}
+
+.notif-mark-all:hover {
+  background: var(--bg2);
+}
+
+/* ── List ──────────────────────────────────────────────────── */
+.notif-list {
+  list-style: none;
+  margin: 0;
+  padding: .35rem 0;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.notif-list::-webkit-scrollbar { width: 4px; }
+.notif-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ── Item ──────────────────────────────────────────────────── */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  padding: .7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  transition: background .12s;
+  position: relative;
+}
+
+.notif-item:last-child {
+  border-bottom: none;
+}
+
+.notif-item:hover {
+  background: var(--bg2);
+}
+
+.notif-item.unread {
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+
+.notif-item.unread::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+
+.notif-item.hidden,
+.notif-item.hidden-by-filter {
+  display: none;
+}
+
+/* ── Icon ──────────────────────────────────────────────────── */
+.notif-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .9rem;
+  flex-shrink: 0;
+  margin-top: .1rem;
+}
+
+.notif-icon--event   { background: #eef2ff; color: #5b5fcf; }
+.notif-icon--ticket  { background: #f0fdf4; color: #16a34a; }
+.notif-icon--user    { background: #fdf4ff; color: #9333ea; }
+.notif-icon--warning { background: #fffbeb; color: #d97706; }
+.notif-icon--tag     { background: #fff1f2; color: #e11d48; }
+
+/* ── Body ──────────────────────────────────────────────────── */
+.notif-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-msg {
+  font-size: .83rem;
+  color: var(--text);
+  line-height: 1.45;
+  margin: 0 0 .2rem;
+  word-break: break-word;
+}
+
+.notif-msg strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.notif-time {
+  font-size: .72rem;
+  color: var(--text2);
+}
+
+/* ── Read/Unread toggle ────────────────────────────────────── */
+.notif-read-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: .2rem;
+  color: var(--accent);
+  font-size: .65rem;
+  flex-shrink: 0;
+  margin-top: .25rem;
+  opacity: .7;
+  transition: opacity .15s, transform .15s;
+  line-height: 1;
+}
+
+.notif-read-btn:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.notif-read-btn.is-read {
+  color: var(--text2);
+  opacity: .4;
+  cursor: default;
+}
+
+.notif-read-btn.is-read:hover {
+  transform: none;
+  opacity: .4;
+}
+
+/* ── Empty state ───────────────────────────────────────────── */
+.notif-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  padding: 2.5rem 1rem;
+  color: var(--text2);
+  font-size: .85rem;
+}
+
+.notif-empty i {
+  font-size: 2rem;
+  opacity: .35;
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+.notif-footer {
+  border-top: 1px solid var(--border);
+  padding: .55rem 1rem;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.notif-view-more {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .3rem .75rem;
+  border-radius: 6px;
+  transition: background .12s;
+  font-family: inherit;
+}
+
+.notif-view-more:hover {
+  background: var(--bg2);
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .notif-panel {
+    position: fixed;
+    top: var(--panel-topbar-h, 56px);
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-height: calc(100vh - 56px);
+    border-radius: 0 0 14px 14px;
+    border-left: none;
+    border-right: none;
+  }
+}
+
+/* ── Topbar header extras (moved from base_site.html inline) ── */
+.panel-topbar {
+  gap: .75rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.panel-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.panel-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-shrink: 0;
+}
+
+.topbar-icon-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card2);
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 1.05rem;
+  transition: background .15s, color .15s;
+  text-decoration: none;
+}
+
+.topbar-icon-btn:hover { background: var(--bg2); color: var(--accent); }
+
+.topbar-notif-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 2px solid var(--card);
+  display: none;
+}
+
+.topbar-profile { position: relative; }
+
+.topbar-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .35rem .6rem .35rem .35rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card2);
+  cursor: pointer;
+  transition: background .15s;
+  text-decoration: none;
+}
+
+.topbar-profile-btn:hover { background: var(--bg2); }
+
+.topbar-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.topbar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.topbar-profile-name {
+  font-size: .83rem;
+  font-weight: 600;
+  color: var(--text);
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-profile-caret { font-size: .7rem; color: var(--text2); transition: transform .2s; }
+.topbar-profile-btn.open .topbar-profile-caret { transform: rotate(180deg); }
+
+.topbar-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 210px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+  overflow: hidden;
+  z-index: 500;
+}
+
+.topbar-dropdown.open { display: block; }
+
+.topbar-dropdown-header {
+  padding: .75rem 1rem .5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-dropdown-name { font-weight: 700; font-size: .9rem; color: var(--text); }
+
+.topbar-dropdown-role {
+  font-size: .72rem;
+  color: var(--text2);
+  margin-top: .1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .6rem 1rem;
+  font-size: .85rem;
+  color: var(--text2);
+  text-decoration: none;
+  transition: background .12s, color .12s;
+}
+
+.topbar-dropdown-link:hover { background: var(--bg2); color: var(--accent); }
+.topbar-dropdown-link i { font-size: .95rem; width: 16px; text-align: center; }
+.topbar-dropdown-divider { height: 1px; background: var(--border); }
+.topbar-dropdown-form { margin: 0; }
+
+.topbar-dropdown-logout {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  width: 100%;
+  padding: .6rem 1rem;
+  font-size: .85rem;
+  color: var(--red);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background .12s;
+  font-family: inherit;
+}
+
+.topbar-dropdown-logout:hover { background: #fef2f2; }
+
+/* ── Sidebar mobile overlay ────────────────────────────────── */
+.panel-sidebar-toggle { display: none; }
+.panel-sidebar-overlay { display: none; }
+
+@media (max-width: 768px) {
+  .panel-sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    height: 100vh;
+    z-index: 200;
+    width: 260px !important;
+    transition: left .25s ease;
+    overflow-y: auto;
+  }
+  .panel-sidebar.open { left: 0; }
+  .panel-sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .35);
+    z-index: 199;
+  }
+  .panel-sidebar-overlay.open { display: block; }
+  .panel-sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    cursor: pointer;
+    color: var(--text);
+    font-size: 1.1rem;
+  }
+  .panel-layout { flex-direction: column; }
+  .panel-main { min-height: 100vh; }
 }

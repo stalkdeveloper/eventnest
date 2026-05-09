@@ -1,8 +1,52 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.utils.text import slugify
 from apps.core.mixins import TimeStampedModel, ActiveManager, AllObjectsManager
 from apps.categories.models import Category
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(unique=True, max_length=60)
+    color = models.CharField(max_length=7, default='#6366f1')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='events_tag_created'
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='events_tag_updated'
+    )
+    deleted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='events_tag_deleted'
+    )
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def soft_delete(self, user=None):
+        from django.utils import timezone as tz
+        self.deleted_at = tz.now()
+        self.deleted_by = user
+        self.save(update_fields=['deleted_at', 'deleted_by', 'updated_at'])
+
+    def restore(self):
+        self.deleted_at = None
+        self.deleted_by = None
+        self.save(update_fields=['deleted_at', 'deleted_by', 'updated_at'])
 
 
 class Event(TimeStampedModel):
@@ -45,6 +89,8 @@ class Event(TimeStampedModel):
     ticket_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_free = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
+
+    tags = models.ManyToManyField('Tag', blank=True, related_name='events')
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,

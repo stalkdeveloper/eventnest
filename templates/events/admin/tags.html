@@ -1,0 +1,79 @@
+{% extends 'admin/base_site.html' %}
+{% block title %}Tags{% endblock %}
+{% block page_title %}Tag Management{% endblock %}
+{% block nav_tags %}active{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'admin_events:tag_create' %}" class="btn btn-gradient btn-sm">+ New Tag</a>
+{% endblock %}
+
+{% block content %}
+<div class="panel-filter-bar">
+  <form method="get" class="flex flex-wrap gap-2 items-end w-full">
+    <div class="panel-filter-group panel-filter-group--grow">
+      <label class="panel-filter-label">Search</label>
+      <input type="text" name="q" value="{{ q }}" placeholder="Tag name…" class="form-input">
+    </div>
+    <div class="flex gap-1">
+      <button type="submit" class="btn btn-gradient btn-sm">Filter</button>
+      <a href="{% url 'admin_events:tag_list' %}" class="btn btn-outline btn-sm">Clear</a>
+    </div>
+  </form>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Tag</th><th>Slug</th><th>Color</th><th>Events</th><th>Created</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for tag in tags %}
+      <tr>
+        <td>
+          <span class="inline-flex items-center gap-1">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ tag.color }};flex-shrink:0;"></span>
+            <strong>{{ tag.name }}</strong>
+          </span>
+        </td>
+        <td class="text-sm text-muted"><code>{{ tag.slug }}</code></td>
+        <td><code class="text-xs">{{ tag.color }}</code></td>
+        <td class="text-sm">{{ tag.events.count }}</td>
+        <td class="text-sm text-muted">{{ tag.created_at|date:"M d, Y" }}</td>
+        <td>
+          {% if tag.deleted_at %}<span class="chip chip-deleted">Deleted</span>
+          {% else %}<span class="chip chip-published">Active</span>{% endif %}
+        </td>
+        <td>
+          <div class="table-actions">
+            {% if not tag.deleted_at %}
+            <a href="{% url 'admin_events:tag_edit' tag.id %}" class="btn btn-outline btn-sm">Edit</a>
+            {% endif %}
+            <form method="post" action="{% url 'admin_events:tag_delete' tag.id %}"
+                  onsubmit="return confirm('{% if tag.deleted_at %}Restore{% else %}Delete{% endif %} this tag?')">
+              {% csrf_token %}
+              <button type="submit" class="btn {% if tag.deleted_at %}btn-success{% else %}btn-danger{% endif %} btn-sm">
+                {% if tag.deleted_at %}Restore{% else %}Delete{% endif %}
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="text-center text-muted table-empty-cell">No tags found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="panel-pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}" class="pagination-btn">&larr; Prev</a>
+  {% endif %}
+  <span class="pagination-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}" class="pagination-btn">Next &rarr;</a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

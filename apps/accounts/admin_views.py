@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.db.models import Q
 from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator
 from apps.core.decorators import system_required, superadmin_required
 from .models import CustomUser
 from .forms import AdminUserCreateForm, AdminUserEditForm, AssignRoleForm
@@ -13,7 +14,10 @@ def user_list(request):
     q           = request.GET.get('q', '')
     role_filter = request.GET.get('role', '')
     type_filter = request.GET.get('type', '')
+    active_f    = request.GET.get('active', '1')
+
     users = CustomUser.objects.prefetch_related('groups').order_by('-date_joined')
+
     if q:
         users = users.filter(
             Q(username__icontains=q) | Q(email__icontains=q) |
@@ -23,9 +27,23 @@ def user_list(request):
         users = users.filter(groups__name=role_filter)
     if type_filter:
         users = users.filter(account_type=type_filter)
+    if active_f == '0':
+        users = users.filter(is_active=False)
+    else:
+        users = users.filter(is_active=True)
+
+    paginator = Paginator(users, 20)
+    page_obj  = paginator.get_page(request.GET.get('page'))
+
     return render(request, 'accounts/admin/list.html', {
-        'users': users, 'groups': Group.objects.all(),
-        'q': q, 'role_filter': role_filter, 'type_filter': type_filter,
+        'users': page_obj,
+        'page_obj': page_obj,
+        'groups': Group.objects.all(),
+        'q': q,
+        'role_filter': role_filter,
+        'type_filter': type_filter,
+        'active_filter': active_f,
+        'account_types': CustomUser.AccountType.choices,
     })
 
 

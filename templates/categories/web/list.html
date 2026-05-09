@@ -1,21 +1,32 @@
 {% extends 'base.html' %}
 {% block title %}Categories - EventNest{% endblock %}
 {% block content %}
-<h1 class="section-title">Browse Categories</h1>
+
+<div class="cat-hero">
+  <h1 class="section-title">Browse Categories</h1>
+  <p class="section-sub">Find events by what interests you</p>
+</div>
+
 <div class="grid-3">
   {% for cat in categories %}
-  <a href="{% url 'web_categories:category_detail' cat.slug %}">
-    <div class="card">
-      <div class="card-body flex items-center gap-3">
-        <div>
-          <div class="font-head font-bold">{{ cat.title }}</div>
-          {% if cat.description %}<p class="text-xs text-muted mt-1">{{ cat.description|truncatewords:8 }}</p>{% endif %}
-        </div>
+  <a href="{% url 'web_categories:category_detail' cat.slug %}" class="cat-card-link">
+    <div class="cat-card">
+      <div class="cat-card-icon">{{ cat.title|first|upper }}</div>
+      <div class="cat-card-body">
+        <h3 class="cat-card-title">{{ cat.title }}</h3>
+        {% if cat.description %}
+        <p class="cat-card-desc">{{ cat.description|truncatewords:10 }}</p>
+        {% endif %}
+        <span class="cat-card-count">{{ cat.total_event_count }} event{{ cat.total_event_count|pluralize }}</span>
       </div>
+      <div class="cat-card-arrow">&#8594;</div>
     </div>
   </a>
   {% empty %}
-  <p class="text-muted">No categories yet.</p>
+  <div class="empty-state">
+    <div class="empty-icon">&#127991;</div>
+    <p class="text-muted">No categories yet.</p>
+  </div>
   {% endfor %}
 </div>
 {% endblock %}

@@ -11,4 +11,10 @@ urlpatterns = [
     path('admin/events/<int:event_id>/delete/', admin_views.event_delete, name='event_delete'),
     path('admin/events/<int:event_id>/status/', admin_views.event_change_status, name='event_status'),
     path('admin/events/<int:event_id>/attendees/', admin_views.event_attendees, name='event_attendees'),
+
+    # Tag CRUD
+    path('admin/tags/', admin_views.tag_list, name='tag_list'),
+    path('admin/tags/create/', admin_views.tag_create, name='tag_create'),
+    path('admin/tags/<int:tag_id>/edit/', admin_views.tag_edit, name='tag_edit'),
+    path('admin/tags/<int:tag_id>/delete/', admin_views.tag_delete, name='tag_delete'),
 ]

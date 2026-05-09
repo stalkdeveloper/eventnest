@@ -58,6 +58,29 @@
           </div>
         </div>
       </div>
+
+      <!-- Tags -->
+      <div class="card mb-3">
+        <div class="card-body">
+          <p class="panel-section-title mb-2">Tags</p>
+          <p class="form-hint mb-2">Select tags to categorise this event.</p>
+          <div class="tag-picker" id="tagPicker">
+            {% for tag in all_tags %}
+            <label class="tag-option {% if tag.id in selected_tag_ids %}selected{% endif %}"
+                   style="--tag-color:{{ tag.color }}" title="{{ tag.name }}">
+              <input type="checkbox" name="tags" value="{{ tag.id }}"
+                     {% if tag.id in selected_tag_ids %}checked{% endif %}
+                     class="tag-checkbox">
+              <span class="tag-dot" style="background:{{ tag.color }}"></span>
+              {{ tag.name }}
+            </label>
+            {% empty %}
+            <p class="text-sm text-muted">No tags yet. <a href="{% url 'admin_events:tag_create' %}" class="link-accent">Create one</a>.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
       <div class="card mb-3">
         <div class="card-body">
           <p class="panel-section-title mb-3">Date &amp; Location</p>
@@ -130,6 +153,15 @@
       <div class="card mb-3">
         <div class="card-body">
           <p class="panel-section-title mb-3">Banner</p>
+          {% if event %}
+            {% with banner=event.get_banner %}
+            {% if banner %}
+            <div class="mb-2">
+              <img src="{{ banner.file.url }}" alt="Banner" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;">
+            </div>
+            {% endif %}
+            {% endwith %}
+          {% endif %}
           <input type="file" name="banner" accept="image/*" class="form-input">
         </div>
       </div>
@@ -140,4 +172,14 @@
     </div>
   </div>
 </form>
+
+<script>
+document.querySelectorAll('.tag-option').forEach(label=>{
+  label.addEventListener('click',()=>{
+    const cb=label.querySelector('.tag-checkbox');
+    cb.checked=!cb.checked;
+    label.classList.toggle('selected',cb.checked);
+  });
+});
+</script>
 {% endblock %}

@@ -6,6 +6,7 @@ Usage:
   python manage.py seed --groups         # groups & permissions only
   python manage.py seed --users          # test users only
   python manage.py seed --categories     # categories only
+  python manage.py seed --tags           # tags only
   python manage.py seed --events         # events only
   python manage.py seed --flush          # wipe data, then seed everything
 """
@@ -19,6 +20,7 @@ class Command(BaseCommand):
         parser.add_argument('--groups',     action='store_true', help='Seed groups & permissions')
         parser.add_argument('--users',      action='store_true', help='Seed test users')
         parser.add_argument('--categories', action='store_true', help='Seed categories')
+        parser.add_argument('--tags',       action='store_true', help='Seed tags')
         parser.add_argument('--events',     action='store_true', help='Seed sample events')
         parser.add_argument('--flush',      action='store_true', help='Flush data before seeding')
 
@@ -27,6 +29,7 @@ class Command(BaseCommand):
             options['groups'],
             options['users'],
             options['categories'],
+            options['tags'],
             options['events'],
         ])
 
@@ -48,6 +51,11 @@ class Command(BaseCommand):
             from apps.database.seeders import categories_seeder
             categories_seeder.run(stdout=self.stdout)
 
+        if run_all or options['tags']:
+            self.stdout.write(self.style.MIGRATE_HEADING('── Tags ──'))
+            from apps.database.seeders import tags_seeder
+            tags_seeder.run(stdout=self.stdout)
+
         if run_all or options['events']:
             self.stdout.write(self.style.MIGRATE_HEADING('── Events ──'))
             from apps.database.seeders import events_seeder
@@ -57,7 +65,7 @@ class Command(BaseCommand):
 
     def _flush(self):
         from apps.accounts.models import CustomUser
-        from apps.events.models import Event
+        from apps.events.models import Event, Tag
         from apps.tickets.models import Ticket
         from apps.categories.models import Category
         from django.contrib.auth.models import Group
@@ -65,6 +73,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.WARNING('Flushing existing data...'))
         Ticket.all_objects.all().delete()
         Event.all_objects.all().delete()
+        Tag.objects.all().delete()
         Category.all_objects.all().delete()
         CustomUser.objects.filter(is_superuser=False).delete()
         Group.objects.all().delete()
