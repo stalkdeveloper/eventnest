@@ -1,0 +1,191 @@
+<!-- D:\python\django\eventnest\templates\admin\partials\_topbar.html -->
+<header class="panel-topbar">
+  <div class="panel-topbar-left">
+    <button class="panel-sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+      <i class="bi bi-list"></i>
+    </button>
+    <h1 class="panel-page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+  </div>
+
+  <div class="panel-topbar-right">
+    {% block topbar_actions %}{% endblock %}
+
+    <!-- Notification Bell -->
+    <div class="notif-wrap" id="notifWrap">
+      <button class="topbar-icon-btn" id="notifBtn" title="Notifications" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+        <i class="bi bi-bell-fill"></i>
+        <span class="topbar-notif-dot" id="notifDot"></span>
+      </button>
+
+      <!-- Notification Dropdown -->
+      <div class="notif-panel" id="notifPanel" role="dialog" aria-label="Notifications">
+        <div class="notif-header">
+          <span class="notif-header-title">Notifications</span>
+          <div class="notif-header-actions">
+            <button class="notif-filter-btn active" data-filter="all">All</button>
+            <button class="notif-filter-btn" data-filter="unread">Unread</button>
+            <button class="notif-filter-btn" data-filter="read">Read</button>
+          </div>
+          <button class="notif-mark-all" id="markAllRead" title="Mark all as read">
+            <i class="bi bi-check2-all"></i>
+          </button>
+        </div>
+
+        <ul class="notif-list" id="notifList" role="list">
+
+            <li class="notif-item unread" data-id="1">
+                <div class="notif-icon notif-icon--event"><i class="bi bi-calendar3-event-fill"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg"><strong>TechFest 2025</strong> is now published and live.</p>
+                <span class="notif-time">2 min ago</span>
+                </div>
+                <button class="notif-read-btn" data-id="1" title="Mark as read"><i class="bi bi-circle-fill"></i></button>
+            </li>
+
+            <li class="notif-item unread" data-id="2">
+                <div class="notif-icon notif-icon--ticket"><i class="bi bi-ticket-perforated-fill"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg"><strong>15 new registrations</strong> for Street Food Carnival.</p>
+                <span class="notif-time">18 min ago</span>
+                </div>
+                <button class="notif-read-btn" data-id="2" title="Mark as read"><i class="bi bi-circle-fill"></i></button>
+            </li>
+
+            <li class="notif-item unread" data-id="3">
+                <div class="notif-icon notif-icon--user"><i class="bi bi-person-fill"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg"><strong>priya@example.com</strong> registered as Organiser.</p>
+                <span class="notif-time">45 min ago</span>
+                </div>
+                <button class="notif-read-btn" data-id="3" title="Mark as read"><i class="bi bi-circle-fill"></i></button>
+            </li>
+
+            <li class="notif-item unread" data-id="4">
+                <div class="notif-icon notif-icon--warning"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg"><strong>Yoga Retreat</strong> is at 90% capacity - only 5 spots left.</p>
+                <span class="notif-time">1 hr ago</span>
+                </div>
+                <button class="notif-read-btn" data-id="4" title="Mark as read"><i class="bi bi-circle-fill"></i></button>
+            </li>
+
+            <li class="notif-item unread" data-id="5">
+                <div class="notif-icon notif-icon--tag"><i class="bi bi-hash"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg">New tag <strong>#Wellness</strong> was created by admin.</p>
+                <span class="notif-time">2 hr ago</span>
+                </div>
+                <button class="notif-read-btn" data-id="5" title="Mark as read"><i class="bi bi-circle-fill"></i></button>
+            </li>
+
+            <li class="notif-item read" data-id="6">
+                <div class="notif-icon notif-icon--event"><i class="bi bi-calendar3-event-fill"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg"><strong>IPL Watch Party</strong> was updated by organiser.</p>
+                <span class="notif-time">3 hr ago</span>
+                </div>
+                <button class="notif-read-btn is-read" data-id="6" title="Already read"><i class="bi bi-circle"></i></button>
+            </li>
+
+            <li class="notif-item read" data-id="7">
+                <div class="notif-icon notif-icon--ticket"><i class="bi bi-ticket-perforated-fill"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg"><strong>Ticket #TKT-A3F2</strong> was cancelled by attendee.</p>
+                <span class="notif-time">5 hr ago</span>
+                </div>
+                <button class="notif-read-btn is-read" data-id="7" title="Already read"><i class="bi bi-circle"></i></button>
+            </li>
+
+            <li class="notif-item read" data-id="8">
+                <div class="notif-icon notif-icon--user"><i class="bi bi-person-fill"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg"><strong>rahul_dev</strong> account was deactivated.</p>
+                <span class="notif-time">Yesterday</span>
+                </div>
+                <button class="notif-read-btn is-read" data-id="8" title="Already read"><i class="bi bi-circle"></i></button>
+            </li>
+
+            <li class="notif-item read" data-id="9">
+                <div class="notif-icon notif-icon--event"><i class="bi bi-calendar3-event-fill"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg"><strong>Modern Art Exhibition</strong> moved to completed.</p>
+                <span class="notif-time">Yesterday</span>
+                </div>
+                <button class="notif-read-btn is-read" data-id="9" title="Already read"><i class="bi bi-circle"></i></button>
+            </li>
+
+            <li class="notif-item read" data-id="10">
+                <div class="notif-icon notif-icon--tag"><i class="bi bi-tags-fill"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg">Category <strong>Sports</strong> had 3 new events added.</p>
+                <span class="notif-time">2 days ago</span>
+                </div>
+                <button class="notif-read-btn is-read" data-id="10" title="Already read"><i class="bi bi-circle"></i></button>
+            </li>
+
+            <!-- Hidden extras (visible after View More) -->
+            <li class="notif-item read notif-extra hidden" data-id="11">
+                <div class="notif-icon notif-icon--warning"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg"><strong>Cybersecurity Workshop</strong> starts in 24 hours.</p>
+                <span class="notif-time">2 days ago</span>
+                </div>
+                <button class="notif-read-btn is-read" data-id="11" title="Already read"><i class="bi bi-circle"></i></button>
+            </li>
+
+            <li class="notif-item read notif-extra hidden" data-id="12">
+                <div class="notif-icon notif-icon--ticket"><i class="bi bi-ticket-perforated-fill"></i></div>
+                <div class="notif-body">
+                <p class="notif-msg"><strong>50 tickets sold</strong> for Startup Pitch Day Season 4.</p>
+                <span class="notif-time">3 days ago</span>
+                </div>
+                <button class="notif-read-btn is-read" data-id="12" title="Already read"><i class="bi bi-circle"></i></button>
+            </li>
+
+        </ul>
+
+        <div class="notif-footer">
+          <button class="notif-view-more" id="notifViewMore">
+            <i class="bi bi-chevron-down"></i> View More
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile dropdown -->
+    <div class="topbar-profile">
+      <button class="topbar-profile-btn" id="profileBtn" aria-haspopup="true" aria-expanded="false">
+        <div class="topbar-avatar">
+          {% with pic=request.user.get_profile_picture %}
+            {% if pic %}<img src="{{ pic.file.url }}" alt="{{ request.user.username }}">
+            {% else %}{{ request.user.username|first|upper }}{% endif %}
+          {% endwith %}
+        </div>
+        <span class="topbar-profile-name">{{ request.user.username }}</span>
+        <i class="bi bi-chevron-down topbar-profile-caret"></i>
+      </button>
+
+      <div class="topbar-dropdown" id="profileDropdown" role="menu">
+        <div class="topbar-dropdown-header">
+          <div class="topbar-dropdown-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+          <div class="topbar-dropdown-role">
+            {% if request.user.is_superuser %}Superadmin{% else %}Sub-Admin{% endif %} &bull; {{ request.user.email }}
+          </div>
+        </div>
+        <a href="{% url 'accounts:profile' %}" class="topbar-dropdown-link">
+          <i class="bi bi-person-circle"></i> My Profile
+        </a>
+        <a href="{% url 'web_home:home' %}" class="topbar-dropdown-link" target="_blank">
+          <i class="bi bi-globe"></i> View Website
+        </a>
+        <div class="topbar-dropdown-divider"></div>
+        <form method="post" action="{% url 'accounts:logout' %}" class="topbar-dropdown-form">
+          {% csrf_token %}
+          <button type="submit" class="topbar-dropdown-logout">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</header>

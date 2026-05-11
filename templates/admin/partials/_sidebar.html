@@ -1,0 +1,63 @@
+<!-- D:\python\django\eventnest\templates\admin\partials\_sidebar.html -->
+<aside class="panel-sidebar" id="panelSidebar">
+  <div class="panel-logo">
+    <a href="{% url 'admin_dashboard:dashboard' %}">&#11043; EventNest</a>
+    <span class="panel-logo-badge">Admin</span>
+  </div>
+
+  <nav class="panel-nav">
+    <div class="panel-nav-section">Overview</div>
+    <a href="{% url 'admin_dashboard:dashboard' %}"
+       class="panel-nav-link {% block nav_dashboard %}{% endblock %}">
+      <i class="bi bi-house-door-fill"></i> Dashboard
+    </a>
+
+    <div class="panel-nav-section">Manage</div>
+    <a href="{% url 'admin_accounts:user_list' %}"
+       class="panel-nav-link {% block nav_users %}{% endblock %}">
+      <i class="bi bi-people-fill"></i> Users
+    </a>
+    <a href="{% url 'admin_categories:category_list' %}"
+       class="panel-nav-link {% block nav_categories %}{% endblock %}">
+      <i class="bi bi-tags-fill"></i> Categories
+    </a>
+    <a href="{% url 'admin_events:event_list' %}"
+       class="panel-nav-link {% block nav_events %}{% endblock %}">
+      <i class="bi bi-calendar3-event-fill"></i> Events
+    </a>
+    <a href="{% url 'admin_events:tag_list' %}"
+       class="panel-nav-link {% block nav_tags %}{% endblock %}">
+      <i class="bi bi-hash"></i> Tags
+    </a>
+    <a href="{% url 'admin_tickets:ticket_list' %}"
+       class="panel-nav-link {% block nav_tickets %}{% endblock %}">
+      <i class="bi bi-ticket-perforated-fill"></i> Tickets
+    </a>
+    <a href="{% url 'admin_roles:role_list' %}"
+       class="panel-nav-link {% block nav_roles %}{% endblock %}">
+      <i class="bi bi-person-badge-fill"></i> Roles
+    </a>
+
+    <div class="panel-nav-section">Site</div>
+    <a href="{% url 'web_home:home' %}"
+       class="panel-nav-link" target="_blank">
+      <i class="bi bi-globe"></i> View Website
+    </a>
+  </nav>
+
+  <div class="panel-sidebar-footer">
+    <div class="panel-user-info">
+      <div class="panel-user-avatar">{{ request.user.username|first|upper }}</div>
+      <div>
+        <div class="panel-user-name">{{ request.user.username }}</div>
+        <div class="panel-user-role">
+          {% if request.user.is_superuser %}Superadmin{% else %}Sub-Admin{% endif %}
+        </div>
+      </div>
+    </div>
+    <form method="post" action="{% url 'accounts:logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="panel-logout-btn">&#128682;&nbsp; Logout</button>
+    </form>
+  </div>
+</aside>

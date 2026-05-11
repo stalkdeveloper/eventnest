@@ -1,0 +1,145 @@
+<!-- D:\python\django\eventnest\templates\admin\partials\_scripts.html -->
+<script>
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebar = document.getElementById('panelSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    });
+  }
+
+  const profileBtn = document.getElementById('profileBtn');
+  const profileDropdown = document.getElementById('profileDropdown');
+  if (profileBtn) {
+    profileBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = profileDropdown.classList.toggle('open');
+      profileBtn.classList.toggle('open', isOpen);
+      profileBtn.setAttribute('aria-expanded', isOpen);
+      notifPanel.classList.remove('open');
+      notifBtn.setAttribute('aria-expanded', 'false');
+    });
+    document.addEventListener('click', () => {
+      profileDropdown.classList.remove('open');
+      profileBtn.classList.remove('open');
+      profileBtn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  // ── Notification panel logic ──────────────────────────────────────
+  const notifBtn   = document.getElementById('notifBtn');
+  const notifPanel = document.getElementById('notifPanel');
+  const notifDot   = document.getElementById('notifDot');
+
+  function countUnread() {
+    return document.querySelectorAll('#notifList .notif-item.unread:not(.hidden-by-filter)').length;
+  }
+
+  function updateDot() {
+    const n = document.querySelectorAll('#notifList .notif-item.unread').length;
+    notifDot.style.display = n > 0 ? 'block' : 'none';
+  }
+  updateDot();
+
+  notifBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const isOpen = notifPanel.classList.toggle('open');
+    notifBtn.setAttribute('aria-expanded', isOpen);
+    if (profileDropdown) {
+      profileDropdown.classList.remove('open');
+      profileBtn.classList.remove('open');
+    }
+  });
+
+  notifPanel.addEventListener('click', e => e.stopPropagation());
+
+  document.addEventListener('click', () => {
+    notifPanel.classList.remove('open');
+    notifBtn.setAttribute('aria-expanded', 'false');
+  });
+
+  // Mark single as read
+  document.querySelectorAll('.notif-read-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.notif-item');
+      if (item.classList.contains('unread')) {
+        item.classList.replace('unread', 'read');
+        btn.classList.add('is-read');
+        btn.querySelector('i').className = 'bi bi-circle';
+        updateDot();
+        applyFilter(currentFilter);
+      }
+    });
+  });
+
+  // Mark all as read
+  document.getElementById('markAllRead').addEventListener('click', () => {
+    document.querySelectorAll('.notif-item.unread').forEach(item => {
+      item.classList.replace('unread', 'read');
+      const btn = item.querySelector('.notif-read-btn');
+      btn.classList.add('is-read');
+      btn.querySelector('i').className = 'bi bi-circle';
+    });
+    updateDot();
+    applyFilter(currentFilter);
+  });
+
+  let currentFilter = 'all';
+  function applyFilter(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.notif-item').forEach(item => {
+      const isExtra = item.classList.contains('notif-extra') && !item.classList.contains('shown-extra');
+      if (isExtra) return;
+      if (filter === 'all') {
+        item.classList.remove('hidden-by-filter');
+      } else if (filter === 'unread') {
+        item.classList.toggle('hidden-by-filter', !item.classList.contains('unread'));
+      } else if (filter === 'read') {
+        item.classList.toggle('hidden-by-filter', !item.classList.contains('read'));
+      }
+    });
+
+    const visible = document.querySelectorAll('#notifList .notif-item:not(.hidden-by-filter):not(.hidden)').length;
+    let empty = document.getElementById('notifEmpty');
+    if (visible === 0) {
+      if (!empty) {
+        empty = document.createElement('li');
+        empty.id = 'notifEmpty';
+        empty.className = 'notif-empty';
+        empty.innerHTML = '<i class="bi bi-bell-slash"></i><span>No notifications</span>';
+        document.getElementById('notifList').appendChild(empty);
+      }
+    } else {
+      if (empty) empty.remove();
+    }
+  }
+
+  document.querySelectorAll('.notif-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.notif-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilter(btn.dataset.filter);
+    });
+  });
+
+  const viewMoreBtn = document.getElementById('notifViewMore');
+  viewMoreBtn.addEventListener('click', () => {
+    const extras = document.querySelectorAll('.notif-extra.hidden');
+    extras.forEach(el => {
+      el.classList.remove('hidden');
+      el.classList.add('shown-extra');
+    });
+    viewMoreBtn.closest('.notif-footer').style.display = 'none';
+    applyFilter(currentFilter);
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+{% load static %}
+<!-- <script src="{% static 'js/default.js' %}"></script> -->
+{% block extra_js %}{% endblock %}
