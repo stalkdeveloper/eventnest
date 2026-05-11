@@ -1,31 +1,35 @@
 from pathlib import Path
 import os
-from decouple import config  # pip install python-decouple
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY    = config('SECRET_KEY')
-DEBUG         = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
+SECRET_KEY    = os.environ.get('SECRET_KEY', 'django-insecure-k2ur%-)e%vbo71o4ygxb4zxlcp6n6f)+0(%06j3jm8@th*i3qs')
+DEBUG         = os.environ.get('DEBUG', 'True') == 'True'
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
+    # Django core (no admin app)
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # ── Apps that OWN database tables (models + migrations) ─────────────────
     'apps.accounts',     # CustomUser
     'apps.categories',   # Category
     'apps.events',       # Event
     'apps.tickets',      # Ticket
     'apps.media',        # Media
 
+    # ── Apps with NO models - only views/urls/templates ─────────────────────
+    # These still need to be here for management commands (database) and
+    # context processors (core). dashboard/roles have no models so optional,
+    # but listing them makes the project structure self-documenting.
     'apps.core',
     'apps.dashboard',
     'apps.roles',
-    'apps.database',
+    'apps.database',     # seeders (management commands)
 ]
 
 MIDDLEWARE = [
@@ -59,11 +63,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'eventnest.wsgi.application'
 
-# Database (reads from .env)
 DATABASES = {
     'default': {
-        'ENGINE': config('DB_ENGINE'),
-        'NAME': BASE_DIR / config('DB_NAME'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -87,10 +90,10 @@ USE_TZ        = True
 
 STATIC_URL       = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT      = BASE_DIR / config('STATIC_ROOT', default='staticfiles')
+STATIC_ROOT      = BASE_DIR / 'staticfiles'
 
 MEDIA_URL  = '/media-files/'
-MEDIA_ROOT = BASE_DIR / config('MEDIA_ROOT', default='media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND      = 'django.core.mail.backends.console.EmailBackend'
