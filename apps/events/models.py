@@ -150,3 +150,33 @@ class Event(TimeStampedModel):
         if self.max_capacity == 0:
             return None
         return max(0, self.max_capacity - self.tickets_sold)
+
+# ── Feature 4: Wishlist ───────────────────────────────────────────────────────
+class Wishlist(models.Model):
+    user       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='wishlisted_events')
+    event      = models.ForeignKey('Event', on_delete=models.CASCADE, related_name='wishlisted_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'event']
+        ordering        = ['-created_at']
+
+    def __str__(self):
+        return f'{self.user.email} → {self.event.title}'
+
+
+# ── Feature 5: Review ─────────────────────────────────────────────────────────
+class Review(models.Model):
+    event      = models.ForeignKey('Event', on_delete=models.CASCADE, related_name='reviews')
+    reviewer   = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
+    rating     = models.PositiveSmallIntegerField()
+    body       = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['event', 'reviewer']
+        ordering        = ['-created_at']
+
+    def __str__(self):
+        return f'{self.reviewer.username} → {self.event.title} ({self.rating}★)'

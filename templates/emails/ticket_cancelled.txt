@@ -1,0 +1,3 @@
+Hi {{ ticket.attendee.username }},
+Ticket {{ ticket.ticket_code }} for {{ event.title }} has been cancelled.
+— EventNest Team

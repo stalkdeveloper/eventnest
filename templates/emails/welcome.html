@@ -1,0 +1,6 @@
+{% extends 'emails/base_email.html' %}
+{% block content %}
+<h2>Welcome to EventNest, {{ user.username }}! 🎉</h2>
+<p>Your account is ready. Start exploring events near you.</p>
+<a class="btn" href="{{ site_url }}">Explore Events</a>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'emails/base_email.html' %}
+{% block content %}
+<h2>You're in! 🎉</h2>
+<p>Hi {{ ticket.attendee.username }}, your ticket for <strong>{{ event.title }}</strong> is confirmed.</p>
+<div class="ticket-box">
+  <div style="font-size:13px;color:#888;margin-bottom:4px">Your ticket code</div>
+  <div class="ticket-code">{{ ticket.ticket_code }}</div>
+  {% if qr %}<img src="{{ qr.get_url }}" alt="QR Code" style="width:140px;margin-top:12px">{% endif %}
+</div>
+<div class="info-row"><span class="label">📅 Date</span><span>{{ event.start_date|date:"F d, Y, g:i A" }}</span></div>
+{% if event.venue %}<div class="info-row"><span class="label">📍 Venue</span><span>{{ event.venue }}, {{ event.city }}</span></div>{% endif %}
+{% if event.is_free %}<div class="info-row"><span class="label">💰 Price</span><span>FREE</span></div>
+{% else %}<div class="info-row"><span class="label">💰 Paid</span><span>₹{{ ticket.amount_paid }}</span></div>{% endif %}
+{% endblock %}

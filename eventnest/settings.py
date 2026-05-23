@@ -1,13 +1,15 @@
 from pathlib import Path
+from datetime import timedelta
 import os
-from decouple import config  # pip install python-decouple
+from decouple import config
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY    = config('SECRET_KEY')
 DEBUG         = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1',
+                       cast=lambda v: [s.strip() for s in v.split(',')])
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -16,16 +18,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'apps.accounts',     # CustomUser
-    'apps.categories',   # Category
-    'apps.events',       # Event
-    'apps.tickets',      # Ticket
-    'apps.media',        # Media
-
+    'apps.accounts',
+    'apps.categories',
+    'apps.events',
+    'apps.tickets',
+    'apps.media',
     'apps.core',
     'apps.dashboard',
     'apps.roles',
     'apps.database',
+    'apps.payments',
+
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -36,6 +41,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'eventnest.urls'
@@ -59,13 +65,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'eventnest.wsgi.application'
 
-# Database (reads from .env)
+
+
+# Database
 DATABASES = {
     'default': {
         'ENGINE': config('DB_ENGINE'),
         'NAME': BASE_DIR / config('DB_NAME'),
     }
 }
+
+""" DATABASES = {
+    'default': {
+        'ENGINE':   config('DB_ENGINE'),
+        'NAME':     config('DB_NAME'),
+        'USER':     config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST':     config('DB_HOST'),
+        'PORT':     config('DB_PORT', cast=int),
+    }
+} """
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
@@ -93,4 +112,34 @@ MEDIA_URL  = '/media-files/'
 MEDIA_ROOT = BASE_DIR / config('MEDIA_ROOT', default='media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-EMAIL_BACKEND      = 'django.core.mail.backends.console.EmailBackend'
+
+# Email 
+EMAIL_BACKEND       = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST          = config('EMAIL_HOST', default='')
+EMAIL_PORT          = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS       = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER     = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL  = config('DEFAULT_FROM_EMAIL', default='EventNest <noreply@eventnest.com>')
+SITE_URL            = config('SITE_URL', default='http://localhost:8000')
+
+# Razorpay
+RAZORPAY_KEY_ID     = config('RAZORPAY_KEY_ID', default='')
+RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET', default='')
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME':  timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}

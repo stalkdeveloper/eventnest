@@ -1,0 +1,53 @@
+{# Include this inside event detail template: {% include 'events/web/reviews_partial.html' %} #}
+{% if avg_rating %}
+<div class="info-box mb-3">
+  <div class="info-box-title">⭐ {{ avg_rating }} / 5 <span class="text-muted text-sm">({{ review_count }} review{{ review_count|pluralize }})</span></div>
+  <div style="display:flex;gap:2px;margin-top:4px">
+    {% for i in "12345" %}{% if avg_rating >= forloop.counter %}<span style="color:#f59e0b;font-size:18px">★</span>{% else %}<span style="color:#ddd;font-size:18px">★</span>{% endif %}{% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if can_review %}
+<div class="card mb-3">
+  <div class="card-body">
+    <h3 class="panel-section-title mb-3">{% if user_review %}Edit your review{% else %}Leave a review{% endif %}</h3>
+    <form method="post" action="{% url 'web_events:submit_review' event.slug %}">
+      {% csrf_token %}
+      <div class="mb-2">
+        <label class="text-sm text-muted">Your rating</label>
+        <div class="star-picker" style="display:flex;gap:6px;margin-top:4px">
+          {% for i in "12345" %}
+          <label style="cursor:pointer;font-size:28px">
+            <input type="radio" name="rating" value="{{ forloop.counter }}" {% if user_review and user_review.rating == forloop.counter %}checked{% endif %} style="display:none">
+            <span class="star-label" data-val="{{ forloop.counter }}" style="color:{% if user_review and user_review.rating >= forloop.counter %}#f59e0b{% else %}#ddd{% endif %}">★</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="text-sm text-muted">Review (optional)</label>
+        <textarea name="body" class="form-input mt-1" rows="3" placeholder="Share your experience...">{{ user_review.body|default:'' }}</textarea>
+      </div>
+      <button type="submit" class="btn btn-gradient">Submit Review</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+{% if reviews %}
+<div class="mb-4">
+  <h3 class="panel-section-title mb-3">Reviews ({{ review_count }})</h3>
+  {% for review in reviews %}
+  <div class="card mb-2">
+    <div class="card-body">
+      <div style="display:flex;justify-content:space-between">
+        <div><span class="font-bold text-sm">{{ review.reviewer.username }}</span><span class="text-muted text-xs ml-2">{{ review.created_at|date:"M d, Y" }}</span></div>
+        <div style="color:#f59e0b">{% for i in "12345" %}{% if review.rating >= forloop.counter %}★{% else %}<span style="color:#ddd">★</span>{% endif %}{% endfor %}</div>
+      </div>
+      {% if review.body %}<p class="text-sm mt-1 mb-0">{{ review.body }}</p>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Analytics — {{ event.title }}{% endblock %}
+{% block extra_css %}
+<style>
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:20px;text-align:center}
+.stat-num{font-size:32px;font-weight:700;color:#7c3aed}
+.stat-lbl{font-size:13px;color:#888;margin-top:4px}
+.chart-wrap{background:#fff;border:1px solid #eee;border-radius:12px;padding:24px;margin-bottom:24px}
+.status-bar{height:10px;border-radius:5px;background:#eee;overflow:hidden;margin:6px 0}
+.status-fill{height:100%;border-radius:5px}
+</style>
+{% endblock %}
+{% block content %}
+<div class="panel-content">
+  <div class="panel-topbar mb-3">
+    <a href="{% url 'web_events:organiser_events' %}" class="btn btn-outline btn-sm">← My Events</a>
+    <h1 class="font-head fs-h2 mb-0">Analytics — {{ event.title }}</h1>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">{{ status_counts.confirmed }}</div><div class="stat-lbl">Confirmed</div></div>
+    <div class="stat-card"><div class="stat-num">₹{{ total_revenue|floatformat:0 }}</div><div class="stat-lbl">Revenue</div></div>
+    <div class="stat-card"><div class="stat-num">{{ attendance_rate }}%</div><div class="stat-lbl">Attendance</div></div>
+    {% if capacity_pct is not None %}<div class="stat-card"><div class="stat-num">{{ capacity_pct }}%</div><div class="stat-lbl">Capacity</div></div>{% endif %}
+    <div class="stat-card"><div class="stat-num">{{ status_counts.cancelled }}</div><div class="stat-lbl">Cancelled</div></div>
+  </div>
+  <div class="chart-wrap"><h3 class="font-head mb-3">Daily ticket sales</h3><canvas id="salesChart" height="90"></canvas></div>
+  <div class="chart-wrap"><h3 class="font-head mb-3">Daily revenue (₹)</h3><canvas id="revenueChart" height="90"></canvas></div>
+  <div class="chart-wrap">
+    <h3 class="font-head mb-3">Ticket status breakdown</h3>
+    {% for status, count in status_counts.items %}{% if total_tickets > 0 %}
+    <div class="flex justify-between text-sm mb-1"><span>{{ status|title }}</span><span>{{ count }}</span></div>
+    <div class="status-bar"><div class="status-fill" style="width:{% widthratio count total_tickets 100 %}%;background:{% if status == 'confirmed' %}#7c3aed{% elif status == 'attended' %}#059669{% elif status == 'cancelled' %}#dc2626{% else %}#f59e0b{% endif %}"></div></div>
+    {% endif %}{% endfor %}
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script>
+const labels={{ chart_labels|safe }},sales={{ chart_sales|safe }},revenue={{ chart_revenue|safe }};
+const opts={responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true}}};
+new Chart(document.getElementById('salesChart'),{type:'bar',data:{labels,datasets:[{label:'Tickets',data:sales,backgroundColor:'rgba(124,58,237,0.25)',borderColor:'#7c3aed',borderWidth:2,borderRadius:4}]},options:opts});
+new Chart(document.getElementById('revenueChart'),{type:'line',data:{labels,datasets:[{label:'Revenue',data:revenue,borderColor:'#059669',backgroundColor:'rgba(5,150,105,0.1)',fill:true,tension:0.3,pointRadius:4}]},options:opts});
+</script>
+{% endblock %}

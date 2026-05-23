@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}My Wishlist — EventNest{% endblock %}
+{% block content %}
+<div class="panel-content">
+  <h1 class="font-head fs-h2 mb-3">❤️ My Wishlist</h1>
+  {% if items %}
+  <div class="grid-3">
+    {% for item in items %}
+    <a href="{% url 'web_events:event_detail' item.event.slug %}">
+      <div class="event-card">
+        <div class="event-card-body">
+          <div class="event-card-title">{{ item.event.title }}</div>
+          <div class="event-card-meta">
+            <span>📅 {{ item.event.start_date|date:"M d, Y" }}</span>
+            {% if item.event.city %}<span>📍 {{ item.event.city }}</span>{% endif %}
+          </div>
+        </div>
+        <div class="event-card-footer">
+          {% if item.event.is_free %}<span class="free-tag">FREE</span>
+          {% else %}<span class="price-tag">₹{{ item.event.ticket_price }}</span>{% endif %}
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center empty-state mt-4">
+    <div class="empty-icon-lg">🤍</div>
+    <p class="text-muted">No saved events yet.</p>
+    <a href="{% url 'web_events:event_list' %}" class="btn btn-gradient mt-2">Explore Events</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

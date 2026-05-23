@@ -1,0 +1,6 @@
+{% extends 'emails/base_email.html' %}
+{% block content %}
+<h2>Ticket cancelled</h2>
+<p>Hi {{ ticket.attendee.username }}, your ticket <strong>{{ ticket.ticket_code }}</strong> for <strong>{{ event.title }}</strong> has been cancelled.</p>
+{% if ticket.amount_paid > 0 %}<p>Refunds will be processed within 5–7 business days.</p>{% endif %}
+{% endblock %}

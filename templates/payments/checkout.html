@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Checkout — {{ event.title }}{% endblock %}
+{% block content %}
+<div class="panel-content" style="max-width:520px;margin:0 auto">
+  <h1 class="font-head fs-h2 mb-1">Complete your booking</h1>
+  <p class="text-muted mb-3">{{ event.title }}</p>
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="flex justify-between mb-2"><span class="text-muted">Ticket price</span><span class="font-bold">₹{{ amount_display }}</span></div>
+      <div class="divider my-2"></div>
+      <div class="flex justify-between font-bold"><span>Total</span><span>₹{{ amount_display }}</span></div>
+    </div>
+  </div>
+  <button id="rzp-btn" class="btn btn-gradient btn-w-full btn-lg">Pay ₹{{ amount_display }} with Razorpay</button>
+  <form id="success-form" method="post" action="{% url 'payments:payment_success' %}">
+    {% csrf_token %}
+    <input type="hidden" name="razorpay_order_id"   id="h_order">
+    <input type="hidden" name="razorpay_payment_id" id="h_payment">
+    <input type="hidden" name="razorpay_signature"  id="h_sig">
+    <input type="hidden" name="event_slug" value="{{ event.slug }}">
+  </form>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var rzp = new Razorpay({
+  key:'{{ razorpay_key_id }}', amount:{{ amount_paise }}, currency:'INR',
+  name:'EventNest', description:'{{ event.title }}', order_id:'{{ razorpay_order_id }}',
+  prefill:{name:'{{ user_name }}', email:'{{ user_email }}', contact:'{{ user_phone }}'},
+  theme:{color:'#7c3aed'},
+  handler:function(r){
+    document.getElementById('h_order').value=r.razorpay_order_id;
+    document.getElementById('h_payment').value=r.razorpay_payment_id;
+    document.getElementById('h_sig').value=r.razorpay_signature;
+    document.getElementById('success-form').submit();
+  }
+});
+document.getElementById('rzp-btn').onclick=function(e){e.preventDefault();rzp.open();};
+</script>
+{% endblock %}

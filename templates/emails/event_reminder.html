@@ -1,0 +1,6 @@
+{% extends 'emails/base_email.html' %}
+{% block content %}
+<h2>Your event is tomorrow! ⏰</h2>
+<p>Hi {{ ticket.attendee.username }}, reminder: <strong>{{ event.title }}</strong> starts tomorrow.</p>
+<div class="ticket-box"><div class="ticket-code">{{ ticket.ticket_code }}</div></div>
+{% endblock %}

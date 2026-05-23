@@ -6,7 +6,13 @@ __pycache__/
 .Python
 
 # ── Virtual Environment ───────────────────────────
-vistalk_env/
+/eventnest/lib/*
+/eventnest/lib64*
+/eventnest/bin/*
+/eventnest/include/*
+/eventnest/pip-selfcheck.json
+/eventnest/pyvenv.cfg
+
 env/
 venv/
 .env/
@@ -21,8 +27,10 @@ venv/
 # ── Django ────────────────────────────────────────
 *.sqlite3
 /media/
-staticfiles/
-static_root/
+/staticfiles/
+/static_root/
+/static/staticfiles
+/tmp*
 
 # ── IDE ───────────────────────────────────────────
 .vscode/
@@ -38,7 +46,16 @@ desktop.ini
 *.log
 logs/
 
-# ── Coverage & Testing ────────────────────────────
+# ── Coverage & Testing
 .coverage
 htmlcov/
 .pytest_cache/
+
+# ── Optional extras often used
+*.egg-info/
+dist/
+build/
+*.egg
+
+.htaccess*
+

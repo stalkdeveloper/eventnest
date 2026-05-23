@@ -1,0 +1,4 @@
+Hi {{ user.username }},
+Verify your email: {{ verify_url }}
+This link expires in 24 hours.
+— EventNest Team
