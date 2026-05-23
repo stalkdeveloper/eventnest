@@ -31,6 +31,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',   # enables logout token blacklisting
 ]
 
 MIDDLEWARE = [
@@ -66,7 +67,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'eventnest.wsgi.application'
 
 
-
 # Database
 DATABASES = {
     'default': {
@@ -85,7 +85,6 @@ DATABASES = {
         'PORT':     config('DB_PORT', cast=int),
     }
 } """
-
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -113,7 +112,10 @@ MEDIA_ROOT = BASE_DIR / config('MEDIA_ROOT', default='media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Email 
+# ── Fix: trailing slash error on POST ─────────────────────────────────────────
+APPEND_SLASH = True   # keep True — just always add trailing slash in API calls
+
+# ── Email ──────────────────────────────────────────────────────────────────────
 EMAIL_BACKEND       = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST          = config('EMAIL_HOST', default='')
 EMAIL_PORT          = config('EMAIL_PORT', default=587, cast=int)
@@ -123,11 +125,11 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL  = config('DEFAULT_FROM_EMAIL', default='EventNest <noreply@eventnest.com>')
 SITE_URL            = config('SITE_URL', default='http://localhost:8000')
 
-# Razorpay
+# ── Razorpay ───────────────────────────────────────────────────────────────────
 RAZORPAY_KEY_ID     = config('RAZORPAY_KEY_ID', default='')
 RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET', default='')
 
-
+# ── Django REST Framework ──────────────────────────────────────────────────────
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -137,9 +139,16 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+
+    'NON_FIELD_ERRORS_KEY': 'errors',
+
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME':  timedelta(hours=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ACCESS_TOKEN_LIFETIME':       timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME':      timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS':       True,    # new refresh token on each refresh
+    'BLACKLIST_AFTER_ROTATION':    True,    # old refresh token blacklisted
+    'UPDATE_LAST_LOGIN':           True,
+    'AUTH_HEADER_TYPES':           ('Bearer',),
 }

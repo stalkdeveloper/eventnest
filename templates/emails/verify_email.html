@@ -1,6 +1,17 @@
 {% extends 'emails/base_email.html' %}
 {% block content %}
 <h2>Verify your email address</h2>
-<p>Hi {{ user.username }}, click below to verify your email. Link expires in 24 hours.</p>
-<a class="btn" href="{{ verify_url }}">Verify Email Address</a>
+<p>Hi {{ user.username }}, thanks for signing up! Please verify your email to unlock all EventNest features.</p>
+
+<div style="background:#f3f0ff;border:2px dashed #7c3aed;border-radius:8px;padding:16px 24px;margin:16px 0;text-align:center">
+  <div style="font-size:12px;color:#888;margin-bottom:6px">Your verification token</div>
+  <div style="font-size:13px;font-family:monospace;word-break:break-all;color:#7c3aed;font-weight:600">{{ token }}</div>
+</div>
+
+<a class="btn" href="{{ verify_url }}?token={{ token }}">Verify Email Address</a>
+
+<p style="color:#888;font-size:13px;margin-top:16px">
+  This link expires in <strong>24 hours</strong>.<br>
+  If you didn't create an EventNest account, ignore this email.
+</p>
 {% endblock %}

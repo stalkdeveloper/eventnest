@@ -1,4 +1,13 @@
 Hi {{ user.username }},
-Verify your email: {{ verify_url }}
+
+Thanks for signing up! Please verify your email address.
+
+Your verification token:
+{{ token }}
+
+Use this token at: {{ verify_url }}
+
 This link expires in 24 hours.
+If you didn't create an EventNest account, ignore this email.
+
 — EventNest Team

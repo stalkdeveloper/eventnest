@@ -1,15 +1,12 @@
 """
-EventNest - Master URL configuration
--------------------------------------
-Pattern: include each app's web_urls and admin_urls separately.
-No app needs to be in INSTALLED_APPS just for URLs.
+EventNest — Master URL configuration
 """
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 from apps.events.views  import EventViewSet
 from apps.tickets.views import TicketViewSet
 
@@ -23,28 +20,28 @@ router.register(r'tickets', TicketViewSet, basename='api-tickets')
 
 urlpatterns = [
     # ── Public website ──────────────────────────────────────────────────────
-    path('', include('apps.core.web_urls')),               # /
-    path('', include('apps.accounts.web_urls')),           # /login/ /register/ /profile/
-    path('', include('apps.events.web_urls')),             # /events/*
-    path('', include('apps.tickets.web_urls')),            # /my-tickets/ /tickets/*
-    path('', include('apps.categories.web_urls')),         # /categories/*
-    path('', include('apps.dashboard.web_urls')),          # /dashboard/
+    path('', include('apps.core.web_urls')),
+    path('', include('apps.accounts.web_urls')),
+    path('', include('apps.events.web_urls')),
+    path('', include('apps.tickets.web_urls')),
+    path('', include('apps.categories.web_urls')),
+    path('', include('apps.dashboard.web_urls')),
 
     # ── Admin panel ─────────────────────────────────────────────────────────
-    path('', include('apps.dashboard.admin_urls')),        # /admin/dashboard/
-    path('', include('apps.accounts.admin_urls')),         # /admin/users/*
-    path('', include('apps.events.admin_urls')),           # /admin/events/*
-    path('', include('apps.tickets.admin_urls')),          # /admin/tickets/*
-    path('', include('apps.categories.admin_urls')),       # /admin/categories/*
-    path('', include('apps.roles.admin_urls')),            # /admin/roles/*
+    path('', include('apps.dashboard.admin_urls')),
+    path('', include('apps.accounts.admin_urls')),
+    path('', include('apps.events.admin_urls')),
+    path('', include('apps.tickets.admin_urls')),
+    path('', include('apps.categories.admin_urls')),
+    path('', include('apps.roles.admin_urls')),
 
     # ── Shared ──────────────────────────────────────────────────────────────
-    path('media/', include('apps.media.urls')),            # /media/upload/
-
+    path('media/', include('apps.media.urls')),
     path('', include('apps.payments.urls')),
-    
-    path('api/v1/', include(router.urls)),
-    path('api/v1/token/',         TokenObtainPairView.as_view(),  name='token_obtain_pair'),
-    path('api/v1/token/refresh/', TokenRefreshView.as_view(),     name='token_refresh'),
+
+    # ── REST API ─────────────────────────────────────────────────────────────
+    path('api/v1/', include('apps.accounts.api_urls')),   # auth endpoints
+    path('api/v1/', include(router.urls)),                # events + tickets
+    path('api/v1/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
