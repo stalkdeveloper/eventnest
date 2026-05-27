@@ -34,7 +34,7 @@
         {% if tags %}
         <div class="divider"></div>
         <div class="flex flex-wrap gap-1 mt-2">
-          <span class="text-muted text-sm" style="flex-basis:100%;margin-bottom:.25rem">Tags:</span>
+          <span class="text-muted text-sm d-block mb-1">Tags:</span>
           {% for tag in tags %}
           <span class="tag-badge" style="--tc:{{ tag.color }}">{{ tag.name }}</span>
           {% endfor %}

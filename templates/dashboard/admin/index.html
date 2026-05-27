@@ -54,7 +54,7 @@
           <tr>
             <td>
               <a href="{% url 'admin_events:event_detail' event.id %}" class="link-accent font-bold text-sm">{{ event.title|truncatechars:26 }}</a>
-              {% if event.deleted_at %}<span class="chip chip-deleted" style="font-size:.6rem">Deleted</span>{% endif %}
+              {% if event.deleted_at %}<span class="chip chip-deleted chip-sm">Deleted</span>{% endif %}
             </td>
             <td>
               <div class="perm-list">

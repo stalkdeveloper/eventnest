@@ -6,12 +6,12 @@ from .models import CustomUser
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password  = serializers.CharField(write_only=True, min_length=8)
-    password2 = serializers.CharField(write_only=True)
+    password         = serializers.CharField(write_only=True, min_length=8, label='Password')
+    confirm_password = serializers.CharField(write_only=True, label='Confirm Password')
 
     class Meta:
         model  = CustomUser
-        fields = ['username', 'email', 'password', 'password2', 'phone']
+        fields = ['username', 'email', 'password', 'confirm_password', 'phone']
 
     def validate_email(self, value):
         if CustomUser.objects.filter(email=value.lower()).exists():
@@ -19,8 +19,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value.lower()
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({'password2': 'Passwords do not match.'})
+        if attrs['password'] != attrs['confirm_password']:
+            raise serializers.ValidationError({'confirm_password': 'Passwords do not match.'})
         try:
             validate_password(attrs['password'])
         except ValidationError as e:
@@ -28,7 +28,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        validated_data.pop('password2')
+        validated_data.pop('confirm_password')
         password = validated_data.pop('password')
         user = CustomUser(**validated_data)
         user.account_type = CustomUser.AccountType.PLATFORM
@@ -86,9 +86,9 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
 
 class PasswordChangeSerializer(serializers.Serializer):
-    old_password = serializers.CharField(write_only=True)
-    new_password = serializers.CharField(write_only=True, min_length=8)
-    new_password2 = serializers.CharField(write_only=True)
+    old_password     = serializers.CharField(write_only=True, label='Current Password')
+    new_password     = serializers.CharField(write_only=True, min_length=8, label='New Password')
+    confirm_password = serializers.CharField(write_only=True, label='Confirm New Password')
 
     def validate_old_password(self, value):
         user = self.context['request'].user
@@ -97,8 +97,8 @@ class PasswordChangeSerializer(serializers.Serializer):
         return value
 
     def validate(self, attrs):
-        if attrs['new_password'] != attrs['new_password2']:
-            raise serializers.ValidationError({'new_password2': 'New passwords do not match.'})
+        if attrs['new_password'] != attrs['confirm_password']:
+            raise serializers.ValidationError({'confirm_password': 'New passwords do not match.'})
         try:
             validate_password(attrs['new_password'], self.context['request'].user)
         except ValidationError as e:
@@ -118,15 +118,15 @@ class ForgotPasswordSerializer(serializers.Serializer):
     def validate_email(self, value):
         return value.lower()
 
+
 class ResetPasswordSerializer(serializers.Serializer):
-    token        = serializers.CharField()
-    new_password  = serializers.CharField(write_only=True, min_length=8)
-    new_password2 = serializers.CharField(write_only=True)
+    token            = serializers.CharField()
+    new_password     = serializers.CharField(write_only=True, min_length=8, label='New Password')
+    confirm_password = serializers.CharField(write_only=True, label='Confirm Password')
 
     def validate(self, attrs):
-        if attrs['new_password'] != attrs['new_password2']:
-            raise serializers.ValidationError({'new_password2': 'Passwords do not match.'})
-        # Verify token
+        if attrs['new_password'] != attrs['confirm_password']:
+            raise serializers.ValidationError({'confirm_password': 'Passwords do not match.'})
         from django.core import signing
         try:
             user_pk = signing.loads(attrs['token'], salt='password-reset', max_age=3600)

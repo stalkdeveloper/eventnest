@@ -1,15 +1,18 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
+from django.db.models import Count, Q
 from .models import Category
 from apps.events.models import Event
 
 
 def category_list(request):
-    categories = Category.objects.filter(parent=None).prefetch_related('children')
+    # Annotate root categories with published event counts (one query via subquery)
+    categories = (
+        Category.objects
+        .filter(parent=None)
+        .prefetch_related('children__children')
+    )
 
-    # Annotate each root category with the total event count across
-    # itself AND all its child categories combined.
-    from apps.events.models import Event
     cat_list = []
     for cat in categories:
         all_ids = [cat.id] + [c.id for c in cat.get_descendants()]
@@ -21,10 +24,7 @@ def category_list(request):
 
 
 def category_detail(request, slug):
-    cat = get_object_or_404(Category, slug=slug)
-
-    # Collect this category + all descendants so that browsing "Technology"
-    # also shows events filed under "AI", "Web Dev", "Cybersecurity", etc.
+    cat      = get_object_or_404(Category, slug=slug)
     all_cats = [cat] + cat.get_descendants()
     all_cat_ids = [c.id for c in all_cats]
 
@@ -40,9 +40,9 @@ def category_detail(request, slug):
     page_obj  = paginator.get_page(request.GET.get('page'))
 
     return render(request, 'categories/web/detail.html', {
-        'cat': cat,
-        'subcategories': all_cats[1:],   # child chips shown in template
-        'events': page_obj,
-        'page_obj': page_obj,
+        'cat':          cat,
+        'subcategories': all_cats[1:],
+        'events':       page_obj,
+        'page_obj':     page_obj,
         'total_events': events_qs.count(),
     })

@@ -53,6 +53,11 @@ class Ticket(TimeStampedModel):
     class Meta:
         unique_together = ['event', 'attendee']
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['attendee', 'status']),
+            models.Index(fields=['event', 'status']),
+            models.Index(fields=['ticket_code']),
+        ]
 
     def __str__(self):
         return f'{self.ticket_code} - {self.attendee.email} @ {self.event.title}'

@@ -1,64 +1,86 @@
 {% extends 'base.html' %}
-{% block title %}Dashboard - EventNest{% endblock %}
+{% block title %}Dashboard — EventNest{% endblock %}
 {% block content %}
-<div class="dash-header">
-  <div>
-    <h1 class="dash-title">Welcome back, {{ request.user.username }} &#128075;</h1>
-    <p class="dash-sub">Your EventNest activity</p>
+<div class="page-wrap">
+  <h1 class="page-title mb-1">Welcome back, {{ request.user.username }} 👋</h1>
+  <p class="text-muted mb-4">Here's what's happening</p>
+
+  <div class="stats-row mb-4">
+    <a href="{% url 'web_tickets:my_tickets' %}" class="stat-pill stat-pill--link">
+      <span class="stat-pill-val">{{ tickets|length }}</span>
+      <span class="stat-pill-lbl">My Tickets</span>
+    </a>
+    <a href="{% url 'web_events:event_list' %}" class="stat-pill stat-pill--link">
+      <span class="stat-pill-val">{{ upcoming_events|length }}</span>
+      <span class="stat-pill-lbl">Upcoming</span>
+    </a>
+    <a href="{% url 'web_events:my_wishlist' %}" class="stat-pill stat-pill--link">
+      <span class="stat-pill-val">❤</span>
+      <span class="stat-pill-lbl">Wishlist</span>
+    </a>
   </div>
-  <span class="badge badge-purple">{{ request.user.role }}</span>
-</div>
 
-<div class="grid-stats mb-4">
-  <div class="stat-card"><div class="stat-value">{{ tickets|length }}</div><div class="stat-label">My Tickets</div></div>
-  <div class="stat-card"><div class="stat-value">{{ upcoming_events|length }}</div><div class="stat-label">Upcoming Events</div></div>
-</div>
+  {% if tickets %}
+  <div class="section-header mb-2">
+    <h2 class="section-title">Recent Tickets</h2>
+    <a href="{% url 'web_tickets:my_tickets' %}" class="btn btn-outline btn-sm">View All</a>
+  </div>
+  <div class="table-wrap mb-4">
+    <table>
+      <thead><tr><th>Event</th><th>Code</th><th>Date</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        {% for ticket in tickets %}
+        <tr>
+          <td><a href="{% url 'web_events:event_detail' ticket.event.slug %}" class="link-accent font-bold">{{ ticket.event.title }}</a></td>
+          <td><code class="ticket-code">{{ ticket.ticket_code }}</code></td>
+          <td class="text-muted text-sm">{{ ticket.event.start_date|date:"M d, Y" }}</td>
+          <td><span class="badge {% if ticket.status == 'confirmed' %}badge-green{% elif ticket.status == 'attended' %}badge-purple{% elif ticket.status == 'cancelled' %}badge-red{% else %}badge-orange{% endif %}">{{ ticket.status|title }}</span></td>
+          <td><a href="{% url 'web_tickets:ticket_detail' ticket.id %}" class="btn btn-outline btn-sm"><i class="bi bi-qr-code"></i></a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
 
-{% if tickets %}
-<h2 class="font-head mb-2 fs-h2">&#127919; My Recent Tickets</h2>
-<div class="table-wrap mb-4">
-  <table>
-    <thead><tr><th>Event</th><th>Code</th><th>Date</th><th>Status</th><th></th></tr></thead>
-    <tbody>
-      {% for ticket in tickets %}
-      <tr>
-        <td><a href="{% url 'web_events:event_detail' ticket.event.slug %}" class="link-accent font-bold">{{ ticket.event.title }}</a></td>
-        <td><span class="ticket-code">{{ ticket.ticket_code }}</span></td>
-        <td class="text-muted text-sm">{{ ticket.event.start_date|date:"M d, Y" }}</td>
-        <td><span class="badge {% if ticket.status == 'confirmed' %}badge-green{% elif ticket.status == 'cancelled' %}badge-red{% else %}badge-orange{% endif %}">{{ ticket.status|title }}</span></td>
-        <td><a href="{% url 'web_events:event_detail' ticket.event.slug %}" class="btn btn-outline btn-sm">View</a></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-<a href="{% url 'web_tickets:my_tickets' %}" class="btn btn-outline btn-sm">All Tickets</a>
-{% else %}
-<div class="card text-center mb-4 empty-state-sm">
-  <div class="fs-icon-md">&#127919;</div>
-  <h3 class="font-head mt-2 mb-1">No tickets yet</h3>
-  <p class="text-muted mb-3">Explore and register for events</p>
-  <a href="{% url 'web_events:event_list' %}" class="btn btn-gradient">Explore Events</a>
-</div>
-{% endif %}
-
-{% if upcoming_events %}
-<h2 class="font-head mb-2 mt-4 fs-h2">&#128197; Upcoming Events</h2>
-<div class="grid-4">
-  {% for event in upcoming_events %}
-  <a href="{% url 'web_events:event_detail' event.slug %}">
-    <div class="event-card">
-      <div class="event-card-img event-card-img--xs"><span class="event-card-img-placeholder">&#127881;</span></div>
+  {% if upcoming_events %}
+  <div class="section-header mb-2">
+    <h2 class="section-title">You Might Like</h2>
+    <a href="{% url 'web_events:event_list' %}" class="btn btn-outline btn-sm">Browse All</a>
+  </div>
+  <div class="events-grid">
+    {% for event in upcoming_events %}
+    <a href="{% url 'web_events:event_detail' event.slug %}" class="event-card">
+      <div class="event-card-img">
+        {% with banner=event.get_banner %}
+          {% if banner %}<img src="{{ banner.get_url }}" alt="{{ event.title }}">
+          {% else %}<div class="event-card-img-placeholder"><i class="bi bi-calendar3-event-fill"></i></div>{% endif %}
+        {% endwith %}
+        {% if event.is_free %}<span class="event-card-badge badge-green">FREE</span>{% endif %}
+      </div>
       <div class="event-card-body">
-        <div class="event-card-title event-card-title--sm">{{ event.title }}</div>
+        {% if event.category %}<div class="event-card-cat">{{ event.category.title }}</div>{% endif %}
+        <div class="event-card-title">{{ event.title }}</div>
         <div class="event-card-meta">
-          <span>{{ event.start_date|date:"M d" }}</span>
-          {% if event.city %}<span>{{ event.city }}</span>{% endif %}
+          <span><i class="bi bi-calendar3"></i> {{ event.start_date|date:"M d, Y" }}</span>
+          {% if event.city %}<span><i class="bi bi-geo-alt"></i> {{ event.city }}</span>{% endif %}
+        </div>
+        <div class="event-card-footer">
+          <span class="event-card-price {% if event.is_free %}event-card-price--free{% endif %}">
+            {% if event.is_free %}FREE{% else %}₹{{ event.ticket_price }}{% endif %}
+          </span>
         </div>
       </div>
-    </div>
-  </a>
-  {% endfor %}
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon"><i class="bi bi-calendar3-event"></i></div>
+    <h3>No tickets yet</h3>
+    <p class="text-muted">Register for events to see your tickets here.</p>
+    <a href="{% url 'web_events:event_list' %}" class="btn btn-gradient mt-2">Explore Events</a>
+  </div>
+  {% endif %}
 </div>
-{% endif %}
 {% endblock %}

@@ -1,53 +1,131 @@
-{# Include this inside event detail template: {% include 'events/web/reviews_partial.html' %} #}
-{% if avg_rating %}
-<div class="info-box mb-3">
-  <div class="info-box-title">⭐ {{ avg_rating }} / 5 <span class="text-muted text-sm">({{ review_count }} review{{ review_count|pluralize }})</span></div>
-  <div style="display:flex;gap:2px;margin-top:4px">
-    {% for i in "12345" %}{% if avg_rating >= forloop.counter %}<span style="color:#f59e0b;font-size:18px">★</span>{% else %}<span style="color:#ddd;font-size:18px">★</span>{% endif %}{% endfor %}
-  </div>
-</div>
-{% endif %}
+{% load static %}
 
-{% if can_review %}
-<div class="card mb-3">
-  <div class="card-body">
-    <h3 class="panel-section-title mb-3">{% if user_review %}Edit your review{% else %}Leave a review{% endif %}</h3>
-    <form method="post" action="{% url 'web_events:submit_review' event.slug %}">
-      {% csrf_token %}
-      <div class="mb-2">
-        <label class="text-sm text-muted">Your rating</label>
-        <div class="star-picker" style="display:flex;gap:6px;margin-top:4px">
-          {% for i in "12345" %}
-          <label style="cursor:pointer;font-size:28px">
-            <input type="radio" name="rating" value="{{ forloop.counter }}" {% if user_review and user_review.rating == forloop.counter %}checked{% endif %} style="display:none">
-            <span class="star-label" data-val="{{ forloop.counter }}" style="color:{% if user_review and user_review.rating >= forloop.counter %}#f59e0b{% else %}#ddd{% endif %}">★</span>
-          </label>
-          {% endfor %}
-        </div>
+<div id="reviews-section">
+  <div class="panel-section-header">
+    <h3 class="panel-section-title">Reviews</h3>
+    {% if avg_rating %}
+    <div class="flex items-center gap-2">
+      <div>
+        {% for i in "12345" %}{% if avg_rating >= forloop.counter %}<span class="star-label--active star-lg">★</span>{% else %}<span class="star-label--inactive star-lg">★</span>{% endif %}{% endfor %}
       </div>
-      <div class="mb-3">
-        <label class="text-sm text-muted">Review (optional)</label>
-        <textarea name="body" class="form-input mt-1" rows="3" placeholder="Share your experience...">{{ user_review.body|default:'' }}</textarea>
-      </div>
-      <button type="submit" class="btn btn-gradient">Submit Review</button>
-    </form>
+      <span class="text-sm text-muted">{{ avg_rating }}/5 &bull; {{ review_count }} review{{ review_count|pluralize }}</span>
+    </div>
+    {% endif %}
   </div>
-</div>
-{% endif %}
 
-{% if reviews %}
-<div class="mb-4">
-  <h3 class="panel-section-title mb-3">Reviews ({{ review_count }})</h3>
-  {% for review in reviews %}
-  <div class="card mb-2">
+  <!-- Write / Edit Review -->
+  {% if can_review %}
+  <div class="card mb-3">
     <div class="card-body">
-      <div style="display:flex;justify-content:space-between">
-        <div><span class="font-bold text-sm">{{ review.reviewer.username }}</span><span class="text-muted text-xs ml-2">{{ review.created_at|date:"M d, Y" }}</span></div>
-        <div style="color:#f59e0b">{% for i in "12345" %}{% if review.rating >= forloop.counter %}★{% else %}<span style="color:#ddd">★</span>{% endif %}{% endfor %}</div>
-      </div>
-      {% if review.body %}<p class="text-sm mt-1 mb-0">{{ review.body }}</p>{% endif %}
+      <h4 class="fs-h3 mb-2">{% if user_review %}Edit Your Review{% else %}Write a Review{% endif %}</h4>
+      <form method="post" action="{% url 'web_events:submit_review' event.slug %}" id="review-form">
+        {% csrf_token %}
+        <div class="form-group mb-2">
+          <label class="form-label">Rating</label>
+          <div class="star-picker" id="star-picker">
+            {% for i in "12345" %}
+            <input type="radio" name="rating" id="star{{ forloop.counter }}" value="{{ forloop.counter }}"
+              {% if user_review and user_review.rating == forloop.counter %}checked{% endif %} required>
+            <label for="star{{ forloop.counter }}"
+              class="star-pick-label {% if user_review and user_review.rating >= forloop.counter %}star-label--active{% else %}star-label--inactive{% endif %}"
+              data-val="{{ forloop.counter }}">★</label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="form-group mb-2">
+          <label class="form-label" for="review-body">Your Review</label>
+          <textarea id="review-body" name="body" class="form-input" rows="3"
+            placeholder="Share your experience at this event...">{{ user_review.body|default:'' }}</textarea>
+        </div>
+        <div class="flex gap-2">
+          <button type="submit" class="btn btn-gradient">
+            {% if user_review %}<i class="bi bi-pencil-fill"></i> Update Review{% else %}<i class="bi bi-send-fill"></i> Submit Review{% endif %}
+          </button>
+          {% if user_review %}
+          <form method="post" action="{% url 'web_events:delete_review' event.slug %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline"
+              onclick="return confirm('Delete your review?')">
+              <i class="bi bi-trash"></i> Delete
+            </button>
+          </form>
+          {% endif %}
+        </div>
+      </form>
     </div>
   </div>
-  {% endfor %}
+  {% elif user.is_authenticated and user_ticket %}
+    {% if event.is_upcoming %}
+    <div class="alert alert-info mb-2"><i class="bi bi-info-circle"></i> Reviews open after the event ends.</div>
+    {% endif %}
+  {% elif user.is_authenticated %}
+  <div class="alert alert-info mb-2"><i class="bi bi-info-circle"></i> Only registered attendees can leave a review.</div>
+  {% else %}
+  <div class="alert alert-info mb-2">
+    <i class="bi bi-info-circle"></i>
+    <a href="{% url 'accounts:login' %}?next={{ request.path }}">Sign in</a> and attend this event to leave a review.
+  </div>
+  {% endif %}
+
+  <!-- Reviews List -->
+  {% if reviews %}
+  <div class="flex flex-col gap-2">
+    {% for review in reviews %}
+    <div class="card">
+      <div class="card-body">
+        <div class="review-header-row">
+          <div class="flex items-center gap-2">
+            <div class="panel-user-avatar" style="width:36px;height:36px;font-size:.9rem;">
+              {{ review.reviewer.username|first|upper }}
+            </div>
+            <div>
+              <div class="font-bold text-sm">{{ review.reviewer.username }}</div>
+              <div class="text-xs text-muted">{{ review.created_at|date:"M d, Y" }}</div>
+            </div>
+          </div>
+          <div>
+            {% for i in "12345" %}
+              {% if review.rating >= forloop.counter %}<span class="star-label--active">★</span>
+              {% else %}<span class="star-label--inactive">★</span>{% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        {% if review.body %}
+        <p class="text-sm mt-1 mb-0">{{ review.body }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state" style="padding:2rem">
+    <div class="empty-state-icon" style="font-size:2rem">⭐</div>
+    <div class="text-sm text-muted mt-1">No reviews yet. Be the first!</div>
+  </div>
+  {% endif %}
 </div>
-{% endif %}
+
+<script>
+// Interactive star picker
+document.querySelectorAll('.star-pick-label').forEach(label => {
+  label.addEventListener('mouseover', function () {
+    const val = +this.dataset.val;
+    document.querySelectorAll('.star-pick-label').forEach((l, i) => {
+      l.className = 'star-pick-label ' + (i < val ? 'star-label--active' : 'star-label--inactive');
+    });
+  });
+  label.addEventListener('click', function () {
+    const val = +this.dataset.val;
+    document.querySelectorAll('.star-pick-label').forEach((l, i) => {
+      l.className = 'star-pick-label ' + (i < val ? 'star-label--active' : 'star-label--inactive');
+    });
+  });
+});
+document.getElementById('star-picker')?.addEventListener('mouseleave', function () {
+  const checked = document.querySelector('.star-picker input:checked');
+  const val = checked ? +checked.value : 0;
+  document.querySelectorAll('.star-pick-label').forEach((l, i) => {
+    l.className = 'star-pick-label ' + (i < val ? 'star-label--active' : 'star-label--inactive');
+  });
+});
+</script>

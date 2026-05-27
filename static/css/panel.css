@@ -1725,3 +1725,29 @@ code {
     min-height: 100vh;
   }
 }
+/* ── Admin - Banner preview ───────────────────────────────────────────────────── */
+.banner-preview-img {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* ── Admin - Tag dot ─────────────────────────────────────────────────────────── */
+.tag-dot-sm {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Layout utilities ────────────────────────────────────────────────────────── */
+.d-block { display: block; }
+.mb-1 { margin-bottom: .25rem; }
+
+/* ── Category level indent ───────────────────────────────────────────────────── */
+/* Dynamic rem value via template tag — kept as inline style in template (truly dynamic) */
+
+/* ── Chip small ──────────────────────────────────────────────────────────────── */
+.chip-sm { font-size: .6rem; }

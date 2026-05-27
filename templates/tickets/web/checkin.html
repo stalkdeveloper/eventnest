@@ -1,65 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}Check-in — {{ event.title }}{% endblock %}
-{% block extra_css %}
-<style>
-body{background:#0f0f0f;color:#fff}
-.nav,.footer{display:none}
-.checkin-wrap{max-width:480px;margin:0 auto;padding:20px}
-.checkin-header{text-align:center;margin-bottom:20px}
-.checkin-header h1{font-size:20px;font-weight:700;margin-bottom:4px}
-.checkin-header p{font-size:13px;color:#aaa;margin:0}
-#scanner-container{border-radius:16px;overflow:hidden;background:#1a1a1a;border:2px solid #7c3aed;position:relative}
-#qr-video{width:100%;display:block}
-.scan-line{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#7c3aed,transparent);animation:scan 2s linear infinite}
-@keyframes scan{0%{top:0}100%{top:100%}}
-.result-box{margin-top:16px;border-radius:12px;padding:16px 20px;display:none}
-.result-box.success{background:#064e3b;border:1px solid #059669}
-.result-box.error{background:#450a0a;border:1px solid #dc2626}
-.result-box.warn{background:#422006;border:1px solid #d97706}
-.result-icon{font-size:40px;text-align:center;margin-bottom:8px}
-.result-name{font-size:22px;font-weight:700;text-align:center}
-.result-msg{font-size:14px;color:#aaa;text-align:center;margin-top:4px}
-.manual-input{margin-top:16px;display:flex;gap:8px}
-.manual-input input{flex:1;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:10px 14px;color:#fff;font-size:15px;text-transform:uppercase;letter-spacing:1px;outline:none}
-.manual-input input:focus{border-color:#7c3aed}
-.btn-scan{background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer}
-.stats-row{display:flex;gap:10px;margin-top:20px}
-.stat-box{flex:1;background:#1a1a1a;border-radius:10px;padding:12px;text-align:center;border:1px solid #333}
-.stat-box .num{font-size:24px;font-weight:700}
-.stat-box .lbl{font-size:11px;color:#888;margin-top:2px}
-.stat-box.green .num{color:#059669}
-.stat-box.purple .num{color:#7c3aed}
-</style>
-{% endblock %}
 {% block content %}
 <div class="checkin-wrap">
   <div class="checkin-header">
     <h1>{{ event.title }}</h1>
     <p>📍 {{ event.city }} · 📅 {{ event.start_date|date:"M d, Y" }}</p>
   </div>
-  <div id="scanner-container">
+  <div class="scanner-container" id="scanner-container">
     <video id="qr-video" playsinline></video>
     <div class="scan-line"></div>
   </div>
-  <div id="result-box" class="result-box">
-    <div class="result-icon" id="result-icon"></div>
-    <div class="result-name" id="result-name"></div>
-    <div class="result-msg"  id="result-msg"></div>
+  <div id="result-box" class="checkin-result-box">
+    <div class="checkin-result-icon" id="result-icon"></div>
+    <div class="checkin-result-name" id="result-name"></div>
+    <div class="checkin-result-msg"  id="result-msg"></div>
   </div>
-  <div class="manual-input">
+  <div class="checkin-manual-input">
     <input id="manual-code" type="text" placeholder="Enter ticket code manually" maxlength="20">
-    <button class="btn-scan" onclick="validateCode(document.getElementById('manual-code').value)">Check In</button>
+    <button class="btn btn-gradient" onclick="validateCode(document.getElementById('manual-code').value)">Check In</button>
   </div>
-  <div class="stats-row">
-    <div class="stat-box green"><div class="num" id="stat-attended">{{ stats.attended }}</div><div class="lbl">Attended</div></div>
-    <div class="stat-box purple"><div class="num" id="stat-confirmed">{{ stats.confirmed }}</div><div class="lbl">Confirmed</div></div>
-    <div class="stat-box"><div class="num">{{ stats.total }}</div><div class="lbl">Total</div></div>
+  <div class="checkin-stats-row">
+    <div class="checkin-stat-box green"><div class="num" id="stat-attended">{{ stats.attended }}</div><div class="lbl">Attended</div></div>
+    <div class="checkin-stat-box purple"><div class="num" id="stat-confirmed">{{ stats.confirmed }}</div><div class="lbl">Confirmed</div></div>
+    <div class="checkin-stat-box"><div class="num">{{ stats.total }}</div><div class="lbl">Total</div></div>
   </div>
 </div>
 {% endblock %}
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
+// Dark mode for this special page
+document.body.classList.add('checkin-body');
 const VALIDATE_URL='{% url "web_tickets:checkin_validate" event.slug %}';
 const CSRF='{{ csrf_token }}';
 const video=document.getElementById('qr-video');
@@ -98,7 +69,7 @@ async function validateCode(raw){
 }
 function showResult(d){
   const box=document.getElementById('result-box');
-  box.className='result-box';box.style.display='block';
+  box.className='checkin-result-box';box.style.display='block';
   document.getElementById('result-icon').textContent=d.ok?'✅':d.status==='already_attended'?'⚠️':'❌';
   document.getElementById('result-name').textContent=d.attendee_name||d.message;
   document.getElementById('result-msg').textContent=d.ok?'Checked in!':d.attendee_name?d.message:'';

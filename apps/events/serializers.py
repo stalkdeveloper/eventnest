@@ -47,16 +47,22 @@ class EventListSerializer(serializers.ModelSerializer):
         return banner.get_url() if banner else None
 
     def get_organiser(self, obj):
-        return {
-            'id':       obj.organiser.id,
-            'username': obj.organiser.username,
-        }
+        return {'id': obj.organiser.id, 'username': obj.organiser.username}
 
     def get_avg_rating(self, obj):
+        # Uses prefetched reviews if available to avoid extra query
+        if hasattr(obj, '_prefetched_objects_cache') and 'reviews' in obj._prefetched_objects_cache:
+            reviews = obj._prefetched_objects_cache['reviews']
+            if not reviews:
+                return None
+            avg = sum(r.rating for r in reviews) / len(reviews)
+            return round(avg, 1)
         agg = obj.reviews.aggregate(avg=Avg('rating'))
         return round(agg['avg'], 1) if agg['avg'] else None
 
     def get_review_count(self, obj):
+        if hasattr(obj, '_prefetched_objects_cache') and 'reviews' in obj._prefetched_objects_cache:
+            return len(obj._prefetched_objects_cache['reviews'])
         return obj.reviews.count()
 
 
@@ -67,7 +73,6 @@ class EventDetailSerializer(EventListSerializer):
     class Meta(EventListSerializer.Meta):
         fields = EventListSerializer.Meta.fields + [
             'description', 'address', 'online_link',
-            'latitude', 'longitude',
             'created_at', 'updated_at',
             'is_wishlisted', 'tiers',
         ]
@@ -104,7 +109,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        tags = validated_data.pop('tags', [])
+        tags  = validated_data.pop('tags', [])
         event = Event.objects.create(**validated_data)
         event.tags.set(tags)
         return event

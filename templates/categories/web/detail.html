@@ -50,7 +50,7 @@
           {% if event.city %}&bull; &#128205; {{ event.city }}{% endif %}
         </div>
         {% if subcategories and event.category and event.category != cat %}
-        <div class="event-card-date mt-1" style="color:var(--accent);font-size:.72rem;font-weight:600;">
+        <div class="event-card-sub-cat">
           &#127991; {{ event.category.title }}
         </div>
         {% endif %}

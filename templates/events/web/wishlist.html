@@ -1,32 +1,48 @@
 {% extends 'base.html' %}
 {% block title %}My Wishlist — EventNest{% endblock %}
 {% block content %}
-<div class="panel-content">
-  <h1 class="font-head fs-h2 mb-3">❤️ My Wishlist</h1>
+<div class="page-wrap">
+  <div class="page-header">
+    <h1 class="page-title">❤ My Wishlist</h1>
+    <a href="{% url 'web_events:event_list' %}" class="btn btn-outline btn-sm">Explore Events</a>
+  </div>
   {% if items %}
-  <div class="grid-3">
+  <div class="events-grid">
     {% for item in items %}
-    <a href="{% url 'web_events:event_detail' item.event.slug %}">
-      <div class="event-card">
-        <div class="event-card-body">
-          <div class="event-card-title">{{ item.event.title }}</div>
-          <div class="event-card-meta">
-            <span>📅 {{ item.event.start_date|date:"M d, Y" }}</span>
-            {% if item.event.city %}<span>📍 {{ item.event.city }}</span>{% endif %}
-          </div>
+    <a href="{% url 'web_events:event_detail' item.event.slug %}" class="event-card">
+      <div class="event-card-img">
+        {% with banner=item.event.get_banner %}
+          {% if banner %}<img src="{{ banner.get_url }}" alt="{{ item.event.title }}">
+          {% else %}<div class="event-card-img-placeholder"><i class="bi bi-calendar3-event-fill"></i></div>{% endif %}
+        {% endwith %}
+        {% if item.event.is_free %}<span class="event-card-badge badge-green">FREE</span>{% endif %}
+      </div>
+      <div class="event-card-body">
+        {% if item.event.category %}<div class="event-card-cat">{{ item.event.category.title }}</div>{% endif %}
+        <div class="event-card-title">{{ item.event.title }}</div>
+        <div class="event-card-meta">
+          <span><i class="bi bi-calendar3"></i> {{ item.event.start_date|date:"M d, Y" }}</span>
+          {% if item.event.city %}<span><i class="bi bi-geo-alt"></i> {{ item.event.city }}</span>{% endif %}
         </div>
         <div class="event-card-footer">
-          {% if item.event.is_free %}<span class="free-tag">FREE</span>
-          {% else %}<span class="price-tag">₹{{ item.event.ticket_price }}</span>{% endif %}
+          <span class="event-card-price {% if item.event.is_free %}event-card-price--free{% endif %}">
+            {% if item.event.is_free %}FREE{% else %}₹{{ item.event.ticket_price }}{% endif %}
+          </span>
+          <form method="post" action="{% url 'web_events:toggle_wishlist' item.event.slug %}"
+            onclick="event.stopPropagation()">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline btn-sm" title="Remove">❤ Saved</button>
+          </form>
         </div>
       </div>
     </a>
     {% endfor %}
   </div>
   {% else %}
-  <div class="text-center empty-state mt-4">
-    <div class="empty-icon-lg">🤍</div>
-    <p class="text-muted">No saved events yet.</p>
+  <div class="empty-state">
+    <div class="empty-state-icon"><i class="bi bi-heart"></i></div>
+    <h3>Nothing saved yet</h3>
+    <p class="text-muted">Tap ♡ on any event to save it here.</p>
     <a href="{% url 'web_events:event_list' %}" class="btn btn-gradient mt-2">Explore Events</a>
   </div>
   {% endif %}

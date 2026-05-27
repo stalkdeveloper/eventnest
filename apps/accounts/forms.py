@@ -9,17 +9,25 @@ from .models import CustomUser
 class RegisterForm(UserCreationForm):
     email    = forms.EmailField(required=True)
     username = forms.CharField()
-    password1 = forms.CharField(widget=forms.PasswordInput())
-    password2 = forms.CharField(widget=forms.PasswordInput())
+    password1 = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'Enter password'}),
+        help_text='Minimum 8 characters.',
+    )
+    password2 = forms.CharField(
+        label='Confirm Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'Confirm password'}),
+    )
 
     class Meta:
         model  = CustomUser
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'password1', 'password2']  # Django requires these names internally
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for f in self.fields.values():
-            f.widget.attrs['class'] = 'form-input'
+        for name, f in self.fields.items():
+            if 'class' not in f.widget.attrs:
+                f.widget.attrs['class'] = 'form-input'
 
 
 class LoginForm(AuthenticationForm):
@@ -47,7 +55,11 @@ class ProfileUpdateForm(forms.ModelForm):
 # ── Admin forms ───────────────────────────────────────────────────────────────
 
 class AdminUserCreateForm(forms.ModelForm):
-    password     = forms.CharField(widget=forms.PasswordInput(), min_length=8)
+    password     = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-input'}),
+        min_length=8,
+    )
     group        = forms.ModelChoiceField(queryset=Group.objects.all(), required=True, label='Role')
     account_type = forms.ChoiceField(choices=CustomUser.AccountType.choices,
                                      initial=CustomUser.AccountType.PLATFORM)

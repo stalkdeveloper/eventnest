@@ -1,106 +1,125 @@
 {% extends 'base.html' %}
-{% block title %}EventNest - Discover & Host Events{% endblock %}
+{% block title %}EventNest — Discover &amp; Host Events{% endblock %}
 {% block content %}
 
+<!-- Hero -->
 <div class="hero">
-  <span class="hero-eyebrow">The Events Platform</span>
-  <h1 class="hero-title">
-    Discover & Host<br>
-    <span class="grad">Unforgettable Events</span>
-  </h1>
-  <p class="hero-sub">From tech conferences to music festivals - find your next experience or bring your vision to life.</p>
-  <div class="hero-actions">
-    <a href="{% url 'web_events:event_list' %}" class="btn btn-gradient btn-lg">Explore Events</a>
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><i class="bi bi-stars"></i> The Events Platform</div>
+    <h1 class="hero-title">Discover &amp; Host<br><span class="hero-grad">Unforgettable Events</span></h1>
+    <p class="hero-sub">From tech conferences to music festivals — find your next experience or bring your vision to life.</p>
+    <div class="hero-actions">
+      <a href="{% url 'web_events:event_list' %}" class="btn btn-gradient btn-lg"><i class="bi bi-search"></i> Explore Events</a>
+      {% if user.is_authenticated %}
+      <a href="{% url 'web_dashboard:dashboard' %}" class="btn btn-outline btn-lg"><i class="bi bi-speedometer2"></i> Dashboard</a>
+      {% else %}
+      <a href="{% url 'accounts:register' %}" class="btn btn-outline btn-lg"><i class="bi bi-person-plus"></i> Join Free</a>
+      {% endif %}
+    </div>
+    <div class="hero-search">
+      <i class="bi bi-search hero-search-icon"></i>
+      <input type="text" id="heroSearch" class="hero-search-input" placeholder="Search events, cities…">
+      <button class="btn btn-gradient btn-sm" onclick="window.location='/events/?q='+document.getElementById('heroSearch').value">Go</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+  <!-- Categories -->
+  {% if categories %}
+  <div class="section-header mt-4 mb-2">
+    <h2 class="section-title">Browse by Category</h2>
+    <a href="{% url 'web_categories:category_list' %}" class="btn btn-outline btn-sm">All</a>
+  </div>
+  <div class="cat-pills mb-4">
+    <a href="{% url 'web_events:event_list' %}" class="cat-pill cat-pill--active">All Events</a>
+    {% for cat in categories %}
+    <a href="{% url 'web_events:event_list' %}?category={{ cat.slug }}" class="cat-pill">
+      {{ cat.title }}{% if cat.event_count %} <span class="cat-count">{{ cat.event_count }}</span>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Featured -->
+  {% if featured_events %}
+  <div class="section-header mb-2">
+    <h2 class="section-title">⭐ Featured Events</h2>
+    <a href="{% url 'web_events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
+  </div>
+  <div class="events-grid mb-4">
+    {% for event in featured_events %}
+    <a href="{% url 'web_events:event_detail' event.slug %}" class="event-card">
+      <div class="event-card-img">
+        {% with banner=event.get_banner %}
+          {% if banner %}<img src="{{ banner.get_url }}" alt="{{ event.title }}">
+          {% else %}<div class="event-card-img-placeholder"><i class="bi bi-calendar3-event-fill"></i></div>{% endif %}
+        {% endwith %}
+        <span class="event-card-badge badge-orange">⭐ Featured</span>
+        {% if event.is_free %}<span class="event-card-badge badge-green" style="left:auto;right:.5rem">FREE</span>{% endif %}
+      </div>
+      <div class="event-card-body">
+        {% if event.category %}<div class="event-card-cat">{{ event.category.title }}</div>{% endif %}
+        <div class="event-card-title">{{ event.title }}</div>
+        <div class="event-card-meta">
+          <span><i class="bi bi-calendar3"></i> {{ event.start_date|date:"M d, Y" }}</span>
+          {% if event.city %}<span><i class="bi bi-geo-alt"></i> {{ event.city }}</span>{% endif %}
+          <span><i class="bi bi-people"></i> {{ event.tickets_sold }} going</span>
+        </div>
+        <div class="event-card-footer">
+          <span class="event-card-price {% if event.is_free %}event-card-price--free{% endif %}">{% if event.is_free %}FREE{% else %}₹{{ event.ticket_price }}{% endif %}</span>
+          <span class="chip chip-{{ event.event_type }}">{{ event.event_type|title }}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Upcoming -->
+  {% if upcoming_events %}
+  <div class="section-header mb-2">
+    <h2 class="section-title"><i class="bi bi-clock"></i> Upcoming Events</h2>
+    <a href="{% url 'web_events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
+  </div>
+  <div class="events-grid mb-4">
+    {% for event in upcoming_events %}
+    <a href="{% url 'web_events:event_detail' event.slug %}" class="event-card">
+      <div class="event-card-img">
+        {% with banner=event.get_banner %}
+          {% if banner %}<img src="{{ banner.get_url }}" alt="{{ event.title }}">
+          {% else %}<div class="event-card-img-placeholder"><i class="bi bi-calendar3-event-fill"></i></div>{% endif %}
+        {% endwith %}
+        {% if event.is_free %}<span class="event-card-badge badge-green">FREE</span>{% endif %}
+      </div>
+      <div class="event-card-body">
+        {% if event.category %}<div class="event-card-cat">{{ event.category.title }}</div>{% endif %}
+        <div class="event-card-title">{{ event.title }}</div>
+        <div class="event-card-meta">
+          <span><i class="bi bi-calendar3"></i> {{ event.start_date|date:"M d, Y" }}</span>
+          {% if event.city %}<span><i class="bi bi-geo-alt"></i> {{ event.city }}</span>{% endif %}
+        </div>
+        <div class="event-card-footer">
+          <span class="event-card-price {% if event.is_free %}event-card-price--free{% endif %}">{% if event.is_free %}FREE{% else %}₹{{ event.ticket_price }}{% endif %}</span>
+          <span class="text-xs text-muted">{{ event.spots_left }} spots left</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if not featured_events and not upcoming_events %}
+  <div class="empty-state mt-4">
+    <div class="empty-state-icon"><i class="bi bi-calendar3-event"></i></div>
+    <h3>No events yet</h3>
+    <p class="text-muted text-sm">Be the first to create one!</p>
     {% if user.is_authenticated %}
-      <a href="{% url 'web_dashboard:dashboard' %}" class="btn btn-primary btn-lg">My Dashboard</a>
-    {% else %}
-      <a href="{% url 'accounts:register' %}" class="btn btn-outline btn-lg">Get Started Free</a>
+    <a href="{% url 'web_events:event_create' %}" class="btn btn-gradient mt-2">Create Event</a>
     {% endif %}
   </div>
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search events, cities, categories&hellip;">
-    <button class="btn btn-gradient btn-sm" onclick="window.location='/events/?q='+document.getElementById('searchInput').value">Search</button>
-  </div>
-</div>
+  {% endif %}
 
-{% if nav_categories %}
-<div class="cats mb-4">
-  <a href="{% url 'web_events:event_list' %}" class="cat-pill active">All</a>
-  {% for cat in nav_categories %}
-  <a href="{% url 'web_events:event_list' %}?category={{ cat.slug }}" class="cat-pill">{{ cat.title }}</a>
-  {% endfor %}
 </div>
-{% endif %}
-
-{% if featured_events %}
-<div class="section-header">
-  <h2 class="section-title mb-0">Featured Events</h2>
-  <a href="{% url 'web_events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
-</div>
-<div class="grid-3 mb-4">
-  {% for event in featured_events %}
-  <a href="{% url 'web_events:event_detail' event.slug %}">
-    <div class="event-card">
-      <div class="event-card-img">
-        <span class="event-card-img-placeholder">{% if event.category %}{{ event.category.title|first }}{% else %}&#127881;{% endif %}</span>
-        {% if event.is_featured %}<span class="badge badge-orange badge-img-pos">Featured</span>{% endif %}
-      </div>
-      <div class="event-card-body">
-        <div class="event-card-meta">
-          {% if event.category %}<span class="badge badge-purple">{{ event.category.title }}</span>{% endif %}
-          <span class="badge badge-cyan">{{ event.event_type|title }}</span>
-        </div>
-        <div class="event-card-title">{{ event.title }}</div>
-        <div class="event-card-meta">
-          <span>&#128197; {{ event.start_date|date:"M d, Y" }}</span>
-          {% if event.city %}<span>&#128205; {{ event.city }}</span>{% endif %}
-        </div>
-      </div>
-      <div class="event-card-footer">
-        {% if event.is_free %}<span class="free-tag">FREE</span>
-        {% else %}<span class="price-tag">{{ event.ticket_price }}</span>{% endif %}
-        {% if event.spots_left is not None %}<span class="text-xs text-muted">{{ event.spots_left }} left</span>{% endif %}
-      </div>
-    </div>
-  </a>
-  {% endfor %}
-</div>
-{% endif %}
-
-{% if upcoming_events %}
-<div class="section-header mt-4">
-  <h2 class="section-title mb-0">Upcoming Events</h2>
-  <a href="{% url 'web_events:event_list' %}" class="btn btn-outline btn-sm">View All</a>
-</div>
-<div class="grid-4">
-  {% for event in upcoming_events %}
-  <a href="{% url 'web_events:event_detail' event.slug %}">
-    <div class="event-card">
-      <div class="event-card-img event-card-img--sm">
-        <span class="event-card-img-placeholder"></span>
-      </div>
-      <div class="event-card-body">
-        <div class="event-card-title">{{ event.title }}</div>
-        <div class="event-card-meta">
-          <span>{{ event.start_date|date:"M d" }}</span>
-          {% if event.city %}<span>{{ event.city }}</span>{% endif %}
-        </div>
-      </div>
-      <div class="event-card-footer">
-        {% if event.is_free %}<span class="free-tag">FREE</span>
-        {% else %}<span class="price-tag">&#8377;{{ event.ticket_price }}</span>{% endif %}
-      </div>
-    </div>
-  </a>
-  {% endfor %}
-</div>
-{% endif %}
-
-{% if not featured_events and not upcoming_events %}
-<div class="text-center empty-state">
-  <div class="empty-icon-lg">&#127881;</div>
-  <h2 class="font-head mt-2 mb-1">No events yet</h2>
-  <p class="text-muted mb-3">Run <code>python manage.py seed</code> to add sample data</p>
-</div>
-{% endif %}
 {% endblock %}

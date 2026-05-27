@@ -157,7 +157,7 @@
             {% with banner=event.get_banner %}
             {% if banner %}
             <div class="mb-2">
-              <img src="{{ banner.file.url }}" alt="Banner" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;">
+              <img src="{{ banner.file.url }}" alt="Banner" class="banner-preview-img">
             </div>
             {% endif %}
             {% endwith %}

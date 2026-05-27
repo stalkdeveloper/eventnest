@@ -50,17 +50,21 @@ def event_analytics(request, slug):
 @require_POST
 def toggle_wishlist(request, slug):
     from .models import Wishlist
-    event = get_object_or_404(Event, slug=slug, status='published')
+    from django.contrib import messages
+    event = get_object_or_404(Event, slug=slug)
     obj, created = Wishlist.objects.get_or_create(user=request.user, event=event)
     if not created:
         obj.delete()
-    return JsonResponse({'saved': created, 'count': event.wishlisted_by.count()})
+        messages.info(request, f'Removed from wishlist.')
+    else:
+        messages.success(request, f'Saved to wishlist!')
+    return redirect('web_events:event_detail', slug=slug)
 
 
 @login_required
 def my_wishlist(request):
     from .models import Wishlist
-    items = Wishlist.objects.filter(user=request.user).select_related('event')
+    items = Wishlist.objects.filter(user=request.user).select_related('event', 'event__category')
     return render(request, 'events/web/wishlist.html', {'items': items})
 
 

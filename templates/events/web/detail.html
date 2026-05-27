@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ event.title }} - EventNest{% endblock %}
+{% block title %}{{ event.title }} — EventNest{% endblock %}
 {% block content %}
 
 <div class="event-banner">
@@ -8,28 +8,40 @@
     {% if event.category %}<span class="badge badge-purple">{{ event.category.title }}</span>{% endif %}
     <span class="badge {% if event.event_type == 'online' %}badge-cyan{% elif event.event_type == 'hybrid' %}badge-orange{% else %}badge-green{% endif %}">{{ event.event_type|title }}</span>
     {% if event.is_free %}<span class="badge badge-green">FREE</span>{% endif %}
+    {% if event.is_featured %}<span class="badge badge-orange">⭐ Featured</span>{% endif %}
   </div>
 </div>
 
 <div class="event-layout">
+  <!-- ── Left Column ── -->
   <div>
-    <h1 class="font-head fs-h1 mb-1">{{ event.title }}</h1>
+    <div class="flex items-center justify-between gap-2 mb-1">
+      <h1 class="font-head fs-h1 mb-0">{{ event.title }}</h1>
+      {% if user.is_authenticated %}
+      <form method="post" action="{% url 'web_events:toggle_wishlist' event.slug %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline btn-sm" title="Wishlist">
+          &#9825; Save
+        </button>
+      </form>
+      {% endif %}
+    </div>
 
     <div class="event-meta-row">
       <span>&#128197; {{ event.start_date|date:"F d, Y, g:i A" }}</span>
+      {% if event.end_date %}<span>→ {{ event.end_date|date:"F d, Y, g:i A" }}</span>{% endif %}
       {% if event.city %}<span>&#128205; {{ event.city }}</span>{% endif %}
       {% if event.venue %}<span>&#127963; {{ event.venue }}</span>{% endif %}
       <span>&#128101; {{ event.tickets_sold }} registered</span>
+      {% if avg_rating %}<span>⭐ {{ avg_rating }}/5 ({{ review_count }} review{{ review_count|pluralize }})</span>{% endif %}
     </div>
 
     {% with all_event_tags=event.tags.all %}
     {% if all_event_tags %}
     <div class="event-detail-tags">
       {% for tag in all_event_tags %}
-      <a href="{% url 'web_events:tag_events' tag.slug %}"
-         class="event-detail-tag" style="--tc:{{ tag.color }}">
-        <span class="event-detail-tag-dot" style="background:{{ tag.color }}"></span>
-        {{ tag.name }}
+      <a href="{% url 'web_events:tag_events' tag.slug %}" class="event-detail-tag" style="--tc:{{ tag.color }}">
+        <span class="event-detail-tag-dot" style="background:{{ tag.color }}"></span>{{ tag.name }}
       </a>
       {% endfor %}
     </div>
@@ -47,18 +59,31 @@
     </div>
     {% endif %}
 
-    {% if event.online_link %}
-    <div class="info-box info-box-online">
+    {% if user_ticket and event.event_type == 'online' and event.online_link %}
+    <div class="info-box info-box-online mb-2">
+      <div class="info-box-title">&#127760; Online Event Link</div>
+      <a href="{{ event.online_link }}" target="_blank" class="btn btn-outline btn-sm mt-1">Join Event ↗</a>
+    </div>
+    {% elif event.event_type == 'online' %}
+    <div class="info-box info-box-online mb-2">
       <div class="info-box-title">&#127760; Online Event</div>
       <p class="text-sm text-muted">Link shared after registration.</p>
     </div>
     {% endif %}
+
+    <!-- ── Reviews Section ── -->
+    <div class="divider mt-3"></div>
+    {% include 'events/web/reviews_partial.html' %}
+
   </div>
 
+  <!-- ── Sidebar ── -->
   <div class="event-sidebar">
     <div class="card">
       <div class="card-body">
-        <div class="event-price-big">{% if event.is_free %}FREE{% else %}&#8377;{{ event.ticket_price }}{% endif %}</div>
+        <div class="event-price-big">
+          {% if event.is_free %}FREE{% else %}&#8377;{{ event.ticket_price }}{% endif %}
+        </div>
 
         {% if event.max_capacity > 0 %}
         <div class="mb-2">
@@ -73,8 +98,9 @@
         {% endif %}
 
         <div class="text-sm text-muted mb-3 flex flex-col gap-1">
-          <span>&#128197; Ends {{ event.end_date|date:"M d, Y" }}</span>
+          {% if event.end_date %}<span>&#128197; Ends {{ event.end_date|date:"M d, Y" }}</span>{% endif %}
           <span>&#128101; {{ event.tickets_sold }} registered</span>
+          {% if event.organiser %}<span>&#128100; By {{ event.organiser.username }}</span>{% endif %}
         </div>
 
         {% if user.is_authenticated %}
@@ -82,6 +108,7 @@
           <div class="registered-box">
             <div class="registered-box-title">&#10003; You're Registered!</div>
             <div class="registered-box-code">{{ user_ticket.ticket_code }}</div>
+            <a href="{% url 'web_tickets:ticket_detail' user_ticket.pk %}" class="btn btn-outline btn-sm btn-w-full mt-2">View Ticket &amp; QR</a>
           </div>
           {% elif event.spots_left == 0 %}
           <button class="btn btn-outline btn-w-full" disabled>Fully Booked</button>
@@ -91,12 +118,23 @@
           <form method="post" action="{% url 'web_events:register_event' event.slug %}">
             {% csrf_token %}
             <button type="submit" class="btn btn-gradient btn-w-full">
-              {% if event.is_free %}Register Free{% else %}Get Ticket - &#8377;{{ event.ticket_price }}{% endif %}
+              {% if event.is_free %}Register Free{% else %}Get Ticket — &#8377;{{ event.ticket_price }}{% endif %}
             </button>
           </form>
           {% endif %}
         {% else %}
         <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-gradient btn-w-full">Login to Register</a>
+        {% endif %}
+
+        <!-- Organiser actions -->
+        {% if user == event.organiser %}
+        <div class="divider mt-2"></div>
+        <div class="flex flex-col gap-1 mt-1">
+          <a href="{% url 'web_events:event_edit' event.slug %}" class="btn btn-outline btn-sm">&#9998; Edit Event</a>
+          <a href="{% url 'web_events:event_analytics' event.slug %}" class="btn btn-outline btn-sm">&#128202; Analytics</a>
+          <a href="{% url 'web_tickets:checkin_page' event.slug %}" class="btn btn-outline btn-sm">&#128247; QR Check-in</a>
+          <a href="{% url 'web_events:manage_tiers' event.slug %}" class="btn btn-outline btn-sm">&#127881; Manage Tiers</a>
+        </div>
         {% endif %}
       </div>
     </div>

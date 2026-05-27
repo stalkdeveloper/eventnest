@@ -152,3 +152,20 @@ SIMPLE_JWT = {
     'UPDATE_LAST_LOGIN':           True,
     'AUTH_HEADER_TYPES':           ('Bearer',),
 }
+
+# ── Caching (in-memory for dev; swap to Redis in prod) ────────────────────────
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'eventnest-cache',
+    }
+}
+
+# ── Database connection pooling ───────────────────────────────────────────────
+# For production with PostgreSQL, add CONN_MAX_AGE to reuse DB connections
+# DATABASES['default']['CONN_MAX_AGE'] = 60  # seconds
+
+# ── Query optimization ────────────────────────────────────────────────────────
+# Enables persistent DB connections for better API performance
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024   # 10 MB file upload limit
+

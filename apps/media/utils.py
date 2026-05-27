@@ -56,3 +56,51 @@ def save_uploaded_file(file, obj, source_type, file_type=Media.FileType.IMAGE):
         extension=ext,
     )
     return media
+
+
+def generate_ticket_qr(ticket):
+    """
+    Generate a QR code image for a ticket and save it as a Media record.
+    Called automatically when a ticket is confirmed.
+    Returns the Media instance.
+    """
+    import qrcode
+    import io
+    from django.conf import settings
+
+    # Re-use existing QR if already generated
+    existing = ticket.get_qr()
+    if existing:
+        return existing
+
+    # Build QR payload — ticket code is enough for the scanner
+    qr = qrcode.QRCode(
+        version=2,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=10,
+        border=2,
+    )
+    qr.add_data(ticket.ticket_code)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color='black', back_color='white')
+
+    # Save to MEDIA_ROOT
+    folder        = f'tickets/qr/'
+    filename      = f'{ticket.ticket_code}.png'
+    relative_path = folder + filename
+    full_path     = os.path.join(settings.MEDIA_ROOT, relative_path)
+    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+    img.save(full_path)
+
+    # Create Media record
+    media = Media.objects.create(
+        mediable_type='tickets.Ticket',
+        mediable_id=ticket.pk,
+        source_type='ticket_qr',
+        storage_type=Media.StorageType.LOCAL,
+        file_path=relative_path,
+        original_file_name=filename,
+        file_type=Media.FileType.IMAGE,
+        extension='png',
+    )
+    return media

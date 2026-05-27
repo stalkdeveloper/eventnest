@@ -116,6 +116,13 @@ class Event(TimeStampedModel):
 
     class Meta:
         ordering = ['-start_date']
+        indexes = [
+            models.Index(fields=['status', 'start_date']),
+            models.Index(fields=['organiser', 'status']),
+            models.Index(fields=['is_featured', 'status']),
+            models.Index(fields=['is_free', 'status']),
+            models.Index(fields=['city']),
+        ]
 
     def __str__(self):
         return self.title

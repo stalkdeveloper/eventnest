@@ -10,7 +10,6 @@ from apps.events.models import Event
 
 @system_required
 def category_list(request):
-    # Build tree-ordered flat list from roots
     root_cats = Category.objects.filter(parent=None).prefetch_related(
         'children__children__children'
     )
@@ -18,13 +17,12 @@ def category_list(request):
     for root in root_cats:
         all_cats.append(root)
         all_cats.extend(root.get_descendants())
-    
-    paginator = Paginator(all_cats, 20)
-    page_number = request.GET.get('page')
-    cats = paginator.get_page(page_number)
-    
+
+    paginator   = Paginator(all_cats, 20)
+    cats        = paginator.get_page(request.GET.get('page'))
+
     return render(request, 'categories/admin/list.html', {
-        'categories': cats,
+        'categories':  cats,
         'LEVEL_TYPES': Category.LEVEL_TYPES,
         'ENTITY_TYPES': Category.ENTITY_TYPES,
     })
@@ -32,9 +30,14 @@ def category_list(request):
 
 @system_required
 def category_detail(request, cat_id):
-    cat = get_object_or_404(Category.all_objects, pk=cat_id)
-    children = Category.all_objects.filter(parent=cat)
-    events = Event.all_objects.filter(category=cat).order_by('-created_at')[:10]
+    cat      = get_object_or_404(Category.all_objects, pk=cat_id)
+    children = Category.all_objects.filter(parent=cat).select_related('parent')
+    events   = (
+        Event.all_objects
+        .filter(category=cat)
+        .select_related('organiser')
+        .order_by('-created_at')[:10]
+    )
     return render(request, 'categories/admin/detail.html', {
         'cat': cat, 'children': children, 'events': events,
     })
@@ -44,15 +47,15 @@ def category_detail(request, cat_id):
 def category_create(request):
     root_cats = Category.objects.filter(parent=None)
     if request.method == 'POST':
-        title = request.POST.get('title', '').strip()
-        slug = request.POST.get('slug', '').strip() or slugify(title)
-        color = request.POST.get('color', '#6366f1')
-        desc = request.POST.get('description', '')
-        parent_id = request.POST.get('parent')
-        parent = Category.objects.filter(pk=parent_id).first() if parent_id else None
-        level_type = request.POST.get('level_type', 'grand_parent')
+        title       = request.POST.get('title', '').strip()
+        slug        = request.POST.get('slug', '').strip() or slugify(title)
+        color       = request.POST.get('color', '#6366f1')
+        desc        = request.POST.get('description', '')
+        parent_id   = request.POST.get('parent')
+        parent      = Category.objects.filter(pk=parent_id).first() if parent_id else None
+        level_type  = request.POST.get('level_type', 'grand_parent')
         entity_type = request.POST.get('entity_type', 'events')
-        
+
         if Category.objects.filter(slug=slug).exists():
             messages.error(request, f'Slug "{slug}" already exists.')
         else:
@@ -64,8 +67,8 @@ def category_create(request):
             messages.success(request, f'Category "{cat.title}" created.')
             return redirect('admin_categories:category_list')
     return render(request, 'categories/admin/form.html', {
-        'action': 'Create', 'title': 'Create Category', 
-        'root_cats': root_cats,
+        'action': 'Create', 'title': 'Create Category',
+        'root_cats':   root_cats,
         'LEVEL_TYPES': Category.LEVEL_TYPES,
         'ENTITY_TYPES': Category.ENTITY_TYPES,
     })
@@ -73,23 +76,24 @@ def category_create(request):
 
 @system_required
 def category_edit(request, cat_id):
-    cat = get_object_or_404(Category.all_objects, pk=cat_id)
+    cat       = get_object_or_404(Category.all_objects, pk=cat_id)
     root_cats = Category.objects.filter(parent=None).exclude(pk=cat.pk)
     if request.method == 'POST':
-        cat.title = request.POST.get('title', cat.title).strip()
-        cat.slug = request.POST.get('slug', '').strip() or slugify(cat.title)
+        cat.title       = request.POST.get('title', cat.title).strip()
+        cat.slug        = request.POST.get('slug', '').strip() or slugify(cat.title)
         cat.description = request.POST.get('description', '')
-        cat.level_type = request.POST.get('level_type', cat.level_type)
+        cat.level_type  = request.POST.get('level_type', cat.level_type)
         cat.entity_type = request.POST.get('entity_type', cat.entity_type)
-        cat.updated_by = request.user
-        parent_id = request.POST.get('parent')
-        cat.parent = Category.objects.filter(pk=parent_id).first() if parent_id else None
+        cat.updated_by  = request.user
+        parent_id       = request.POST.get('parent')
+        cat.parent      = Category.objects.filter(pk=parent_id).first() if parent_id else None
         cat.save()
         messages.success(request, f'Category "{cat.title}" updated.')
         return redirect('admin_categories:category_list')
     return render(request, 'categories/admin/form.html', {
         'action': 'Edit', 'title': f'Edit - {cat.title}',
-        'cat': cat, 'root_cats': root_cats,
+        'cat':         cat,
+        'root_cats':   root_cats,
         'LEVEL_TYPES': Category.LEVEL_TYPES,
         'ENTITY_TYPES': Category.ENTITY_TYPES,
     })

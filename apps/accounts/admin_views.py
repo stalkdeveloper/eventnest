@@ -36,12 +36,12 @@ def user_list(request):
     page_obj  = paginator.get_page(request.GET.get('page'))
 
     return render(request, 'accounts/admin/list.html', {
-        'users': page_obj,
-        'page_obj': page_obj,
-        'groups': Group.objects.all(),
-        'q': q,
-        'role_filter': role_filter,
-        'type_filter': type_filter,
+        'users':        page_obj,
+        'page_obj':     page_obj,
+        'groups':       Group.objects.all(),
+        'q':            q,
+        'role_filter':  role_filter,
+        'type_filter':  type_filter,
         'active_filter': active_f,
         'account_types': CustomUser.AccountType.choices,
     })
@@ -61,7 +61,7 @@ def user_create(request):
 
 @system_required
 def user_edit(request, user_id):
-    target = get_object_or_404(CustomUser, pk=user_id)
+    target = get_object_or_404(CustomUser.objects.prefetch_related('groups'), pk=user_id)
     if not request.user.is_superuser and target.is_superuser:
         messages.error(request, 'Cannot edit a superuser.')
         return redirect('admin_accounts:user_list')
