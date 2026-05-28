@@ -23,4 +23,4 @@ class Payment(TimeStampedModel):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'{self.ticket.ticket_code} — {self.status} — ₹{self.amount}'
+        return f'{self.ticket.ticket_code}  {self.status}  ₹{self.amount}'

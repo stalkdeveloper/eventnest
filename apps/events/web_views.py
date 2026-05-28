@@ -84,7 +84,7 @@ def event_detail(request, slug):
             can_review  = True
             user_review = Review.objects.filter(event=event, reviewer=request.user).first()
 
-    # Aggregate from prefetch cache — no extra query
+    # Aggregate from prefetch cache  no extra query
     reviews      = event.reviews.all()
     review_count = reviews.count()
     avg_agg      = reviews.aggregate(avg=Avg('rating'))

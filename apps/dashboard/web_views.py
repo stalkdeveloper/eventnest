@@ -1,4 +1,4 @@
-"""Guest and Organiser dashboards (public website side) — optimized."""
+"""Guest and Organiser dashboards (public website side)  optimized."""
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -14,7 +14,7 @@ def dashboard(request):
     if user.groups.filter(name='Organiser').exists():
         return redirect('web_events:organiser_events')
 
-    # Guest dashboard — single optimized queryset per concern
+    # Guest dashboard  single optimized queryset per concern
     tickets = (
         Ticket.objects
         .filter(attendee=user)

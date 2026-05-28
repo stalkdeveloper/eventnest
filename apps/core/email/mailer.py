@@ -65,7 +65,7 @@ class Mailer:
     def send_ticket_confirmation(cls, ticket):
         qr = ticket.get_qr() if hasattr(ticket, 'get_qr') else None
         cls._send(
-            f'Your ticket for {ticket.event.title} — {ticket.ticket_code}',
+            f'Your ticket for {ticket.event.title}  {ticket.ticket_code}',
             ticket.attendee.email,
             'emails/ticket_confirmation.txt', 'emails/ticket_confirmation.html',
             {'ticket': ticket, 'event': ticket.event, 'qr': qr},
@@ -83,7 +83,7 @@ class Mailer:
     @classmethod
     def send_ticket_cancelled(cls, ticket):
         cls._send(
-            f'Ticket cancelled — {ticket.event.title}',
+            f'Ticket cancelled  {ticket.event.title}',
             ticket.attendee.email,
             'emails/ticket_cancelled.txt', 'emails/ticket_cancelled.html',
             {'ticket': ticket, 'event': ticket.event},

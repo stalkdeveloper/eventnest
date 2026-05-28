@@ -1,6 +1,6 @@
 """
 apps/events/views.py
-Full Events REST API — optimized with select_related / prefetch_related / annotations.
+Full Events REST API  optimized with select_related / prefetch_related / annotations.
 """
 import uuid
 from rest_framework import viewsets, status, permissions

@@ -16,5 +16,5 @@ class Migration(migrations.Migration):
             model_name='customuser',
             index=models.Index(fields=['is_verified'], name='accounts_user_is_verified_idx'),
         ),
-        # email is already unique (has implicit index) — skip
+        # email is already unique (has implicit index)  skip
     ]

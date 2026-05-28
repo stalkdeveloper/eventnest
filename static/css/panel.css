@@ -1725,6 +1725,7 @@ code {
     min-height: 100vh;
   }
 }
+
 /* ── Admin - Banner preview ───────────────────────────────────────────────────── */
 .banner-preview-img {
   width: 100%;
@@ -1743,11 +1744,18 @@ code {
 }
 
 /* ── Layout utilities ────────────────────────────────────────────────────────── */
-.d-block { display: block; }
-.mb-1 { margin-bottom: .25rem; }
+.d-block {
+  display: block;
+}
+
+.mb-1 {
+  margin-bottom: .25rem;
+}
 
 /* ── Category level indent ───────────────────────────────────────────────────── */
-/* Dynamic rem value via template tag — kept as inline style in template (truly dynamic) */
+/* Dynamic rem value via template tag  kept as inline style in template (truly dynamic) */
 
 /* ── Chip small ──────────────────────────────────────────────────────────────── */
-.chip-sm { font-size: .6rem; }
+.chip-sm {
+  font-size: .6rem;
+}

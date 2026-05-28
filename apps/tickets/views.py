@@ -1,5 +1,5 @@
 """
-apps/tickets/views.py — Optimized Tickets REST API.
+apps/tickets/views.py  Optimized Tickets REST API.
 """
 from rest_framework import viewsets, status
 from rest_framework.decorators import action

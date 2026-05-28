@@ -73,7 +73,7 @@ def generate_ticket_qr(ticket):
     if existing:
         return existing
 
-    # Build QR payload — ticket code is enough for the scanner
+    # Build QR payload  ticket code is enough for the scanner
     qr = qrcode.QRCode(
         version=2,
         error_correction=qrcode.constants.ERROR_CORRECT_M,

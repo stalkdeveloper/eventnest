@@ -1,5 +1,5 @@
 """
-apps/tickets/web_views.py — Web ticket views + QR check-in (optimized).
+apps/tickets/web_views.py  Web ticket views + QR check-in (optimized).
 """
 import json
 from django.shortcuts import render, redirect, get_object_or_404

@@ -1,5 +1,5 @@
 """
-apps/payments/views.py — Razorpay payment flow (optimized).
+apps/payments/views.py  Razorpay payment flow (optimized).
 """
 import uuid, razorpay, hmac, hashlib, json
 from django.conf import settings

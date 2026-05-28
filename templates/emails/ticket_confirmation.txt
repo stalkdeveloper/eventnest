@@ -2,4 +2,4 @@ Hi {{ ticket.attendee.username }},
 Ticket confirmed for "{{ event.title }}"!
 Code: {{ ticket.ticket_code }}
 Date: {{ event.start_date|date:"F d, Y, g:i A" }}
-— EventNest Team
+ EventNest Team

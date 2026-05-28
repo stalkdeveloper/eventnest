@@ -87,7 +87,7 @@ class TicketTier(models.Model):
         ordering = ['sort_order', 'price']
 
     def __str__(self):
-        return f'{self.event.title} — {self.name} (₹{self.price})'
+        return f'{self.event.title}  {self.name} (₹{self.price})'
 
     @property
     def slots_sold(self):

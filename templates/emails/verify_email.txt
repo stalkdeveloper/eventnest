@@ -10,4 +10,4 @@ Use this token at: {{ verify_url }}
 This link expires in 24 hours.
 If you didn't create an EventNest account, ignore this email.
 
-— EventNest Team
+ EventNest Team

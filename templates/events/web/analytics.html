@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Analytics — {{ event.title }}{% endblock %}
+{% block title %}Analytics  {{ event.title }}{% endblock %}
 {% block content %}
 <div class="panel-content">
   <div class="panel-topbar mb-3">
     <a href="{% url 'web_events:organiser_events' %}" class="btn btn-outline btn-sm">← My Events</a>
-    <h1 class="font-head fs-h2 mb-0">Analytics — {{ event.title }}</h1>
+    <h1 class="font-head fs-h2 mb-0">Analytics  {{ event.title }}</h1>
   </div>
   <div class="analytics-stat-grid">
     <div class="analytics-stat-card"><div class="analytics-stat-num">{{ status_counts.confirmed }}</div><div class="analytics-stat-lbl">Confirmed</div></div>

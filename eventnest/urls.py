@@ -1,5 +1,5 @@
 """
-EventNest — Master URL configuration
+EventNest  Master URL configuration
 """
 from django.urls import path, include
 from django.conf import settings

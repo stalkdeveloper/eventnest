@@ -1,4 +1,4 @@
-"""Admin panel dashboard — optimized."""
+"""Admin panel dashboard  optimized."""
 from django.shortcuts import render
 from django.db.models import Count, Q
 from apps.core.decorators import system_required

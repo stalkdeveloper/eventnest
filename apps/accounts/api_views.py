@@ -1,6 +1,6 @@
 """
 apps/accounts/api_views.py
-Full Auth API — Register, Login, Logout, Profile, Password Change,
+Full Auth API  Register, Login, Logout, Profile, Password Change,
 Forgot Password, Reset Password, Email Verification, Resend Verification.
 """
 from rest_framework import status
@@ -64,7 +64,7 @@ class RegisterAPIView(APIView):
 
 
 class LoginAPIView(APIView):
-    """POST /api/v1/auth/login/ — Body: { email, password }"""
+    """POST /api/v1/auth/login/  Body: { email, password }"""
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -76,7 +76,7 @@ class LoginAPIView(APIView):
 
 
 class LogoutAPIView(APIView):
-    """POST /api/v1/auth/logout/ — Body: { refresh }"""
+    """POST /api/v1/auth/logout/  Body: { refresh }"""
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -106,7 +106,7 @@ class ProfileAPIView(APIView):
 
 
 class PasswordChangeAPIView(APIView):
-    """POST /api/v1/auth/password/change/ — Body: { old_password, new_password, confirm_password }"""
+    """POST /api/v1/auth/password/change/  Body: { old_password, new_password, confirm_password }"""
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -118,7 +118,7 @@ class PasswordChangeAPIView(APIView):
 
 
 class ForgotPasswordAPIView(APIView):
-    """POST /api/v1/auth/password/forgot/ — Body: { email }"""
+    """POST /api/v1/auth/password/forgot/  Body: { email }"""
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -135,7 +135,7 @@ class ForgotPasswordAPIView(APIView):
 
 
 class ResetPasswordAPIView(APIView):
-    """POST /api/v1/auth/password/reset/ — Body: { token, new_password, confirm_password }"""
+    """POST /api/v1/auth/password/reset/  Body: { token, new_password, confirm_password }"""
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -147,7 +147,7 @@ class ResetPasswordAPIView(APIView):
 
 
 class VerifyEmailAPIView(APIView):
-    """POST /api/v1/auth/email/verify/ — Body: { token }"""
+    """POST /api/v1/auth/email/verify/  Body: { token }"""
     permission_classes = [AllowAny]
 
     def post(self, request):

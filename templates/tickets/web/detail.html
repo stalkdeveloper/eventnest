@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Ticket {{ ticket.ticket_code }} — EventNest{% endblock %}
+{% block title %}Ticket {{ ticket.ticket_code }}  EventNest{% endblock %}
 {% block content %}
 <div class="panel-content" style="max-width:600px;margin:0 auto">
 
@@ -34,7 +34,7 @@
         <div class="registered-box-code text-center">{{ ticket.ticket_code }}</div>
 
         {% if qr %}
-        <img src="{{ qr.get_url }}" alt="QR Code — {{ ticket.ticket_code }}" class="qr-code-img">
+        <img src="{{ qr.get_url }}" alt="QR Code  {{ ticket.ticket_code }}" class="qr-code-img">
         <p class="text-xs text-muted text-center">Show this QR at the event for check-in</p>
         {% else %}
         <div class="info-box text-center">

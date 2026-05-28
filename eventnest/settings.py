@@ -113,7 +113,7 @@ MEDIA_ROOT = BASE_DIR / config('MEDIA_ROOT', default='media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ── Fix: trailing slash error on POST ─────────────────────────────────────────
-APPEND_SLASH = True   # keep True — just always add trailing slash in API calls
+APPEND_SLASH = True   # keep True  just always add trailing slash in API calls
 
 # ── Email ──────────────────────────────────────────────────────────────────────
 EMAIL_BACKEND       = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')

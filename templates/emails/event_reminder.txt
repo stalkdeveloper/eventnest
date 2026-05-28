@@ -1,4 +1,4 @@
 Hi {{ ticket.attendee.username }},
-Reminder: {{ event.title }} is tomorrow — {{ event.start_date|date:"F d, Y, g:i A" }}
+Reminder: {{ event.title }} is tomorrow  {{ event.start_date|date:"F d, Y, g:i A" }}
 Ticket: {{ ticket.ticket_code }}
-— EventNest Team
+ EventNest Team

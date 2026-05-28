@@ -27,4 +27,6 @@ urlpatterns = [
     path('events/<slug:slug>/review/delete/', delete_review,              name='delete_review'),
 
     path('events/<slug:slug>/tiers/',        manage_tiers,                name='manage_tiers'),
+
+    path('events/<slug:slug>/attendees/',    web_views.event_attendees,   name='event_attendees'),
 ]

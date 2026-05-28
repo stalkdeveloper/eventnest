@@ -1,3 +1,3 @@
 Welcome to EventNest, {{ user.username }}!
 Your account is ready. Explore: {{ site_url }}
-— EventNest Team
+ EventNest Team

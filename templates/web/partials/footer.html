@@ -1,5 +1,58 @@
+{% load static %}
 <footer class="footer">
-  <p>
-    &#169; {% now "Y" %} EventNest - Discover & Host Amazing Events
-  </p>
+  <div class="footer-inner">
+    <!-- Brand -->
+    <div class="footer-brand">
+      <a href="{% url 'web_home:home' %}" class="footer-logo">&#11043; EventNest</a>
+      <p class="footer-tagline">Discover and host unforgettable events  from tech conferences to music festivals.</p>
+    </div>
+
+    <!-- Explore -->
+    <div>
+      <div class="footer-col-title">Explore</div>
+      <ul class="footer-links">
+        <li><a href="{% url 'web_events:event_list' %}">All Events</a></li>
+        <li><a href="{% url 'web_categories:category_list' %}">Categories</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'web_events:my_wishlist' %}">My Wishlist</a></li>
+        <li><a href="{% url 'web_tickets:my_tickets' %}">My Tickets</a></li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <!-- Organise -->
+    <div>
+      <div class="footer-col-title">Organise</div>
+      <ul class="footer-links">
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'web_events:event_create' %}">Create Event</a></li>
+        <li><a href="{% url 'web_events:organiser_events' %}">My Events</a></li>
+        <li><a href="{% url 'web_dashboard:dashboard' %}">Dashboard</a></li>
+        {% else %}
+        <li><a href="{% url 'accounts:register' %}">Sign Up Free</a></li>
+        <li><a href="{% url 'accounts:login' %}">Login</a></li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <!-- Account -->
+    <div>
+      <div class="footer-col-title">Account</div>
+      <ul class="footer-links">
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
+        <li><a href="{% url 'accounts:password_change' %}">Change Password</a></li>
+        {% else %}
+        <li><a href="{% url 'accounts:login' %}">Login</a></li>
+        <li><a href="{% url 'accounts:register' %}">Register</a></li>
+        <li><a href="{% url 'accounts:password_reset' %}">Forgot Password</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>&#169; {% now "Y" %} EventNest. All rights reserved.</span>
+    <span>Built with &#10084; for event lovers</span>
+  </div>
 </footer>
